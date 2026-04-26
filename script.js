@@ -46,47 +46,78 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Adicione isso ao seu script.js na função de login
-function validarLogin(email, senha) {
-    // 1. Verificação de ADM
-    if (email === "admin@michelly.com" && senha === "123456") {
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Controle do Modal de Login (Abrir e Fechar)
+    const modal = document.getElementById('loginModal');
+    const openBtn = document.getElementById('openLogin');
+    const closeBtn = document.getElementById('closeLogin');
+
+    if (openBtn) {
+        openBtn.onclick = (e) => {
+            e.preventDefault();
+            modal.style.display = "block";
+        }
+    }
+
+    if (closeBtn) {
+        closeBtn.onclick = () => modal.style.display = "none";
+    }
+
+    window.onclick = (event) => {
+        if (event.target == modal) modal.style.display = "none";
+    }
+
+    // 2. Lógica do Formulário de Contato (Se existir na página)
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const status = document.getElementById('status');
+            status.innerText = "Enviando...";
+            setTimeout(() => {
+                status.innerText = "Obrigado! Michelly recebeu sua mensagem.";
+                status.style.color = "green";
+                contactForm.reset();
+            }, 1500);
+        });
+    }
+});
+
+// 3. FUNÇÃO DE LOGIN ÚNICA (Fora do DOMContentLoaded para ser acessível pelo onclick)
+function executarLogin() {
+    // Pega os elementos do HTML
+    const campoUsuario = document.getElementById('loginUser');
+    const campoSenha = document.getElementById('loginPass');
+
+    if (!campoUsuario || !campoSenha) {
+        console.error("Erro: Campos de login não encontrados no HTML.");
+        return;
+    }
+
+    const user = campoUsuario.value.trim();
+    const pass = campoSenha.value.trim();
+
+    console.log("Tentando login com:", user); // Para ajudar no seu teste
+
+    // VERIFICAÇÃO ADM
+    if (user === "admin@michelly.com" && pass === "123456") {
+        console.log("Login ADM aprovado!");
         window.location.href = "adm.html";
         return;
     }
 
-    // 2. Verificação de Cliente
+    // VERIFICAÇÃO CLIENTE
     let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
     
-    // O cliente usará o próprio ID ou Nome como senha (exemplo simples)
-    let clienteEncontrado = clientes.find(c => c.pasta === email && c.id === senha);
-
-    if (clienteEncontrado) {
-        // Redireciona para a área do cliente passando o ID
-        window.location.href = `area-cliente.html?id=${clienteEncontrado.id}`;
-    } else {
-        alert("Usuário ou senha incorretos!");
-    }
-}
-
-function executarLogin() {
-    // Pegamos os valores que o usuário digitou
-    const user = document.getElementById('loginUser').value.trim();
-    const pass = document.getElementById('loginPass').value.trim();
-
-    // Verificação do ADM
-    if (user === "admin@michelly.com" && pass === "123456") {
-        window.location.href = "adm.html";
-        return; // Para a execução aqui
-    }
-
-    // Verificação de Clientes (Angelo, etc)
-    let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-    let clienteEncontrado = clientes.find(c => c.pasta === user && c.id === pass);
+    let clienteEncontrado = clientes.find(c => 
+        c.pasta.toLowerCase() === user.toLowerCase() && 
+        c.id.toString() === pass
+    );
 
     if (clienteEncontrado) {
         window.location.href = `area-cliente.html?id=${clienteEncontrado.id}`;
     } else {
-        alert("Dados incorretos. Tente novamente ou solicite acesso via WhatsApp.");
+        alert("Acesso negado! Verifique seu usuário (nome da pasta) e senha (ID único).");
     }
 }
 
