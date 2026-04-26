@@ -45,3 +45,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// Adicione isso ao seu script.js na função de login
+function validarLogin(email, senha) {
+    // 1. Verificação de ADM
+    if (email === "admin@michelly.com" && senha === "123456") {
+        window.location.href = "adm.html";
+        return;
+    }
+
+    // 2. Verificação de Cliente
+    let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
+    
+    // O cliente usará o próprio ID ou Nome como senha (exemplo simples)
+    let clienteEncontrado = clientes.find(c => c.pasta === email && c.id === senha);
+
+    if (clienteEncontrado) {
+        // Redireciona para a área do cliente passando o ID
+        window.location.href = `area-cliente.html?id=${clienteEncontrado.id}`;
+    } else {
+        alert("Usuário ou senha incorretos!");
+    }
+}
