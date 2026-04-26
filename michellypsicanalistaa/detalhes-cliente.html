@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficha do Cliente | Michelly Santos</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .ficha-container { max-width: 900px; margin: 40px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .grid-ficha { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .card-detalhe { border: 1px solid #f2eee9; padding: 20px; border-radius: 8px; }
+        .pago { color: green; font-weight: bold; }
+        .pendente { color: #d4a373; font-weight: bold; }
+        table { width: 100%; font-size: 0.9rem; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="ficha-container">
+        <a href="adm.html" style="text-decoration: none; color: var(--accent-color);">← Voltar ao Painel</a>
+        <h1 id="nomeClienteHeader" style="margin-top: 20px;">Carregando...</h1>
+        <p>ID: <span id="idClienteHeader">--</span> | Pasta: <span id="pastaClienteHeader">--</span></p>
+
+        <div class="grid-ficha">
+            <div class="card-detalhe">
+                <h3>Relação de Débitos e Pagamentos</h3>
+                <table id="tabelaFinanceiro">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <button class="btn" style="margin-top:15px; font-size: 0.8rem;" onclick="lancarPagamento()">+ Lançar Sessão</button>
+            </div>
+
+            <div class="card-detalhe">
+                <h3>Notas de Evolução</h3>
+                <textarea id="notasEvolucao" style="width:100%; height:150px; border:1px solid #eee; padding:10px;" placeholder="Anotações da sessão..."></textarea>
+                <button class="btn" style="margin-top:10px; font-size: 0.8rem;" onclick="salvarNotas()">Salvar Notas</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica para pegar o ID da URL e carregar o cliente certo
+        const params = new URLSearchParams(window.location.search);
+        const clienteId = params.get('id');
+        let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
+        let cliente = clientes.find(c => c.id === clienteId);
+
+        if (cliente) {
+            document.getElementById('nomeClienteHeader').innerText = cliente.nome;
+            document.getElementById('idClienteHeader').innerText = cliente.id;
+            document.getElementById('pastaClienteHeader').innerText = cliente.pasta;
+            document.getElementById('notasEvolucao').value = cliente.notas || "";
+            renderFinanceiro();
+        }
+
+        function renderFinanceiro() {
+            const tbody = document.querySelector('#tabelaFinanceiro tbody');
+            tbody.innerHTML = cliente.financeiro ? cliente.financeiro.map(f => `
+                <tr>
+                    <td>${f.data}</td>
+                    <td>R$ ${f.valor}</td>
+                    <td class="${f.status.toLowerCase()}">${f.status}</td>
+                </tr>
+            `).join('') : '<tr><td colspan="3">Nenhum registro.</td></tr>';
+        }
+
+        function lancarPagamento() {
+            const valor = prompt("Valor da sessão:", "150");
+            if (valor) {
+                if (!cliente.financeiro) cliente.financeiro = [];
+                cliente.financeiro.push({
+                    data: new Date().toLocaleDateString('pt-BR'),
+                    valor: valor,
+                    status: "Pendente"
+                });
+                atualizarLocalStorage();
+                renderFinanceiro();
+            }
+        }
+
+        function salvarNotas() {
+            cliente.notas = document.getElementById('notasEvolucao').value;
+            atualizarLocalStorage();
+            alert("Evolução salva!");
+        }
+
+        function atualizarLocalStorage() {
+            localStorage.setItem('clientes_michelly', JSON.stringify(clientes));
+        }
+    </script>
+</body>
+</html>
