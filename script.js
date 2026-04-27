@@ -1,29 +1,24 @@
-// Verifica se o arquivo carregou
-console.log("Script de Login Carregado!");
-
 function executarLogin(event) {
-    // 1. Para o recarregamento da página
-    if (event) event.preventDefault();
+    if (event) {
+        event.preventDefault(); // Trava o recarregamento
+        event.stopPropagation(); // Evita que o clique "suba" para outros elementos
+    }
 
     const userField = document.getElementById('loginUser');
     const passField = document.getElementById('loginPass');
-
-    if (!userField || !passField) {
-        alert("Erro: Campos de login não encontrados.");
-        return false;
-    }
-
+    
     const user = userField.value.trim();
     const pass = passField.value.trim();
 
-    // 2. LOGIN ADMIN (MICHELLY)
+    // LOGIN ADMIN
     if (user === "admin@michelly.com" && pass === "123456") {
-        console.log("Login Admin aprovado.");
-        window.location.href = "adm.html"; // No GitHub, usamos o nome direto do arquivo
+        console.log("Admin OK. Redirecionando...");
+        // Usamos ./ para dizer "nesta mesma pasta"
+        window.location.replace("./adm.html"); 
         return false;
     }
 
-    // 3. LOGIN CLIENTE (LOCALSTORAGE)
+    // LOGIN CLIENTE
     const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
     const encontrou = clientes.find(c => 
         c.pasta.toLowerCase() === user.toLowerCase() && 
@@ -31,7 +26,7 @@ function executarLogin(event) {
     );
 
     if (encontrou) {
-        window.location.href = "area-cliente.html?id=" + encontrou.id;
+        window.location.replace("./area-cliente.html?id=" + encontrou.id);
     } else {
         alert("Usuário ou senha incorretos!");
     }
