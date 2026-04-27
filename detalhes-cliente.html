@@ -94,28 +94,67 @@
         }
 
         // 3. Funções de Alimentação
-        function addSessao() {
-            const valor = prompt("Valor da sessão (R$):", "150.00");
-            if (valor) {
-                if (!cliente.financeiro) cliente.financeiro = [];
-                const hoje = new Date().toLocaleDateString('pt-BR');
-                cliente.financeiro.push({ data: hoje, valor: valor, status: "Pendente" });
-                renderFinanceiro();
-            }
-        }
+// No arquivo detalhes-cliente.html, procure e ajuste estas funções:
 
-        function alternarStatus(index) {
-            cliente.financeiro[index].status = cliente.financeiro[index].status === "Pendente" ? "Pago" : "Pendente";
-            renderFinanceiro();
-        }
+function renderFinanceiro() {
+    const tbody = document.querySelector('#tabelaFinanceiro tbody');
+    tbody.innerHTML = '';
+    
+    if (cliente.financeiro) {
+        cliente.financeiro.forEach((item, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${item.data}</td>
+                    <td>${item.valor} €</td> <td class="status-${item.status.toLowerCase()}" onclick="alternarStatus(${index})" style="cursor:pointer">
+                        ${item.status}
+                    </td>
+                </tr>
+            `;
+        });
+    }
+}
 
-        function salvarTudo() {
-            cliente.notas = document.getElementById('notasEvolucao').value;
-            localStorage.setItem('clientes_michelly', JSON.stringify(clientes));
-            alert("Dados salvos com sucesso na pasta de " + cliente.nome);
-        }
-
+function addSessao() {
+    const valor = prompt("Valor da sessão (€):", "50.00"); // Sugestão em Euro
+    if (valor) {
+        if (!cliente.financeiro) cliente.financeiro = [];
+        const hoje = new Date().toLocaleDateString('pt-PT'); // Formato de data europeu
+        cliente.financeiro.push({ data: hoje, valor: valor, status: "Pendente" });
         renderFinanceiro();
+    }
+}
+   <footer>
+    <div class="footer-container">
+        <div class="footer-box">
+            <h3>Michelly Eufrazio Santos</h3>
+            <p>Psicanálista Clínica dedicada ao autoconhecimento e bem-estar emocional na Europa.</p>
+            <div class="redes-sociais">
+                <a href="www.linkendin.com/michellysantos" class="social-icon">In</a>
+                <a href="www.instagram.com/michellysantospsicanalista" class="social-icon">Ig</a>
+            </div>
+        </div>
+
+        <div class="footer-box">
+            <h3>Links</h3>
+            <a href="index.html">Início</a>
+            <a href="#sobre">Sobre Mim</a>
+            <a href="contato.html">Agendar Consulta</a>
+            <a href="#" onclick="document.getElementById('loginModal').style.display='block'">Área Restrita</a>
+        </div>
+
+        <div class="footer-box">
+            <h3>Contato</h3>
+            <p>📍 Aveiro, Portugal / Online</p>
+            <p>📧 michrllysantos@gmail.com</p>
+            <p>📱 +351 910 377 246</p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        &copy; 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.
+    </div>
+</footer>
+
     </script>
 </body>
 </html>

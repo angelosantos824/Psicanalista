@@ -63,3 +63,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modal) modal.style.display = "none";
     };
 });
+
+function enviarWhatsApp(event) {
+    event.preventDefault(); // Impede o envio padrão do formulário
+
+    // Captura os valores dos campos
+    const nome = document.getElementById('nome').value;
+    const email = document.getElementById('email').value;
+    const interesse = document.getElementById('interesse').value;
+    const mensagem = document.getElementById('mensagem').value || "Não informada";
+
+    // Seu número de WhatsApp (com código do país e sem espaços/traços)
+    // Exemplo para Portugal: +351910377246
+    const seuNumero = "+351910377246"; 
+
+    // Monta a mensagem organizada com emojis e quebras de linha (%0A)
+    const texto = 
+        "Olá, Michelly! Tenho um novo pedido de contato pelo site:" + "%0A%0A" +
+        "👤 *NOME:* " + nome + "%0A" +
+        "📧 *E-MAIL:* " + email + "%0A" +
+        "💼 *INTERESSE:* " + interesse + "%0A" +
+        "💬 *MENSAGEM:* " + mensagem + "%0A%0A" +
+        "---" + "%0A" +
+        "viva sua análise.";
+
+    // Cria o link final
+    const url = "https://wa.me/" + seuNumero + "?text=" + encodeURIComponent(texto);
+
+    // Abre em uma nova aba
+    window.open(url, '_blank');
+}
