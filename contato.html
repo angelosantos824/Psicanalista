@@ -29,17 +29,17 @@
                 <form id="formPedido" onsubmit="enviarWhatsApp(event)">
                     <div class="form-group-contato">
                         <label>Seu Nome Completo</label>
-                        <input type="text" id="nomeCliente" placeholder="Ex: Maria Silva" required>
+                        <input type="text" id="nomeCliente" placeholder="Ex: Maria Silva" required> 
                     </div>
 
                     <div class="form-group-contato">
                         <label>E-mail de Contato</label>
-                        <input type="email" id="emailCliente" placeholder="email@exemplo.com" required>
+                        <input type="email" id="emailCliente" placeholder="email@exemplo.com" required> 
                     </div>
 
                     <div class="form-group-contato">
                         <label>Qual o seu interesse?</label>
-                        <select id="interesseCliente">
+                        <select id="interesseCliente"> 
                             <option value="Sessão Avulsa (50 €)">Sessão Avulsa (50 €)</option>
                             <option value="Pacote Mensal (180 €)">Pacote Mensal (180 €)</option>
                             <option value="Foco Total (350 €)">Foco Total (350 €)</option>
@@ -49,7 +49,7 @@
 
                     <div class="form-group-contato">
                         <label>Mensagem (Opcional)</label>
-                        <textarea id="mensagemCliente" rows="4" placeholder="Conte um pouco sobre sua busca..."></textarea>
+                        <textarea id="mensagemCliente" rows="4" placeholder="Conte um pouco sobre sua busca..."></textarea> 
                     </div>
 
                     <button type="submit" class="btn" style="width: 100%; padding: 15px;">Enviar Solicitação</button>
@@ -78,7 +78,6 @@
                     Enviar Mensagem no WhatsApp
                 </a>
             </div>
-
         </div>
     </section>
 
@@ -123,6 +122,30 @@
             <p id="closeLogin" onclick="document.getElementById('loginModal').style.display='none'" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
         </div>
     </div>
+
+    <script>
+        function enviarWhatsApp(event) {
+            event.preventDefault();
+            
+            const nome = document.getElementById('nomeCliente').value;
+            const email = document.getElementById('emailCliente').value;
+            const interesse = document.getElementById('interesseCliente').value;
+            const mensagem = document.getElementById('mensagemCliente').value || "Não informada";
+            const numeroTel = "+351910377246";
+
+            const textoMensagem = `✨ *Nova Solicitação de Consulta*
+
+👤 *PACIENTE:* ${nome}
+📧 *E-MAIL:* ${email}
+💼 *PLANO:* ${interesse}
+💬 *MENSAGEM:* ${mensagem}
+
+---
+Enviado via Site Michelly Santos`;
+
+            const linkWa = "https://wa.me/" + numeroTel + "?text=" + encodeURIComponent(textoMensagem);
+            window.open(linkWa, '_blank');
+        }
     </script>
     <script src="script.js"></script>
 </body>
