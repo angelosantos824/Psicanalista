@@ -53,15 +53,15 @@
         </p>
     </div>
     </footer>
-    <div id="loginModal" class="login-modal">
+<div id="loginModal" class="login-modal">
     <div class="modal-content">
         <h2>Área Restrita</h2>
-        <form>
-            <input type="text" placeholder="Usuário ou E-mail" required>
-            <input type="password" placeholder="Senha" required>
-            <button type="submit" class="btn" style="width: 100%;">Entrar</button>
-        </form>
-        <p style="font-size: 12px; margin-top: 15px; cursor: pointer;" id="closeLogin">Cancelar</p>
+        <input type="text" id="loginUser" placeholder="Usuário (Sua Pasta)">
+        <input type="password" id="loginPass" placeholder="Senha (Seu ID)">
+        <button type="button" onclick="executarLogin()" class="btn">Entrar</button>
+        <p id="closeLogin" style="cursor:pointer; margin-top:15px; font-size:12px;">Cancelar</p>
+    </div>
+</div>        <p style="font-size: 12px; margin-top: 15px; cursor: pointer;" id="closeLogin">Cancelar</p>
     </div>
 </div>
 
