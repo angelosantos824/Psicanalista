@@ -32,7 +32,7 @@ function executarLogin() {
     const campoS = document.getElementById('loginPass');
 
     if (!campoU || !campoS) {
-        alert("Erro: Campos de login não encontrados no HTML desta página.");
+        alert("Erro: Campos de login não encontrados.");
         return;
     }
 
@@ -41,22 +41,21 @@ function executarLogin() {
 
     // 1. Verificação de ADM (Michelly)
     if (user === "admin@michelly.com" && pass === "123456") {
-        window.location.href = "adm.html";
+        // Redirecionamento relativo (sem a barra inicial) para funcionar no GitHub Pages
+        window.location.href = "adm.html"; 
         return;
     }
 
-    // 2. Verificação de Cliente (Buscando no LocalStorage)
+    // 2. Verificação de Cliente
     const clientesGuardados = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-    
     const clienteEncontrado = clientesGuardados.find(c => 
         c.pasta.toLowerCase() === user.toLowerCase() && 
         c.id.toString() === pass
     );
 
     if (clienteEncontrado) {
-        // Se achou o cliente, envia para a área dele com o ID correto
         window.location.href = `area-cliente.html?id=${clienteEncontrado.id}`;
     } else {
-        alert("Acesso negado! Verifique se o Usuário é o nome da sua pasta e a Senha é o seu ID.");
+        alert("Acesso negado! Usuário ou Senha incorretos.");
     }
 }
