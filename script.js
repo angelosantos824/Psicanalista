@@ -1,12 +1,9 @@
-// Remove o alerta de teste para não incomodar mais
-console.log("Sistema de login ativo.");
+// Verifica se o arquivo carregou
+console.log("Script de Login Carregado!");
 
-// 1. FUNÇÃO DE LOGIN
 function executarLogin(event) {
-    // ESTA LINHA É A MAIS IMPORTANTE: Impede a página de recarregar
+    // 1. Para o recarregamento da página
     if (event) event.preventDefault();
-
-    console.log("Iniciando validação de login...");
 
     const userField = document.getElementById('loginUser');
     const passField = document.getElementById('loginPass');
@@ -19,14 +16,14 @@ function executarLogin(event) {
     const user = userField.value.trim();
     const pass = passField.value.trim();
 
-// 1. LOGIN ADMIN
+    // 2. LOGIN ADMIN (MICHELLY)
     if (user === "admin@michelly.com" && pass === "123456") {
-        console.log("Admin detectado. Redirecionando...");
-        window.location.replace("adm.html"); // Replace é mais forte que o href
+        console.log("Login Admin aprovado.");
+        window.location.href = "adm.html"; // No GitHub, usamos o nome direto do arquivo
         return false;
     }
 
-    // 2. LOGIN CLIENTE
+    // 3. LOGIN CLIENTE (LOCALSTORAGE)
     const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
     const encontrou = clientes.find(c => 
         c.pasta.toLowerCase() === user.toLowerCase() && 
@@ -34,15 +31,14 @@ function executarLogin(event) {
     );
 
     if (encontrou) {
-        window.location.replace("area-cliente.html?id=" + encontrou.id);
+        window.location.href = "area-cliente.html?id=" + encontrou.id;
     } else {
         alert("Usuário ou senha incorretos!");
     }
-    
     return false;
 }
 
-// 2. CONTROLE DO MODAL
+// Controle do Modal (Abrir e Fechar)
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('loginModal');
     const openBtn = document.getElementById('openLogin');
@@ -50,20 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (openBtn) {
         openBtn.onclick = (e) => {
-            e.preventDefault(); // Impede de tentar abrir "login.html"
+            e.preventDefault();
             modal.style.display = "block";
         };
     }
 
     if (closeBtn) {
-        closeBtn.onclick = () => {
-            modal.style.display = "none";
-        };
+        closeBtn.onclick = () => modal.style.display = "none";
     }
 
-    window.onclick = (event) => {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+    window.onclick = (e) => {
+        if (e.target === modal) modal.style.display = "none";
     };
 });
