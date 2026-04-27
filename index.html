@@ -9,17 +9,13 @@
 <body>
     <header>
         <nav>
-            <div id="loginModal" class="login-modal">
-            <div class="modal-content">
-            <h2>Área Restrita</h2>
-            <input type="text" id="loginUser" placeholder="Usuário (Sua Pasta)">
-            <input type="password" id="loginPass" placeholder="Senha (Seu ID)">
-        
-            <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%;">Entrar</button>
-        
-        <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
-    </div>
-</div>
+            <div class="logo">Michelly Santos</div>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="sobre.html">Sobre</a></li>
+                <li><a href="contato.html">Contato</a></li>
+                <li><a href="#" class="btn-login" id="openLogin">Login</a></li>
+            </ul>
         </nav>
     </header>
 
@@ -53,7 +49,6 @@
             <h2>Área Restrita</h2>
             <input type="text" id="loginUser" placeholder="Usuário">
             <input type="password" id="loginPass" placeholder="Senha">
-            <button type="button" onclick="executarLogin(event)" class="btn">Entrar</button>
             <p id="closeLogin" style="cursor:pointer; margin-top:15px;">Cancelar</p>
         </div>
     </div>
