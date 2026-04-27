@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Área | Michelly Santos</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cliente-container { 
+            max-width: 600px; 
+            margin: 50px auto; 
+            padding: 30px; 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }
+        .header-cliente { border-bottom: 2px solid #fcfbf9; margin-bottom: 20px; padding-bottom: 10px; }
+        .status-pago { color: #7b8f80; font-weight: bold; }
+        .status-pendente { color: #d4a373; font-weight: bold; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { color: #888; font-size: 0.8rem; text-transform: uppercase; }
+        .btn-sair { 
+            margin-top: 30px; 
+            display: inline-block; 
+            text-decoration: none; 
+            color: #888; 
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body style="background-color: #fcfbf9;">
+
+    <div class="cliente-container">
+        <div class="header-cliente">
+            <h2>Olá, <span id="nomeCliente" style="color: #d4a373;">...</span></h2>
+            <p style="color: #666;">Bem-vindo à sua área de acompanhamento.</p>
+        </div>
+
+        <h3>Extrato de Sessões</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaFinanceiraCliente">
+                </tbody>
+        </table>
+        
+        <a href="index.html" class="btn-sair">← Sair da Área Restrita</a>
+    </div>
+
+    <script>
+        // 1. Pega o ID do cliente que veio na URL após o login
+        const urlParams = new URLSearchParams(window.location.search);
+        const idCliente = urlParams.get('id');
+
+        // 2. Busca no banco de dados local
+        const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
+        
+        // Compara com '==' para evitar erro de tipo (string vs number)
+        const cliente = clientes.find(c => c.id == idCliente);
+
+        if (cliente) {
+            // Preenche o nome do paciente
+            document.getElementById('nomeCliente').innerText = cliente.nome;
+            
+            const tbody = document.getElementById('tabelaFinanceiraCliente');
+            tbody.innerHTML = "";
+
+            if (cliente.financeiro && cliente.financeiro.length > 0) {
+                cliente.financeiro.forEach(item => {
+                    const statusClasse = item.status.toLowerCase() === 'pago' ? 'status-pago' : 'status-pendente';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${item.data}</td>
+                            <td>R$ ${item.valor}</td>
+                            <td class="${statusClasse}">${item.status}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:20px; color:#999;'>Nenhum registro de sessão disponível.</td></tr>";
+            }
+        } else {
+            // Se alguém tentar acessar o link sem ID ou ID errado, volta para o início
+            window.location.replace("index.html");
+        }
+    </script>
+</body>
+</html>
