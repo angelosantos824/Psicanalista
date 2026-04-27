@@ -2,66 +2,50 @@
    SCRIPT.JS - LÓGICA DE LOGIN E MODAL
    ============================================================ */
 
-/* SCRIPT DE LOGIN E MODAL - MICHELLY SANTOS */
-document.addEventListener('DOMContentLoaded', () => {
+// Garantir que o código rode após a página carregar
+window.onload = function() {
+    console.log("Script carregado com sucesso!");
+
     const modal = document.getElementById('loginModal');
     const openBtn = document.getElementById('openLogin');
     const closeBtn = document.getElementById('closeLogin');
 
-    // Abre o modal
+    // Abrir o modal
     if (openBtn) {
-        openBtn.onclick = (e) => {
+        openBtn.onclick = function(e) {
             e.preventDefault();
             modal.style.display = "block";
         };
     }
 
-    // Fecha o modal
+    // Fechar o modal
     if (closeBtn) {
-        closeBtn.onclick = () => {
+        closeBtn.onclick = function() {
             modal.style.display = "none";
         };
     }
+};
 
-    // Fecha se clicar fora
-    window.onclick = (event) => {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    };
-});
-
-// FUNÇÃO DE LOGIN
+// FUNÇÃO DE LOGIN - FORA DO ONLOAD PARA SER ACHADA PELO HTML
 function executarLogin() {
-    console.log("Tentando logar..."); // Isso ajuda a ver se o botão funciona
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
 
-    const userField = document.getElementById('loginUser');
-    const passField = document.getElementById('loginPass');
+    console.log("Tentativa de login com:", user);
 
-    if (!userField || !passField) {
-        alert("Erro: Campos não encontrados no HTML.");
-        return;
-    }
-
-    const user = userField.value.trim();
-    const pass = passField.value.trim();
-
-    // 1. LOGIN ADMIN
+    // 1. ADMIN
     if (user === "admin@michelly.com" && pass === "123456") {
         window.location.href = "adm.html";
         return;
     }
 
-    // 2. LOGIN CLIENTE
-    const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-    const encontrou = clientes.find(c => 
-        c.pasta.toLowerCase() === user.toLowerCase() && 
-        c.id.toString() === pass
-    );
+    // 2. CLIENTE
+    const clientesGuardados = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
+    const cliente = clientesGuardados.find(c => c.pasta === user && c.id.toString() === pass);
 
-    if (encontrou) {
-        window.location.href = "area-cliente.html?id=" + encontrou.id;
+    if (cliente) {
+        window.location.href = "area-cliente.html?id=" + cliente.id;
     } else {
-        alert("Acesso negado! Verifique seus dados.");
+        alert("Usuário ou senha incorretos!");
     }
 }

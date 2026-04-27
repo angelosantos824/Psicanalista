@@ -44,22 +44,13 @@
         </p>
     </footer>
 
-    <div id="loginModal" class="login-modal">
+        <div id="loginModal" class="login-modal">
         <div class="modal-content">
             <h2>Área Restrita</h2>
-            <input type="text" id="loginUser" placeholder="Usuário (Sua Pasta)">
-            <input type="password" id="loginPass" placeholder="Senha (Seu ID)">
-            
-            <button type="button" onclick="executarLogin()" class="btn" style="width: 100%; margin-bottom: 15px;">Entrar</button>
-            
-            <p style="font-size: 13px; margin-bottom: 5px;">Novo por aqui?</p>
-            <a href="https://wa.me/3519103787246?text=Olá%20Michelly,%20gostaria%20de%20solicitar%20meu%20usuário%20e%20senha%20de%20acesso." 
-               target="_blank" 
-               style="text-decoration: none; color: #7b8f80; font-weight: bold; font-size: 14px; display: block; margin-bottom: 15px;">
-               Solicitar Usuário e Senha
-            </a>
-
-            <p style="font-size: 12px; cursor: pointer; color: #888;" id="closeLogin">Cancelar</p>
+            <input type="text" id="loginUser" placeholder="Usuário">
+            <input type="password" id="loginPass" placeholder="Senha">
+            <button type="button" onclick="executarLogin()" class="btn">Entrar</button>
+            <p id="closeLogin" style="cursor:pointer; margin-top:15px;">Cancelar</p>
         </div>
     </div>
 
