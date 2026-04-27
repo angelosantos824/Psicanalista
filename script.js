@@ -2,71 +2,66 @@
    SCRIPT.JS - LÓGICA DE LOGIN E MODAL
    ============================================================ */
 
+/* SCRIPT DE LOGIN E MODAL - MICHELLY SANTOS */
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('loginModal');
     const openBtn = document.getElementById('openLogin');
     const closeBtn = document.getElementById('closeLogin');
 
-    // Abre o modal ao clicar em "Login" no menu
+    // Abre o modal
     if (openBtn) {
-        openBtn.addEventListener('click', (e) => {
+        openBtn.onclick = (e) => {
             e.preventDefault();
-            modal.style.display = 'block';
-        });
+            modal.style.display = "block";
+        };
     }
 
-    // Fecha o modal ao clicar em "Cancelar"
+    // Fecha o modal
     if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
+        };
     }
 
-    // Fecha o modal ao clicar fora da caixa branca
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
+    // Fecha se clicar fora
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            modal.style.display = "none";
         }
-    });
+    };
 });
 
 // FUNÇÃO DE LOGIN
 function executarLogin() {
+    console.log("Tentando logar..."); // Isso ajuda a ver se o botão funciona
+
     const userField = document.getElementById('loginUser');
     const passField = document.getElementById('loginPass');
 
     if (!userField || !passField) {
-        alert("Erro técnico: Campos de login não encontrados no HTML.");
+        alert("Erro: Campos não encontrados no HTML.");
         return;
     }
 
-    const usuarioDigitado = userField.value.trim();
-    const senhaDigitada = passField.value.trim();
+    const user = userField.value.trim();
+    const pass = passField.value.trim();
 
-    if (usuarioDigitado === "" || senhaDigitada === "") {
-        alert("Por favor, preencha o usuário e a senha.");
-        return;
-    }
-
-    // 1. LOGIN DA MICHELLY (ADMIN)
-    if (usuarioDigitado === "admin@michelly.com" && senhaDigitada === "123456") {
-        // Redirecionamento SEM a barra inicial para funcionar no GitHub
+    // 1. LOGIN ADMIN
+    if (user === "admin@michelly.com" && pass === "123456") {
         window.location.href = "adm.html";
         return;
     }
 
-    // 2. LOGIN DOS CLIENTES (BUSCA NO BANCO LOCAL)
-    const clientesGuardados = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-    
-    const clienteEncontrado = clientesGuardados.find(cliente => 
-        cliente.pasta.toLowerCase() === usuarioDigitado.toLowerCase() && 
-        cliente.id.toString() === senhaDigitada
+    // 2. LOGIN CLIENTE
+    const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
+    const encontrou = clientes.find(c => 
+        c.pasta.toLowerCase() === user.toLowerCase() && 
+        c.id.toString() === pass
     );
 
-    if (clienteEncontrado) {
-        // Se encontrou, leva para a área do cliente
-        window.location.href = "area-cliente.html?id=" + clienteEncontrado.id;
+    if (encontrou) {
+        window.location.href = "area-cliente.html?id=" + encontrou.id;
     } else {
-        alert("Acesso negado! Verifique seu usuário (pasta) e senha (ID).");
+        alert("Acesso negado! Verifique seus dados.");
     }
 }

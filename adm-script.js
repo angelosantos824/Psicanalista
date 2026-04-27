@@ -1,57 +1,56 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('loginModal');
-    const openBtn = document.getElementById('openLogin');
-    const closeBtn = document.getElementById('closeLogin');
+/* SCRIPT DO PAINEL ADMINISTRATIVO */
+let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
 
-    // 1. Controle do Modal
-    if (openBtn) {
-        openBtn.onclick = (e) => {
-            e.preventDefault();
-            modal.style.display = "block";
-        };
-    }
+function renderTable() {
+    const tbody = document.getElementById('tabelaClientes');
+    if (!tbody) return;
 
-    if (closeBtn) {
-        closeBtn.onclick = () => modal.style.display = "none";
-    }
+    tbody.innerHTML = '';
+    clientes.forEach((cliente, index) => {
+        tbody.innerHTML += `
+            <tr>
+                <td>#${cliente.id}</td>
+                <td><a href="detalhes-cliente.html?id=${cliente.id}">${cliente.nome}</a></td>
+                <td>📁 ${cliente.pasta}</td>
+                <td>
+                    <button onclick="deletarCliente(${index})" style="background:#ff9999; border:none; padding:5px; cursor:pointer;">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
+    localStorage.setItem('clientes_michelly', JSON.stringify(clientes));
+}
 
-    window.onclick = (event) => {
-        if (event.target == modal) modal.style.display = "none";
-    };
-});
+function salvarCliente() {
+    const nome = document.getElementById('clienteNome').value.trim();
+    const pasta = document.getElementById('clientePasta').value.trim();
 
-// 2. FUNÇÃO DE LOGIN (CHAMADA PELO BOTÃO 'ENTRAR')
-function executarLogin() {
-    // Busca os campos de texto
-    const campoUsuario = document.getElementById('loginUser');
-    const campoSenha = document.getElementById('loginPass');
+    if (!nome || !pasta) return alert("Preencha Nome e Pasta!");
 
-    if (!campoUsuario || !campoSenha) {
-        alert("Erro: Campos de login não encontrados na página.");
-        return;
-    }
+    const novoId = Math.floor(1000 + Math.random() * 9000);
+    clientes.push({ 
+        id: novoId.toString(), 
+        nome: nome, 
+        pasta: pasta, 
+        financeiro: [], 
+        notas: "" 
+    });
 
-    const usuario = campoUsuario.value.trim();
-    const senha = campoSenha.value.trim();
-
-    // Verificação de Administrador (Michelly)
-    if (usuario === "admin@michelly.com" && senha === "123456") {
-        window.location.href = "adm.html";
-        return;
-    }
-
-    // Verificação de Cliente (Buscando no banco de dados local)
-    const clientesGuardados = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
+    alert("Cliente Criado!\nUsuário: " + pasta + "\nSenha: " + novoId);
     
-    const clienteEncontrado = clientesGuardados.find(c => 
-        c.pasta.toLowerCase() === usuario.toLowerCase() && 
-        c.id.toString() === senha
-    );
+    // Fecha o modal se ele existir
+    const modal = document.getElementById('modalCliente');
+    if(modal) modal.style.display = 'none';
+    
+    renderTable();
+}
 
-    if (clienteEncontrado) {
-        // Redireciona para a área do cliente enviando o ID dele na URL
-        window.location.href = "area-cliente.html?id=" + clienteEncontrado.id;
-    } else {
-        alert("Acesso Negado! Verifique seu usuário (pasta) e sua senha (ID).");
+function deletarCliente(index) {
+    if (confirm("Deseja excluir este cliente?")) {
+        clientes.splice(index, 1);
+        renderTable();
     }
 }
+
+// Inicializa a tabela
+document.addEventListener('DOMContentLoaded', renderTable);
