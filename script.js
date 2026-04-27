@@ -1,24 +1,31 @@
+/* ==========================================
+   SISTEMA DE LOGIN BLINDADO - MICHELLY SANTOS
+   ========================================== */
+
 function executarLogin(event) {
+    // 1. TRAVA TOTAL: Impede o navegador de recarregar ou seguir links
     if (event) {
-        event.preventDefault(); // Trava o recarregamento
-        event.stopPropagation(); // Evita que o clique "suba" para outros elementos
+        event.preventDefault();
+        event.stopPropagation();
     }
+
+    console.log("Validando login...");
 
     const userField = document.getElementById('loginUser');
     const passField = document.getElementById('loginPass');
-    
+
     const user = userField.value.trim();
     const pass = passField.value.trim();
 
-    // LOGIN ADMIN
+    // 2. VERIFICAÇÃO ADMIN
     if (user === "admin@michelly.com" && pass === "123456") {
-        console.log("Admin OK. Redirecionando...");
-        // Usamos ./ para dizer "nesta mesma pasta"
-        window.location.replace("./adm.html"); 
-        return false;
+        console.log("Acesso Admin confirmado!");
+        // O './' garante que ele procure o arquivo na mesma pasta atual
+        window.location.assign("./adm.html");
+        return false; 
     }
 
-    // LOGIN CLIENTE
+    // 3. VERIFICAÇÃO CLIENTE
     const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
     const encontrou = clientes.find(c => 
         c.pasta.toLowerCase() === user.toLowerCase() && 
@@ -26,14 +33,15 @@ function executarLogin(event) {
     );
 
     if (encontrou) {
-        window.location.replace("./area-cliente.html?id=" + encontrou.id);
+        window.location.assign("./area-cliente.html?id=" + encontrou.id);
     } else {
-        alert("Usuário ou senha incorretos!");
+        alert("Acesso Negado! Usuário ou senha incorretos.");
     }
-    return false;
+
+    return false; // Reforço para não recarregar
 }
 
-// Controle do Modal (Abrir e Fechar)
+// Inicialização do Modal
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('loginModal');
     const openBtn = document.getElementById('openLogin');
