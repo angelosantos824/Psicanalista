@@ -1,61 +1,72 @@
+/* ============================================================
+   SCRIPT.JS - LÓGICA DE LOGIN E MODAL
+   ============================================================ */
+
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('loginModal');
     const openBtn = document.getElementById('openLogin');
     const closeBtn = document.getElementById('closeLogin');
 
-    // Abre o modal
+    // Abre o modal ao clicar em "Login" no menu
     if (openBtn) {
-        openBtn.onclick = (e) => {
+        openBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            modal.style.display = "block";
-        };
+            modal.style.display = 'block';
+        });
     }
 
-    // Fecha o modal
+    // Fecha o modal ao clicar em "Cancelar"
     if (closeBtn) {
-        closeBtn.onclick = () => {
-            modal.style.display = "none";
-        };
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
     }
 
-    // Fecha se clicar fora da caixa branca
-    window.onclick = (event) => {
-        if (event.target == modal) {
-            modal.style.display = "none";
+    // Fecha o modal ao clicar fora da caixa branca
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
         }
-    };
+    });
 });
 
-// FUNÇÃO DE LOGIN ÚNICA
+// FUNÇÃO DE LOGIN
 function executarLogin() {
-    const campoU = document.getElementById('loginUser');
-    const campoS = document.getElementById('loginPass');
+    const userField = document.getElementById('loginUser');
+    const passField = document.getElementById('loginPass');
 
-    if (!campoU || !campoS) {
-        alert("Erro: Campos de login não encontrados.");
+    if (!userField || !passField) {
+        alert("Erro técnico: Campos de login não encontrados no HTML.");
         return;
     }
 
-    const user = campoU.value.trim();
-    const pass = campoS.value.trim();
+    const usuarioDigitado = userField.value.trim();
+    const senhaDigitada = passField.value.trim();
 
-    // 1. Verificação de ADM (Michelly)
-    if (user === "admin@michelly.com" && pass === "123456") {
-        // Redirecionamento relativo (sem a barra inicial) para funcionar no GitHub Pages
-        window.location.href = "adm.html"; 
+    if (usuarioDigitado === "" || senhaDigitada === "") {
+        alert("Por favor, preencha o usuário e a senha.");
         return;
     }
 
-    // 2. Verificação de Cliente
+    // 1. LOGIN DA MICHELLY (ADMIN)
+    if (usuarioDigitado === "admin@michelly.com" && senhaDigitada === "123456") {
+        // Redirecionamento SEM a barra inicial para funcionar no GitHub
+        window.location.href = "adm.html";
+        return;
+    }
+
+    // 2. LOGIN DOS CLIENTES (BUSCA NO BANCO LOCAL)
     const clientesGuardados = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-    const clienteEncontrado = clientesGuardados.find(c => 
-        c.pasta.toLowerCase() === user.toLowerCase() && 
-        c.id.toString() === pass
+    
+    const clienteEncontrado = clientesGuardados.find(cliente => 
+        cliente.pasta.toLowerCase() === usuarioDigitado.toLowerCase() && 
+        cliente.id.toString() === senhaDigitada
     );
 
     if (clienteEncontrado) {
-        window.location.href = `area-cliente.html?id=${clienteEncontrado.id}`;
+        // Se encontrou, leva para a área do cliente
+        window.location.href = "area-cliente.html?id=" + clienteEncontrado.id;
     } else {
-        alert("Acesso negado! Usuário ou Senha incorretos.");
+        alert("Acesso negado! Verifique seu usuário (pasta) e senha (ID).");
     }
 }
