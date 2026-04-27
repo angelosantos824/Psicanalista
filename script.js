@@ -3,7 +3,7 @@
    ========================================== */
 
 function executarLogin(event) {
-    // 1. TRAVA TOTAL: Impede o navegador de recarregar ou seguir links
+    // 1. TRAVA TOTAL
     if (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -20,8 +20,8 @@ function executarLogin(event) {
     // 2. VERIFICAÇÃO ADMIN
     if (user === "admin@michelly.com" && pass === "123456") {
         console.log("Acesso Admin confirmado!");
-        // O './' garante que ele procure o arquivo na mesma pasta atual
-        window.location.assign("./adm.html");
+        // Trocamos o assign por replace para evitar o "flash" de retorno
+        location.replace("adm.html"); 
         return false; 
     }
 
@@ -33,15 +33,16 @@ function executarLogin(event) {
     );
 
     if (encontrou) {
-        window.location.assign("./area-cliente.html?id=" + encontrou.id);
+        // Trocamos aqui também para garantir a entrada do cliente
+        location.replace("area-cliente.html?id=" + encontrou.id);
     } else {
         alert("Acesso Negado! Usuário ou senha incorretos.");
     }
 
-    return false; // Reforço para não recarregar
+    return false;
 }
 
-// Inicialização do Modal
+// Inicialização do Modal (Mantenha como está, está perfeito)
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('loginModal');
     const openBtn = document.getElementById('openLogin');
