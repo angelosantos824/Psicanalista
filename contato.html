@@ -24,17 +24,16 @@
             <h2>Vamos iniciar sua jornada analítica?</h2>
             <p>Preencha o formulário abaixo ou entre em contato pelos canais oficiais para agendar sua primeira consulta. Atendimentos presenciais e online.</p>
             
-            <div id="loginModal" class="login-modal">
-    <div class="modal-content">
-        <h2>Área Restrita</h2>
-        <input type="text" id="loginUser" placeholder="Usuário (Sua Pasta)">
-        <input type="password" id="loginPass" placeholder="Senha (Seu ID)">
-        
-        <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%;">Entrar</button>
-        
-        <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
-    </div>
-</div>
+            <div="contact-form">
+                <input type="text" id="nome" placeholder="Seu Nome Completo" required>
+                <input type="email" id="email" placeholder="Seu Melhor E-mail" required>
+                <textarea id="mensagem" placeholder="Breve resumo da sua queixa (opcional)..." required></textarea>
+                <div style="text-align: center;">
+                    <button type="submit" class="btn">Enviar Mensagem</button>
+                </div>
+            </div>
+            <div id="status"></div>
+        </div>
     </section>
 
     <a href="https://wa.me/+3519103787246?text=Olá%20Michelly,%20gostaria%20de%20informações%20sobre%20as%20sessões%20de%20análise." class="whatsapp-float" target="_blank">
