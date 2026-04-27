@@ -2,38 +2,44 @@
 console.log("Sistema de login ativo.");
 
 // 1. FUNÇÃO DE LOGIN
-function executarLogin() {
-    // Captura os elementos
+function executarLogin(event) {
+    // ESTA LINHA É A MAIS IMPORTANTE: Impede a página de recarregar
+    if (event) event.preventDefault();
+
+    console.log("Iniciando validação de login...");
+
     const userField = document.getElementById('loginUser');
     const passField = document.getElementById('loginPass');
 
     if (!userField || !passField) {
-        alert("Erro: Campos de login não encontrados no HTML!");
-        return;
+        alert("Erro: Campos de login não encontrados.");
+        return false;
     }
 
     const user = userField.value.trim();
     const pass = passField.value.trim();
 
-    // TESTE DE ADMIN
+// 1. LOGIN ADMIN
     if (user === "admin@michelly.com" && pass === "123456") {
-        // Redirecionamento relativo para o GitHub Pages
-        window.location.href = "adm.html";
-        return;
+        console.log("Admin detectado. Redirecionando...");
+        window.location.replace("adm.html"); // Replace é mais forte que o href
+        return false;
     }
 
-    // TESTE DE CLIENTE
-    const clientesGuardados = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-    const cliente = clientesGuardados.find(c => 
+    // 2. LOGIN CLIENTE
+    const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
+    const encontrou = clientes.find(c => 
         c.pasta.toLowerCase() === user.toLowerCase() && 
         c.id.toString() === pass
     );
 
-    if (cliente) {
-        window.location.href = "area-cliente.html?id=" + cliente.id;
+    if (encontrou) {
+        window.location.replace("area-cliente.html?id=" + encontrou.id);
     } else {
-        alert("Usuário ou senha incorretos!\n\nVerifique se o usuário é o nome da sua pasta.");
+        alert("Usuário ou senha incorretos!");
     }
+    
+    return false;
 }
 
 // 2. CONTROLE DO MODAL
