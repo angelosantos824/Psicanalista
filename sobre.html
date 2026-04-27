@@ -7,17 +7,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-    <nav>
-        <div class="logo">Michelly Santos</div>
-        <ul>
-            <li><a href="index.html">Início</a></li>
-            <li><a href="sobre.html">Sobre</a></li>
-            <li><a href="contato.html">Contato</a></li>
-                <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%; margin-top: 10px;"> Entra</div>
-        </ul>
-    </nav>
-</header>
+    <header>
+        <nav>
+            <div class="logo">Michelly Santos</div>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="sobre.html">Sobre</a></li>
+                <li><a href="contato.html">Contato</a></li>
+                <li><a href="#" class="btn-login" id="openLogin">Login</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <section class="container sobre-container">
         <div class="sobre-img">
@@ -49,20 +49,19 @@
     </footer>
 
     <div id="loginModal" class="login-modal" style="display:none;">
-    <div class="modal-content">
-        <h2>Área Restrita</h2>
-        
-        <input type="text" id="loginUser" placeholder="E-mail ou Usuário">
-        <input type="password" id="loginPass" placeholder="Senha">
-        
-        <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%; margin-top: 10px;">
-            Entrar
-        </button>
-        
-        <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
+        <div class="modal-content">
+            <h2>Área Restrita</h2>
+            <input type="text" id="loginUser" placeholder="E-mail ou Usuário">
+            <input type="password" id="loginPass" placeholder="Senha">
+            
+            <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%; margin-top: 10px;">
+                Entrar
+            </button>
+            
+            <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
+        </div>
     </div>
-</div>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

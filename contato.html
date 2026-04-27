@@ -22,14 +22,15 @@
     <section class="container">
         <div class="contato-wrapper">
             <h2>Vamos iniciar sua jornada analítica?</h2>
-            <p>Preencha o formulário abaixo ou entre em contato pelos canais oficiais para agendar sua primeira consulta. Atendimentos presenciais e online.</p>
+            <p>Preencha o formulário abaixo ou entre em contato pelos canais oficiais para agendar sua primeira consulta.</p>
             
-            <div="contact-form">
+            <div id="contact-form-container">
                 <input type="text" id="nome" placeholder="Seu Nome Completo" required>
                 <input type="email" id="email" placeholder="Seu Melhor E-mail" required>
                 <textarea id="mensagem" placeholder="Breve resumo da sua queixa (opcional)..." required></textarea>
                 <div style="text-align: center;">
-                <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%; margin-top: 10px;"> Entra</div>
+                    <button type="button" class="btn" onclick="alert('Mensagem enviada! Michelly entrará em contato em breve.')">Enviar Mensagem</button>
+                </div>
             </div>
             <div id="status"></div>
         </div>
@@ -53,20 +54,19 @@
     </footer>
 
     <div id="loginModal" class="login-modal" style="display:none;">
-    <div class="modal-content">
-        <h2>Área Restrita</h2>
-        
-        <input type="text" id="loginUser" placeholder="E-mail ou Usuário">
-        <input type="password" id="loginPass" placeholder="Senha">
-        
-        <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%; margin-top: 10px;">
-            Entrar
-        </button>
-        
-        <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
+        <div class="modal-content">
+            <h2>Área Restrita</h2>
+            <input type="text" id="loginUser" placeholder="E-mail ou Usuário">
+            <input type="password" id="loginPass" placeholder="Senha">
+            
+            <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%; margin-top: 10px;">
+                Entrar
+            </button>
+            
+            <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
+        </div>
     </div>
-</div>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
