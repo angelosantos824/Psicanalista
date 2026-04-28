@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minha Área | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+
     <style>
         .cliente-container { 
             max-width: 800px; 
@@ -15,137 +19,146 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
         }
         .header-cliente { border-bottom: 2px solid #fcfbf9; margin-bottom: 30px; padding-bottom: 10px; }
-        
-        /* Grid de Ações */
-        .grid-acoes { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-            gap: 15px; 
-            margin-bottom: 40px;
-        }
-        
-        .btn-acao {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: #fff;
-            border: 1px solid #d4a373;
-            color: #d4a373;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: bold;
-            transition: 0.3s;
-            text-align: center;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .btn-acao:hover {
-            background: #d4a373;
-            color: white;
-            transform: translateY(-3px);
-        }
-
-        .btn-reuniao {
-            background: #7b8f80;
-            color: white;
-            border: none;
-        }
-
-        .btn-reuniao:hover {
-            background: #6a7c6e;
-        }
-
-        /* Tabela Financeira */
+        .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; }
+        .btn-acao:hover { background: #d4a373; color: white; transform: translateY(-3px); }
+        .btn-reuniao { background: #7b8f80; color: white; border: none; }
+        .btn-reuniao:hover { background: #6a7c6e; }
         .status-pago { color: #7b8f80; font-weight: bold; }
         .status-pendente { color: #d4a373; font-weight: bold; }
         table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .btn-sair { margin-top: 30px; display: inline-block; text-decoration: none; color: #888; font-size: 0.9rem; cursor: pointer; }
         
-        .btn-sair { margin-top: 30px; display: inline-block; text-decoration: none; color: #888; font-size: 0.9rem; }
+        /* Estilo para o carregamento */
+        #loading-overlay { text-align: center; padding: 40px; color: #d4a373; font-weight: bold; }
     </style>
 </head>
 <body style="background-color: #fcfbf9;">
 
     <div class="cliente-container">
-        <div class="header-cliente">
-            <h2>Olá, <span id="nomeCliente" style="color: #d4a373;">...</span></h2>
-            <p style="color: #666;">Bem-vindo à sua área de acompanhamento e ferramentas terapêuticas.</p>
-        </div>
+        <div id="loading-overlay">Carregando seus dados terapêuticos...</div>
 
-        <h3>Ferramentas e Consultas</h3>
-        <div class="grid-acoes">
-            <a href="https://forms.gle/99qtpEuEzvtSQh5f8" target="_blank" class="btn-acao">
-                <span>📋 Preencher Anamnese</span>
-                <small style="font-weight: normal; font-size: 0.7rem;">(Primeira consulta)</small>
-            </a>
-            
-            <a href="https://drive.google.com/drive/folders/18TZ362jEE46gxBjEkCxwtQMvZ-WmjMdA?usp=drive_link" target="_blank" class="btn-acao">
-                <span>📂 Meus Documentos</span>
-                <small style="font-weight: normal; font-size: 0.7rem;">(Contratos e Testes)</small>
-            </a>
+        <div id="conteudo-principal" style="display: none;">
+            <div class="header-cliente">
+                <h2>Olá, <span id="nomeCliente" style="color: #d4a373;">...</span></h2>
+                <p style="color: #666;">Bem-vindo à sua área de acompanhamento e ferramentas terapêuticas.</p>
+            </div>
 
-            <a href="LINK_DA_AGENDA_TERAPEUTA" target="_blank" class="btn-acao">
-                <span>📅 Agendar/Ver Datas</span>
-                <small style="font-weight: normal; font-size: 0.7rem;">(Sincronizado)</small>
-            </a>
-        </div>
+            <h3>Ferramentas e Consultas</h3>
+            <div class="grid-acoes">
+                <a href="https://forms.gle/99qtpEuEzvtSQh5f8" target="_blank" class="btn-acao">
+                    <span>📋 Preencher Anamnese</span>
+                    <small style="font-weight: normal; font-size: 0.7rem;">(Primeira consulta)</small>
+                </a>
+                
+                <a href="#" id="linkPasta" target="_blank" class="btn-acao">
+                    <span>📂 Meus Documentos</span>
+                    <small style="font-weight: normal; font-size: 0.7rem;">(Contratos e Testes)</small>
+                </a>
 
-        <h3>Minha Sessão Online</h3>
-        <div class="grid-acoes" style="grid-template-columns: 1fr;">
-            <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px dashed #7b8f80; text-align: center;">
-                <p style="margin-bottom: 15px; font-size: 0.9rem;">Acesse sua sala virtual no horário agendado:</p>
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <a href="https://us02web.zoom.us/j/85844194665?pwd=Mur0SgWJs9lqzCxe9WGNhjSdLasCFM.1#success" target="_blank" class="btn-acao btn-reuniao" style="flex: 1;">Entrar via Zoom</a>
-                    <a href="https://meet.google.com/landing" target="_blank" class="btn-acao btn-reuniao" style="flex: 1; background: #4285f4;">Entrar via Meet</a>
+                <a href="LINK_DA_AGENDA_TERAPEUTA" target="_blank" class="btn-acao">
+                    <span>📅 Agendar/Ver Datas</span>
+                    <small style="font-weight: normal; font-size: 0.7rem;">(Sincronizado)</small>
+                </a>
+            </div>
+
+            <h3>Minha Sessão Online</h3>
+            <div class="grid-acoes" style="grid-template-columns: 1fr;">
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px dashed #7b8f80; text-align: center;">
+                    <p style="margin-bottom: 15px; font-size: 0.9rem;">Acesse sua sala virtual no horário agendado:</p>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <a href="https://us02web.zoom.us/j/85844194665?pwd=Mur0SgWJs9lqzCxe9WGNhjSdLasCFM.1#success" target="_blank" class="btn-acao btn-reuniao" style="flex: 1;">Entrar via Zoom</a>
+                        <a href="https://meet.google.com/landing" target="_blank" class="btn-acao btn-reuniao" style="flex: 1; background: #4285f4;">Entrar via Meet</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <h3>Extrato de Sessões</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Valor</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="tabelaFinanceiraCliente"></tbody>
-        </table>
-        
-        <a href="index.html" class="btn-sair">← Sair da Área Restrita</a>
+            <h3>Extrato de Sessões</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaFinanceiraCliente"></tbody>
+            </table>
+            
+            <a onclick="deslogar()" class="btn-sair">← Sair da Área Restrita</a>
+        </div>
     </div>
 
     <script>
+        // Pega o ID que veio na URL após o login
         const urlParams = new URLSearchParams(window.location.search);
         const idCliente = urlParams.get('id');
-        const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-        const cliente = clientes.find(c => c.id == idCliente);
 
-        if (cliente) {
-            document.getElementById('nomeCliente').innerText = cliente.nome;
-            const tbody = document.getElementById('tabelaFinanceiraCliente');
-            tbody.innerHTML = "";
-
-            if (cliente.financeiro && cliente.financeiro.length > 0) {
-                cliente.financeiro.forEach(item => {
-                    const statusClasse = item.status.toLowerCase() === 'pago' ? 'status-pago' : 'status-pendente';
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${item.data}</td>
-                            <td>${item.valor} €</td> 
-                            <td class="${statusClasse}">${item.status}</td>
-                        </tr>
-                    `;
-                });
-            } else {
-                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:20px; color:#999;'>Nenhum registro de sessão disponível.</td></tr>";
+        async function carregarDadosPaciente() {
+            if (!idCliente) {
+                alert("Sessão expirada ou inválida.");
+                window.location.replace("index.html");
+                return;
             }
-        } else {
-            window.location.replace("index.html");
+
+            try {
+                // BUSCA NO SUPABASE (SELECT * FROM pacientes WHERE id = idCliente)
+                const { data: paciente, error } = await _supabase
+                    .from('pacientes')
+                    .select('*')
+                    .eq('id', idCliente)
+                    .single();
+
+                if (error || !paciente) throw error;
+
+                // Preenche Nome
+                document.getElementById('nomeCliente').innerText = paciente.nome;
+                
+                // Preenche link da pasta (se houver)
+                if (paciente.link_drive_pasta || paciente.pasta_nome) {
+                    document.getElementById('linkPasta').href = paciente.link_drive_pasta || paciente.pasta_nome;
+                }
+
+                // Preenche Tabela Financeira (JSONB do Supabase)
+                const tbody = document.getElementById('tabelaFinanceiraCliente');
+                tbody.innerHTML = "";
+
+                const financeiro = paciente.financeiro || [];
+
+                if (financeiro.length > 0) {
+                    financeiro.forEach(item => {
+                        const statusClasse = item.status.toLowerCase() === 'pago' ? 'status-pago' : 'status-pendente';
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${item.data}</td>
+                                <td>${item.valor} €</td> 
+                                <td class="${statusClasse}">${item.status}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:20px; color:#999;'>Nenhum registro de sessão disponível.</td></tr>";
+                }
+
+                // Mostra o conteúdo e esconde o loading
+                document.getElementById('loading-overlay').style.display = 'none';
+                document.getElementById('conteudo-principal').style.display = 'block';
+
+            } catch (err) {
+                console.error("Erro ao carregar dados:", err.message);
+                alert("Erro ao carregar informações. Por favor, tente novamente.");
+                window.location.replace("index.html");
+            }
         }
+
+        function deslogar() {
+            // Limpa dados se necessário e volta para a home
+            window.location.href = "index.html";
+        }
+
+        // Executa a função ao carregar a página
+        carregarDadosPaciente();
     </script>
 </body>
 </html>
