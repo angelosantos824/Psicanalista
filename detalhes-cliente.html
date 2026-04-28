@@ -80,6 +80,144 @@
     <script src="config.js"></script>
 
     <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const idCliente = urlParams.get('id');
+    let dadosPaciente = null;
+
+    // 1. CARREGAR DADOS (COM TODOS OS CAMPOS)
+    async function carregarDados() {
+        console.log("Iniciando carregamento do paciente:", idCliente);
+        
+        const { data, error } = await _supabase
+            .from('pacientes')
+            .select('*')
+            .eq('id', idCliente)
+            .single();
+
+        if (error || !data) {
+            console.error("Erro Supabase:", error);
+            alert("Erro ao localizar paciente.");
+            window.location.href = "adm.html";
+            return;
+        }
+
+        dadosPaciente = data;
+        if (!dadosPaciente.financeiro) dadosPaciente.financeiro = [];
+
+        // Preencher a Interface
+        document.getElementById('nomeDisplay').innerText = data.nome || "Sem Nome";
+        document.getElementById('infoCliente').innerText = `ID/Senha: #${data.codigo_acesso || data.senha_acesso}`;
+        
+        // Preencher os Inputs (Cuidado com os IDs aqui!)
+        document.getElementById('email').value = data.email || "";
+        document.getElementById('telefone').value = data.telefone || "";
+        
+        // Verificação de segurança para campos que podem não existir no seu HTML ainda
+        if(document.getElementById('nascimento')) document.getElementById('nascimento').value = data.nascimento || "";
+        if(document.getElementById('idade')) document.getElementById('idade').value = data.idade || "";
+        if(document.getElementById('morada')) document.getElementById('morada').value = data.morada || "";
+        
+        document.getElementById('notasEvolucao').value = data.notas || "";
+
+        renderFinanceiro();
+        console.log("Dados carregados com sucesso:", dadosPaciente);
+    }
+
+    // 2. RENDER FINANCEIRO (SEM ALTERAÇÕES)
+    function renderFinanceiro() {
+        const tbody = document.querySelector('#tabelaFinanceiro tbody');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+        
+        dadosPaciente.financeiro.forEach((item, index) => {
+            const classeStatus = item.status === "Pago" ? "status-pago" : "status-pendente";
+            tbody.innerHTML += `
+                <tr>
+                    <td>${item.data}</td>
+                    <td>${item.valor}€</td>
+                    <td class="${classeStatus}" onclick="alternarStatus(${index})" style="cursor:pointer">${item.status}</td>
+                    <td style="text-align:center;">
+                        <button onclick="gerarRecibo(${index})" style="border:none; background:none; cursor:pointer;">📄</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // 3. FUNÇÕES FINANCEIRAS
+    function addSessao() {
+        const valor = prompt("Valor da Sessão (€):", "50.00");
+        if (valor) {
+            const novo = {
+                data: new Date().toLocaleDateString('pt-PT'),
+                valor: valor,
+                status: "Pendente",
+                descricao: "Atendimento Psicanalítico"
+            };
+            dadosPaciente.financeiro.push(novo);
+            renderFinanceiro();
+        }
+    }
+
+    function alternarStatus(index) {
+        dadosPaciente.financeiro[index].status = dadosPaciente.financeiro[index].status === "Pendente" ? "Pago" : "Pendente";
+        renderFinanceiro();
+    }
+
+    function gerarRecibo(index) {
+        const lanc = dadosPaciente.financeiro[index];
+        const win = window.open('', '', 'height=600,width=600');
+        win.document.write(`<html><body style="font-family:sans-serif; padding:50px;"><div style="border:2px solid #7b8f80; padding:30px; border-radius:10px;"><h2 style="color:#7b8f80; text-align:center;">RECIBO</h2><p><strong>Emitente:</strong> Michelly Eufrazio Santos</p><p><strong>Paciente:</strong> ${dadosPaciente.nome}</p><hr><p>Recebi a importância de <strong>${lanc.valor}€</strong></p><p>Referente a: ${lanc.descricao}</p><p>Data do Serviço: ${lanc.data}</p><br><br><p style="text-align:center;">__________________________________<br>Assinatura</p></div></body></html>`);
+        win.document.close();
+        win.print();
+    }
+
+    // 4. SALVAR TUDO (REVISADO)
+    async function salvarTudo() {
+        const btn = document.querySelector('.btn-save');
+        const textoOriginal = btn.innerText;
+        btn.innerText = "Salvando no Banco...";
+        btn.disabled = true;
+
+        // Pegamos os valores de cada campo
+        const updateData = {
+            email: document.getElementById('email').value,
+            telefone: document.getElementById('telefone').value,
+            notas: document.getElementById('notasEvolucao').value,
+            financeiro: dadosPaciente.financeiro
+        };
+
+        // Adicionamos nascimento, idade e morada APENAS se os campos existirem na tela
+        if(document.getElementById('nascimento')) updateData.nascimento = document.getElementById('nascimento').value;
+        if(document.getElementById('idade')) updateData.idade = document.getElementById('idade').value;
+        if(document.getElementById('morada')) updateData.morada = document.getElementById('morada').value;
+
+        console.log("Enviando para o Supabase:", updateData);
+
+        try {
+            const { error } = await _supabase
+                .from('pacientes')
+                .update(updateData)
+                .eq('id', idCliente);
+
+            if (error) throw error;
+            
+            alert("✅ Sincronizado com o Supabase!");
+            // Recarregar os dados para ter certeza que o que está na tela é o que está no banco
+            carregarDados(); 
+            
+        } catch (err) {
+            console.error("Erro ao salvar:", err);
+            alert("Erro crítico ao salvar: " + err.message);
+        } finally {
+            btn.innerText = textoOriginal;
+            btn.disabled = false;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', carregarDados);
+</script>
+    <!-- <script>
         const urlParams = new URLSearchParams(window.location.search);
         const idCliente = urlParams.get('id');
         let dadosPaciente = null;
@@ -211,6 +349,6 @@ async function salvarTudo() {
     }
 }
         document.addEventListener('DOMContentLoaded', carregarDados);
-    </script>
+    </script> -->
 </body>
 </html>
