@@ -55,13 +55,13 @@
 
         <div class="card">
             <h3>Cadastrar Novo Paciente</h3>
-            <div class="form-cadastro">
+            <div class="campos-cadastro">
                 <input type="text" id="novoNome" placeholder="Nome Completo do Paciente">
-                <input type="text" id="novaPasta" placeholder="Código/Pasta (Login)">
-                <button class="btn-add" onclick="adicionarCliente()">Criar Pasta do Paciente</button>
+                <input type="email" id="novoEmail" placeholder="E-mail do Paciente (Login)">
+                <input type="text" id="novaSenha" placeholder="Senha de Acesso (Ex: michely2026)">
             </div>
+            <button onclick="cadastrarNovoPaciente()" class="btn-principal">Criar Pasta do Paciente</button>
         </div>
-
         <div id="listaClientes">
             <h3 style="margin-left: 10px; margin-bottom: 15px;">Pacientes Ativos</h3>
             </div>

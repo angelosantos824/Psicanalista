@@ -1,56 +1,94 @@
-/* SCRIPT DO PAINEL ADMINISTRATIVO */
-let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
+/* ==========================================
+   GESTÃO ADMINISTRATIVA SQL - MICHELLY SANTOS
+   ========================================== */
 
-function renderTable() {
+// 1. CARREGAR PACIENTES DO SUPABASE
+async function renderTable() {
     const tbody = document.getElementById('tabelaClientes');
     if (!tbody) return;
 
+    console.log("Buscando pacientes no banco...");
+    
+    // Busca todos os pacientes ordenados pelo nome
+    const { data: pacientes, error } = await _supabase
+        .from('pacientes')
+        .select('*')
+        .order('nome', { ascending: true });
+
+    if (error) {
+        console.error("Erro ao carregar:", error.message);
+        return;
+    }
+
     tbody.innerHTML = '';
-    clientes.forEach((cliente, index) => {
+    pacientes.forEach((cliente) => {
         tbody.innerHTML += `
             <tr>
                 <td>#${cliente.id}</td>
-                <td><a href="detalhes-cliente.html?id=${cliente.id}">${cliente.nome}</a></td>
-                <td>📁 ${cliente.pasta}</td>
+                <td><a href="detalhes-cliente.html?id=${cliente.id}" style="color: #d4a373; font-weight: bold; text-decoration: none;">${cliente.nome}</a></td>
+                <td>📧 ${cliente.email}</td>
                 <td>
-                    <button onclick="deletarCliente(${index})" style="background:#ff9999; border:none; padding:5px; cursor:pointer;">Excluir</button>
+                    <button onclick="deletarCliente(${cliente.id})" style="background:#ff9999; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; color:white;">Excluir</button>
                 </td>
             </tr>
         `;
     });
-    localStorage.setItem('clientes_michelly', JSON.stringify(clientes));
 }
 
-function salvarCliente() {
+// 2. SALVAR NOVO PACIENTE (COM ID/SENHA AUTOMÁTICOS)
+async function salvarCliente() {
     const nome = document.getElementById('clienteNome').value.trim();
-    const pasta = document.getElementById('clientePasta').value.trim();
+    const email = document.getElementById('clientePasta').value.trim(); // Reutilizando seu ID de input para Email
 
-    if (!nome || !pasta) return alert("Preencha Nome e Pasta!");
+    if (!nome || !email) return alert("Preencha Nome e E-mail!");
 
-    const novoId = Math.floor(1000 + Math.random() * 9000);
-    clientes.push({ 
-        id: novoId.toString(), 
-        nome: nome, 
-        pasta: pasta, 
-        financeiro: [], 
-        notas: "" 
-    });
+    // Gera um ID aleatório de 4 dígitos (como você fazia)
+    const novoId = Math.floor(1000 + Math.random() * 9000).toString();
 
-    alert("Cliente Criado!\nUsuário: " + pasta + "\nSenha: " + novoId);
-    
-    // Fecha o modal se ele existir
-    const modal = document.getElementById('modalCliente');
-    if(modal) modal.style.display = 'none';
-    
-    renderTable();
-}
+    const novoPaciente = {
+        id: novoId,
+        nome: nome,
+        email: email,
+        senha_acesso: novoId, // A SENHA É O ID AUTOMATICAMENTE
+        financeiro: [],
+        notas: ""
+    };
 
-function deletarCliente(index) {
-    if (confirm("Deseja excluir este cliente?")) {
-        clientes.splice(index, 1);
-        renderTable();
+    const { error } = await _supabase
+        .from('pacientes')
+        .insert([novoPaciente]);
+
+    if (error) {
+        alert("Erro ao salvar no banco: " + error.message);
+    } else {
+        alert(`✅ Cliente Criado!\n\nUsuário (Email): ${email}\nSenha (ID): ${novoId}`);
+        
+        // Limpa campos e fecha modal
+        document.getElementById('clienteNome').value = '';
+        document.getElementById('clientePasta').value = '';
+        
+        const modal = document.getElementById('modalCliente');
+        if(modal) modal.style.display = 'none';
+        
+        renderTable(); // Atualiza a lista na hora
     }
 }
 
-// Inicializa a tabela
+// 3. DELETAR PACIENTE DO SQL
+async function deletarCliente(id) {
+    if (confirm("Deseja excluir este cliente permanentemente do banco de dados?")) {
+        const { error } = await _supabase
+            .from('pacientes')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            alert("Erro ao excluir: " + error.message);
+        } else {
+            renderTable();
+        }
+    }
+}
+
+// Inicializa a tabela ao carregar a página
 document.addEventListener('DOMContentLoaded', renderTable);
