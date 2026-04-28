@@ -3,130 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo | Michelly Santos</title>
+    <title>Painel de Gestão - Michelly</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .admin-container { max-width: 900px; margin: 40px auto; padding: 20px; font-family: sans-serif; }
-        .card-cadastro { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid #e9e0d2; }
-        input { padding: 12px; border-radius: 8px; border: 1px solid #e9e0d2; outline: none; }
-        .btn-principal { background: #d4a373; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-principal:hover { background: #b88b5d; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        th { background: #fdfaf6; color: #8c7851; padding: 15px; text-align: left; border-bottom: 2px solid #f4f1ea; }
-        td { padding: 15px; border-bottom: 1px solid #f4f1ea; }
-        .btn-excluir { background: #ff9999; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+        body { background-color: #fcfbf9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; }
+        .admin-container { max-width: 1000px; margin: 0 auto; }
+        .header-painel { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header-painel h2 { color: #555; margin: 0; }
+        
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .card h3 { color: #8c7851; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid #f4f1ea; padding-bottom: 10px; }
+        
+        /* Grid de Botões Superiores */
+        .grid-atalhos { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .btn-atalho { background: white; border: 1px solid #e9e0d2; padding: 15px; border-radius: 12px; text-decoration: none; color: #7b8f80; font-weight: bold; text-align: center; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-atalho:hover { background: #7b8f80; color: white; transform: translateY(-3px); }
+
+        /* Formulário */
+        .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-row input { flex: 1; min-width: 250px; padding: 12px; border: 1px solid #e9e0d2; border-radius: 8px; outline: none; }
+        .btn-salvar { width: 100%; background: #d4a373; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
+        .btn-salvar:hover { background: #b88b5d; }
+
+        /* Tabela Profissional */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 15px; color: #8c7851; border-bottom: 2px solid #f4f1ea; font-size: 0.9rem; }
+        td { padding: 15px; border-bottom: 1px solid #f4f1ea; color: #666; }
+        .id-badge { background: #f4f1ea; padding: 4px 8px; border-radius: 5px; font-weight: bold; color: #8c7851; }
+        .btn-excluir { background: #ff9999; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .btn-excluir:hover { background: #ff4d4d; }
+        .nome-link { color: #d4a373; text-decoration: none; font-weight: bold; }
+        .nome-link:hover { text-decoration: underline; }
+
+        footer { margin-top: 50px; text-align: center; padding: 20px; color: #999; border-top: 1px solid #eee; }
     </style>
 </head>
-<body style="background-color: #fcfbf9;">
+<body>
 
     <div class="admin-container">
-        <h2 style="color: #8c7851; text-align: center; margin-bottom: 30px;">Gestão de Pacientes</h2>
-
-        <div class="card-cadastro">
-            <h3 style="color: #8c7851; margin-bottom: 15px;">Cadastrar Novo Paciente</h3>
-            <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
-                <input type="text" id="nomeInput" placeholder="Nome Completo" style="flex: 1; min-width: 250px;">
-                <input type="email" id="emailInput" placeholder="E-mail (Login)" style="flex: 1; min-width: 250px;">
-            </div>
-            <button onclick="salvarNovoPacienteSQL()" class="btn-principal" style="width: 100%;">
-                Criar Pasta e Gerar Senha Automática
-            </button>
+        <div class="header-painel">
+            <h2>Painel de Gestão - Michelly</h2>
+            <a href="index.html" style="color: #999; text-decoration: none; font-size: 0.9rem;">Sair do Sistema</a>
         </div>
 
-        <h3 style="color: #8c7851; margin-bottom: 15px;">Pacientes Ativos (Banco SQL)</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID (Senha)</th>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody id="tabelaClientes">
+        <div class="grid-atalhos">
+            <a href="#" class="btn-atalho">📋 Nova Anamnese</a>
+            <a href="#" class="btn-atalho">💰 Fluxo de Caixa</a>
+            <a href="#" class="btn-atalho">📁 Drive de Pacientes</a>
+            <a href="#" class="btn-atalho">📅 Agenda Online</a>
+        </div>
+
+        <div class="card">
+            <h3>Cadastrar Novo Paciente</h3>
+            <div class="form-row">
+                <input type="text" id="nomeInput" placeholder="Nome Completo do Paciente">
+                <input type="email" id="emailInput" placeholder="E-mail do Paciente (Login)">
+            </div>
+            <button onclick="salvarPacienteSQL()" class="btn-salvar">Criar Pasta e Gerar Senha Automática</button>
+        </div>
+
+        <div class="card">
+            <h3>Pacientes Ativos</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID (SENHA)</th>
+                        <th>NOME</th>
+                        <th>E-MAIL (LOGIN)</th>
+                        <th>AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaClientes">
+                    <tr>
+                        <td colspan="4" style="text-align:center; padding:30px;">A carregar pacientes...</td>
+                    </tr>
                 </tbody>
-        </table>
+            </table>
+        </div>
+
+        <footer>
+            &copy; 2026 Michelly Eufrazio Santos - Psicanalista.
+        </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
-    
+
     <script>
-        // 1. CARREGAR PACIENTES DO SUPABASE
+        // 1. CARREGAR TABELA
         async function renderTable() {
             const tbody = document.getElementById('tabelaClientes');
-            if (!tbody) return;
+            
+            try {
+                const { data: pacientes, error } = await _supabase
+                    .from('pacientes')
+                    .select('*')
+                    .order('nome', { ascending: true });
 
-            const { data: pacientes, error } = await _supabase
-                .from('pacientes')
-                .select('*')
-                .order('nome', { ascending: true });
+                if (error) throw error;
 
-            if (error) {
-                console.error("Erro:", error);
-                return;
+                if (!pacientes || pacientes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">Nenhum paciente cadastrado no banco.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                pacientes.forEach(p => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><span class="id-badge">#${p.id}</span></td>
+                            <td><a href="detalhes-cliente.html?id=${p.id}" class="nome-link">${p.nome}</a></td>
+                            <td>${p.email}</td>
+                            <td>
+                                <button class="btn-excluir" onclick="excluirPaciente('${p.id}', '${p.nome}')">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Erro ao ligar ao banco de dados.</td></tr>';
             }
-
-            tbody.innerHTML = '';
-            if (pacientes.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum paciente no banco.</td></tr>';
-            }
-
-            pacientes.forEach((p) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>#${p.id}</strong></td>
-                        <td><a href="detalhes-cliente.html?id=${p.id}" style="color:#d4a373; font-weight:bold; text-decoration:none;">${p.nome}</a></td>
-                        <td>${p.email}</td>
-                        <td>
-                            <button onclick="excluirPaciente('${p.id}')" class="btn-excluir">Excluir</button>
-                        </td>
-                    </tr>
-                `;
-            });
         }
 
-        // 2. SALVAR NOVO PACIENTE (ID = SENHA)
-        async function salvarNovoPacienteSQL() {
+        // 2. SALVAR NOVO
+        async function salvarPacienteSQL() {
             const nome = document.getElementById('nomeInput').value.trim();
             const email = document.getElementById('emailInput').value.trim();
 
-            if (!nome || !email) return alert("Preencha Nome e E-mail!");
+            if (!nome || !email) {
+                alert("Por favor, preencha o Nome e o E-mail!");
+                return;
+            }
 
-            // Gera ID de 4 dígitos
+            // Gera ID de 4 dígitos (Senha)
             const novoId = Math.floor(1000 + Math.random() * 9000).toString();
 
-            const { error } = await _supabase
-                .from('pacientes')
-                .insert([{ 
-                    id: novoId, 
-                    nome: nome, 
-                    email: email, 
-                    senha_acesso: novoId, 
-                    financeiro: [], 
-                    notas: "" 
-                }]);
+            try {
+                const { error } = await _supabase
+                    .from('pacientes')
+                    .insert([{ 
+                        id: novoId, 
+                        nome: nome, 
+                        email: email, 
+                        senha_acesso: novoId, 
+                        financeiro: [], 
+                        notas: "" 
+                    }]);
 
-            if (error) {
-                alert("Erro ao salvar: " + error.message);
-            } else {
-                alert("✅ Paciente Cadastrado!\n\nID/Senha: " + novoId);
+                if (error) throw error;
+
+                alert("✅ Sucesso!\nPaciente: " + nome + "\nSenha/ID: " + novoId);
+                
+                // Limpar campos e recarregar
                 document.getElementById('nomeInput').value = '';
                 document.getElementById('emailInput').value = '';
                 renderTable();
+
+            } catch (err) {
+                alert("Erro ao salvar: " + err.message);
             }
         }
 
         // 3. EXCLUIR
-        async function excluirPaciente(id) {
-            if (confirm("Deseja excluir permanentemente?")) {
-                const { error } = await _supabase.from('pacientes').delete().eq('id', id);
-                if (error) alert("Erro ao excluir");
-                else renderTable();
+        async function excluirPaciente(id, nome) {
+            if (confirm("Tens a certeza que desejas excluir permanentemente o paciente " + nome + "?")) {
+                try {
+                    const { error } = await _supabase
+                        .from('pacientes')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) throw error;
+                    renderTable();
+                } catch (err) {
+                    alert("Erro ao excluir.");
+                }
             }
         }
 
-        // Inicia ao carregar a página
+        // Inicialização
         document.addEventListener('DOMContentLoaded', renderTable);
     </script>
 </body>
