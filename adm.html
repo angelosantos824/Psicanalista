@@ -91,8 +91,11 @@
 
 <script>
         // 1. CARREGAR TABELA
+// FUNÇÃO ATUALIZADA PARA ABRIR O PRONTUÁRIO CORRETAMENTE
 async function renderTable() {
     const tbody = document.getElementById('tabelaClientes');
+    if (!tbody) return;
+
     try {
         const { data: pacientes, error } = await _supabase
             .from('pacientes')
@@ -103,32 +106,35 @@ async function renderTable() {
 
         tbody.innerHTML = '';
         if (pacientes.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum paciente cadastrado.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">Nenhum paciente cadastrado.</td></tr>';
             return;
         }
 
         pacientes.forEach(p => {
-            // Se o codigo_acesso estiver vazio, tentamos mostrar a senha_acesso
-            const senhaExibir = p.codigo_acesso || p.senha_acesso || "Sem senha";
+            // Usamos a senha_acesso de 4 dígitos para mostrar na tabela (ex: #9295)
+            const senhaExibir = p.senha_acesso || "---";
 
             tbody.innerHTML += `
                 <tr>
                     <td><span class="id-label">#${senhaExibir}</span></td>
                     <td style="font-weight: bold; color: #d4a373;">${p.nome}</td>
                     <td>${p.email}</td>
-                    <td style="display: flex; gap: 10px;">
+                    <td style="display: flex; gap: 10px; align-items: center;">
                         <a href="detalhes-cliente.html?id=${p.id}" 
-                           style="background: #7b8f80; color: white; text-decoration: none; padding: 8px 15px; border-radius: 8px; font-size: 14px; font-weight: bold;">
+                           style="background: #7b8f80; color: white; text-decoration: none; padding: 8px 15px; border-radius: 8px; font-size: 14px; font-weight: bold; display: inline-block;">
                            Abrir Prontuário
                         </a>
                         
-                        <button class="btn-excluir" onclick="excluirPaciente('${p.id}', '${p.nome}')">Excluir</button>
+                        <button class="btn-excluir" onclick="excluirPaciente('${p.id}', '${p.nome}')" 
+                                style="background: #ff9999; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer;">
+                                Excluir
+                        </button>
                     </td>
                 </tr>
             `;
         });
     } catch (err) {
-        console.error(err);
+        console.error("Erro ao renderizar:", err);
         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Erro ao carregar lista.</td></tr>';
     }
 }
