@@ -218,25 +218,33 @@
             btn.innerText = "Sincronizando...";
             btn.disabled = true;
 
-            const updateData = {
+           const updateData = {
                 email: document.getElementById('email').value,
                 telefone: document.getElementById('telefone').value,
                 nascimento: document.getElementById('nascimento').value,
                 idade: document.getElementById('idade').value,
                 morada: document.getElementById('morada').value,
-                status: document.getElementById('statusPaciente').value,
+                status: document.getElementById('statusPaciente').value, // Esta é a coluna que você vai criar no passo 1
                 notas: document.getElementById('notasEvolucao').value,
                 financeiro: dadosPaciente.financeiro
             };
 
-            const { error } = await _supabase.from('pacientes').update(updateData).eq('id', idCliente);
+           try {
+                const { error } = await _supabase
+                    .from('pacientes')
+                    .update(updateData)
+                    .eq('id', idCliente);
 
-            if (error) alert("Erro ao salvar: " + error.message);
-            else alert("✅ Prontuário atualizado!");
-            
-            btn.innerText = "Salvar Prontuário Completo";
-            btn.disabled = false;
-            carregarDados();
+                if (error) throw error;
+                alert("✅ Sincronizado com sucesso!");
+                
+            } catch (err) {
+                console.error("Erro completo:", err);
+                alert("Erro ao salvar: " + err.message);
+            } finally {
+                btn.innerText = "Salvar Prontuário Completo";
+                btn.disabled = false;
+            }
         }
 
         document.addEventListener('DOMContentLoaded', carregarDados);
