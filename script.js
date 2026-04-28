@@ -1,15 +1,14 @@
 /* ==========================================
-   SISTEMA DE LOGIN BLINDADO - MICHELLY SANTOS
+   SISTEMA DE LOGIN SQL - MICHELLY SANTOS
    ========================================== */
 
-function executarLogin(event) {
-    // 1. TRAVA TOTAL
+async function executarLogin(event) {
+    // 1. Previne o recarregamento da página
     if (event) {
         event.preventDefault();
-        event.stopPropagation();
     }
 
-    console.log("Validando login...");
+    console.log("🚀 Validando login no Supabase...");
 
     const userField = document.getElementById('loginUser');
     const passField = document.getElementById('loginPass');
@@ -17,50 +16,71 @@ function executarLogin(event) {
     const user = userField.value.trim();
     const pass = passField.value.trim();
 
-    // 2. VERIFICAÇÃO ADMIN
+    // 2. VERIFICAÇÃO ADMIN (Acesso rápido)
     if (user === "admin@michelly.com" && pass === "123456") {
-        console.log("Acesso Admin confirmado!");
-        // Trocamos o assign por replace para evitar o "flash" de retorno
+        console.log("✅ Acesso Admin confirmado!");
         location.replace("adm.html"); 
         return false; 
     }
 
-    // 3. VERIFICAÇÃO CLIENTE
-    const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-    const encontrou = clientes.find(c => 
-        c.pasta.toLowerCase() === user.toLowerCase() && 
-        c.id.toString() === pass
-    );
+    // 3. VERIFICAÇÃO CLIENTE NO SUPABASE (SQL)
+    try {
+        // Buscamos o paciente pelo e-mail
+        const { data: paciente, error } = await _supabase
+            .from('pacientes')
+            .select('*')
+            .eq('email', user)
+            .single();
 
-    if (encontrou) {
-        // Trocamos aqui também para garantir a entrada do cliente
-        location.replace("area-cliente.html?id=" + encontrou.id);
-    } else {
-        alert("Acesso Negado! Usuário ou senha incorretos.");
+        if (error || !paciente) {
+            alert("Acesso Negado! Usuário não encontrado.");
+            return false;
+        }
+
+        // Verifica se a senha do banco bate com a digitada
+        if (paciente.senha_acesso === pass) {
+            console.log("✅ Acesso Paciente confirmado!");
+            // Redireciona para a área do cliente passando o ID do Supabase
+            location.replace("area-cliente.html?id=" + paciente.id);
+        } else {
+            alert("Senha incorreta!");
+        }
+
+    } catch (err) {
+        console.error("Erro na conexão:", err);
+        alert("Erro ao conectar com o banco de dados.");
     }
 
     return false;
 }
 
-// Inicialização do Modal (Mantenha como está, está perfeito)
+// Inicialização do Modal
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('loginModal');
     const openBtn = document.getElementById('openLogin');
     const closeBtn = document.getElementById('closeLogin');
 
+    // Abre o modal
     if (openBtn) {
-        openBtn.onclick = (e) => {
+        openBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            modal.style.display = "block";
+            console.log("Abrindo modal...");
+            // Usamos 'flex' para garantir que centralize conforme o CSS moderno
+            modal.style.display = "flex"; 
+        });
+    }
+
+    // Fecha o modal
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            modal.style.display = "none";
         };
     }
 
-    if (closeBtn) {
-        closeBtn.onclick = () => modal.style.display = "none";
-    }
-
+    // Fecha se clicar fora da caixa branca
     window.onclick = (e) => {
-        if (e.target === modal) modal.style.display = "none";
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
     };
 });
-
