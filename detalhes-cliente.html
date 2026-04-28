@@ -85,32 +85,36 @@
         let dadosPaciente = null;
 
         // 1. CARREGAR DADOS
-        async function carregarDados() {
-            const { data, error } = await _supabase
-                .from('pacientes')
-                .select('*')
-                .eq('id', idCliente)
-                .single();
+async function carregarDados() {
+    const { data, error } = await _supabase
+        .from('pacientes')
+        .select('*')
+        .eq('id', idCliente)
+        .single();
 
-            if (error || !data) {
-                alert("Erro ao localizar paciente.");
-                window.location.href = "adm.html";
-                return;
-            }
+    if (error || !data) {
+        alert("Erro ao localizar paciente.");
+        window.location.href = "adm.html";
+        return;
+    }
 
-            dadosPaciente = data;
-            if (!dadosPaciente.financeiro) dadosPaciente.financeiro = [];
+    dadosPaciente = data;
+    if (!dadosPaciente.financeiro) dadosPaciente.financeiro = [];
 
-            // Preencher campos
-            document.getElementById('nomeDisplay').innerText = data.nome;
-            document.getElementById('infoCliente').innerText = `ID/Senha: #${data.codigo_acesso || data.senha_acesso}`;
-            document.getElementById('email').value = data.email || "";
-            document.getElementById('telefone').value = data.telefone || "";
-            document.getElementById('notasEvolucao').value = data.notas || "";
+    // Preencher campos (Os IDs devem bater com o HTML acima)
+    document.getElementById('nomeDisplay').innerText = data.nome;
+    document.getElementById('infoCliente').innerText = `ID/Senha: #${data.codigo_acesso || data.senha_acesso}`;
+    
+    // Aqui está o segredo: preencher cada campo com o que está no Supabase
+    document.getElementById('email').value = data.email || "";
+    document.getElementById('telefone').value = data.telefone || "";
+    document.getElementById('nascimento').value = data.nascimento || "";
+    document.getElementById('idade').value = data.idade || "";
+    document.getElementById('morada').value = data.morada || "";
+    document.getElementById('notasEvolucao').value = data.notas || "";
 
-            renderFinanceiro();
-        }
-
+    renderFinanceiro();
+}
         // 2. RENDER FINANCEIRO
         function renderFinanceiro() {
             const tbody = document.querySelector('#tabelaFinanceiro tbody');
