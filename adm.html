@@ -89,12 +89,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
 
-    <script>
+<script>
         // 1. CARREGAR TABELA
         async function renderTable() {
             const tbody = document.getElementById('tabelaClientes');
-            if (!tbody) return;
-            
             try {
                 const { data: pacientes, error } = await _supabase
                     .from('pacientes')
@@ -103,91 +101,64 @@
 
                 if (error) throw error;
 
-                if (!pacientes || pacientes.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">Nenhum paciente cadastrado no banco.</td></tr>';
-                    return;
-                }
-
                 tbody.innerHTML = '';
                 pacientes.forEach(p => {
+                    // Usamos o codigo_acesso (4 dígitos) para exibir como senha
+                    const senhaExibir = p.codigo_acesso || "Sem senha";
                     tbody.innerHTML += `
                         <tr>
-                            <td><span class="id-badge">#${p.id}</span></td>
-                            <td><a href="detalhes-cliente.html?id=${p.id}" class="nome-link">${p.nome}</a></td>
+                            <td><span class="id-label">#${senhaExibir}</span></td>
+                            <td><a href="detalhes-cliente.html?id=${p.id}" style="color:#d4a373; font-weight:bold; text-decoration:none;">${p.nome}</a></td>
                             <td>${p.email}</td>
-                            <td>
-                                <button class="btn-excluir" onclick="excluirPaciente('${p.id}', '${p.nome}')">Excluir</button>
-                            </td>
+                            <td><button class="btn-excluir" onclick="excluirPaciente('${p.id}')">Excluir</button></td>
                         </tr>
                     `;
                 });
             } catch (err) {
-                console.error(err);
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Erro ao ligar ao banco de dados.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Erro ao carregar lista.</td></tr>';
             }
         }
 
-        // 2. SALVAR NOVO (CORRIGIDO SEM A COLUNA 'NOTAS')
+        // 2. SALVAR NOVO (CORRIGIDO PARA O FORMATO DO BANCO)
         async function salvarPacienteSQL() {
-            const nomeInput = document.getElementById('nomeInput');
-            const emailInput = document.getElementById('emailInput');
-            
-            const nome = nomeInput.value.trim();
-            const email = emailInput.value.trim();
+            const nome = document.getElementById('nomeInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
 
-            if (!nome || !email) {
-                alert("Por favor, preencha o Nome e o E-mail!");
-                return;
-            }
+            if (!nome || !email) return alert("Preencha Nome e E-mail!");
 
-            // Gera ID de 4 dígitos (Senha)
-            const novoId = Math.floor(1000 + Math.random() * 9000).toString();
+            // Sua senha de 4 dígitos
+            const suaSenhaSugerida = Math.floor(1000 + Math.random() * 9000).toString();
 
             try {
-                // ENVIANDO APENAS AS COLUNAS QUE EXISTEM COM CERTEZA
                 const { error } = await _supabase
                     .from('pacientes')
                     .insert([{ 
-                        id: novoId, 
                         nome: nome, 
                         email: email, 
-                        senha_acesso: novoId 
+                        senha_acesso: suaSenhaSugerida, // Senha para o login
+                        codigo_acesso: suaSenhaSugerida // Campo para visualizarmos na tabela
                     }]);
 
                 if (error) throw error;
 
-                alert("✅ Sucesso!\nPaciente: " + nome + "\nSenha/ID: " + novoId);
-                
-                // Limpar campos e recarregar
-                nomeInput.value = '';
-                emailInput.value = '';
+                alert("✅ Sucesso!\nPaciente: " + nome + "\nSenha/Código: " + suaSenhaSugerida);
+                document.getElementById('nomeInput').value = '';
+                document.getElementById('emailInput').value = '';
                 renderTable();
-
             } catch (err) {
-                console.error("Erro detalhado:", err);
+                console.error(err);
                 alert("Erro ao salvar: " + err.message);
             }
         }
 
-        // 3. EXCLUIR
-        async function excluirPaciente(id, nome) {
-            if (confirm("Tens a certeza que desejas excluir permanentemente o paciente " + nome + "?")) {
-                try {
-                    const { error } = await _supabase
-                        .from('pacientes')
-                        .delete()
-                        .eq('id', id);
-
-                    if (error) throw error;
-                    renderTable();
-                } catch (err) {
-                    alert("Erro ao excluir.");
-                }
+        async function excluirPaciente(id) {
+            if (confirm("Deseja realmente excluir?")) {
+                await _supabase.from('pacientes').delete().eq('id', id);
+                renderTable();
             }
         }
 
-        // Inicialização
         document.addEventListener('DOMContentLoaded', renderTable);
-    </script>
+    </script>    </script>
     </body>
 </html>
