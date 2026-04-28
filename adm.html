@@ -37,31 +37,31 @@
 </head>
 <body style="background-color: #fcfbf9;">
 
-    <div class="admin-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2>Painel de Gestão - Michelly</h2>
-            <a href="index.html" style="color: #888; text-decoration: none; font-size: 0.9rem;">Sair do Sistema</a>
-        </div>
-
-        <div class="card">
-            <h3>Gestão da Clínica</h3>
-            <div class="grid-gestao">
-                <a href="https://forms.gle/cfLNsgbjPwuhWJ5DA" target="_blank" class="btn-doc">📋 Nova Anamnese</a>
-                <a href="SEU_LINK_DA_PLANILHA" target="_blank" class="btn-doc">💰 Fluxo de Caixa</a>
-                <a href="https://drive.google.com/drive/folders/1-O3ylkXv1bz1yyElwRi7rZWZ7uURcRBr?usp=drive_link" target="_blank" class="btn-doc">📂 Drive de Pacientes</a>
-                <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" class="btn-doc">📅 Agenda Online</a>
-            </div>
-        </div>
-
-       <div class="card-cadastro" style="background: #fdfaf6; padding: 20px; border-radius: 12px; border: 1px solid #e9e0d2; margin-bottom: 30px;">
+    <div class="card-cadastro" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;">
     <h3 style="color: #8c7851; margin-bottom: 15px;">Cadastrar Novo Paciente</h3>
-    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-        <input type="text" id="nomeInput" placeholder="Nome Completo" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
-        <input type="email" id="emailInput" placeholder="E-mail (Login)" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+        <input type="text" id="nomeInput" placeholder="Nome Completo" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #e9e0d2;">
+        <input type="email" id="emailInput" placeholder="E-mail (Login)" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #e9e0d2;">
     </div>
-    <button onclick="salvarNovoPacienteSQL()" style="width: 100%; background: #d4a373; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+    <button onclick="salvarNovoPacienteSQL()" style="width: 100%; background: #d4a373; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">
         Criar Pasta e Gerar Senha
     </button>
+</div>
+
+<h3 style="color: #8c7851; margin-bottom: 15px;">Pacientes Ativos</h3>
+<div style="background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+            <tr style="border-bottom: 2px solid #f4f1ea; color: #8c7851;">
+                <th style="padding: 15px;">ID (Senha)</th>
+                <th style="padding: 15px;">Nome</th>
+                <th style="padding: 15px;">E-mail</th>
+                <th style="padding: 15px;">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaClientes">
+            </tbody>
+    </table>
 </div>
 
 <table>
