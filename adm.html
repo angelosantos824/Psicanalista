@@ -86,13 +86,14 @@
         </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
 
     <script>
         // 1. CARREGAR TABELA
         async function renderTable() {
             const tbody = document.getElementById('tabelaClientes');
+            if (!tbody) return;
             
             try {
                 const { data: pacientes, error } = await _supabase
@@ -126,10 +127,13 @@
             }
         }
 
-        // 2. SALVAR NOVO
+        // 2. SALVAR NOVO (CORRIGIDO SEM A COLUNA 'NOTAS')
         async function salvarPacienteSQL() {
-            const nome = document.getElementById('nomeInput').value.trim();
-            const email = document.getElementById('emailInput').value.trim();
+            const nomeInput = document.getElementById('nomeInput');
+            const emailInput = document.getElementById('emailInput');
+            
+            const nome = nomeInput.value.trim();
+            const email = emailInput.value.trim();
 
             if (!nome || !email) {
                 alert("Por favor, preencha o Nome e o E-mail!");
@@ -140,15 +144,14 @@
             const novoId = Math.floor(1000 + Math.random() * 9000).toString();
 
             try {
+                // ENVIANDO APENAS AS COLUNAS QUE EXISTEM COM CERTEZA
                 const { error } = await _supabase
                     .from('pacientes')
                     .insert([{ 
                         id: novoId, 
                         nome: nome, 
                         email: email, 
-                        senha_acesso: novoId, 
-                        financeiro: [], 
-                        notas: "" 
+                        senha_acesso: novoId 
                     }]);
 
                 if (error) throw error;
@@ -156,11 +159,12 @@
                 alert("✅ Sucesso!\nPaciente: " + nome + "\nSenha/ID: " + novoId);
                 
                 // Limpar campos e recarregar
-                document.getElementById('nomeInput').value = '';
-                document.getElementById('emailInput').value = '';
+                nomeInput.value = '';
+                emailInput.value = '';
                 renderTable();
 
             } catch (err) {
+                console.error("Erro detalhado:", err);
                 alert("Erro ao salvar: " + err.message);
             }
         }
@@ -185,5 +189,5 @@
         // Inicialização
         document.addEventListener('DOMContentLoaded', renderTable);
     </script>
-</body>
+    </body>
 </html>
