@@ -135,6 +135,29 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="config.js"></script>
+
+<script>
+    async function enviarSolicitacao() {
+        // Pega os dados do formulário
+        const nomeInput = document.querySelector('#nome').value;
+        const emailInput = document.querySelector('#email').value;
+
+        const { data, error } = await _supabase
+            .from('pacientes')
+            .insert([{ 
+                nome: nomeInput, 
+                email: emailInput,
+                senha_acesso: 'michely2026' // senha padrão inicial
+            }]);
+
+        if (error) {
+            alert("Erro ao salvar: " + error.message);
+        } else {
+            alert("Paciente cadastrado no banco SQL!");
+        }
+    }
+</script></body>
 </html>
