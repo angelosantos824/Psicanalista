@@ -2,117 +2,157 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .admin-container { max-width: 800px; margin: 50px auto; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .form-group { margin-bottom: 15px; padding: 20px; border: 1px solid #f0e6db; border-radius: 10px; }
-        input { padding: 10px; width: calc(50% - 12px); margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; }
-        .btn-add { background: #d4a373; color: white; cursor: pointer; border: none; padding: 10px 20px; width: 100%; margin-top: 10px; border-radius: 8px; }
-        .cliente-card { border-bottom: 1px solid #eee; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-open { background: #7b8f80; color: white; text-decoration: none; padding: 5px 15px; border-radius: 5px; font-size: 0.8rem; }
-        .btn-delete { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-left: 10px; }
+        .admin-container { max-width: 900px; margin: 40px auto; padding: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        
+        /* Grid de Gestão Rápida */
+        .grid-gestao { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .btn-doc { 
+            display: flex; align-items: center; justify-content: center; padding: 15px; 
+            background: #fff; border: 1px solid #7b8f80; color: #7b8f80; 
+            text-decoration: none; border-radius: 10px; font-weight: bold; transition: 0.3s; 
+        }
+        .btn-doc:hover { background: #7b8f80; color: white; transform: translateY(-3px); }
+
+        /* Formulário de Cadastro */
+        .form-cadastro { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .form-cadastro input { flex: 1; min-width: 200px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
+        .btn-add { background: #d4a373; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+
+        /* Lista de Clientes */
+        .cliente-card { 
+            background: #fff; padding: 15px 20px; border-radius: 10px; margin-bottom: 10px; 
+            display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #7b8f80;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .btn-open { background: #7b8f80; color: white; text-decoration: none; padding: 8px 15px; border-radius: 6px; font-size: 0.85rem; }
+        .btn-delete { background: #ff4d4d; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 5px; }
+        
+        h2, h3 { color: #555; }
     </style>
 </head>
 <body style="background-color: #fcfbf9;">
 
     <div class="admin-container">
-        <h2>Painel de Gestão - Michelly</h2>
-        <hr>
-        
-        <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Painel de Gestão - Michelly</h2>
+            <a href="index.html" style="color: #888; text-decoration: none; font-size: 0.9rem;">Sair do Sistema</a>
+        </div>
+
+        <div class="card">
+            <h3>Gestão da Clínica</h3>
+            <div class="grid-gestao">
+                <a href="https://forms.gle/cfLNsgbjPwuhWJ5DA" target="_blank" class="btn-doc">📋 Nova Anamnese</a>
+                <a href="SEU_LINK_DA_PLANILHA" target="_blank" class="btn-doc">💰 Fluxo de Caixa</a>
+                <a href="https://drive.google.com/drive/folders/1-O3ylkXv1bz1yyElwRi7rZWZ7uURcRBr?usp=drive_link" target="_blank" class="btn-doc">📂 Drive de Pacientes</a>
+                <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" class="btn-doc">📅 Agenda Online</a>
+            </div>
+        </div>
+
+        <div class="card">
             <h3>Cadastrar Novo Paciente</h3>
-            <input type="text" id="novoNome" placeholder="Nome Completo">
-            <input type="text" id="novaPasta" placeholder="Nome da Pasta (Login)">
-            <button class="btn-add" onclick="adicionarCliente()">Criar Pasta do Paciente</button>
+            <div class="form-cadastro">
+                <input type="text" id="novoNome" placeholder="Nome Completo do Paciente">
+                <input type="text" id="novaPasta" placeholder="Código/Pasta (Login)">
+                <button class="btn-add" onclick="adicionarCliente()">Criar Pasta do Paciente</button>
+            </div>
         </div>
 
         <div id="listaClientes">
-            <h3>Pacientes Ativos</h3>
+            <h3 style="margin-left: 10px; margin-bottom: 15px;">Pacientes Ativos</h3>
             </div>
-
-        <br>
-        <a href="index.html" style="color: #888;">Sair do Sistema</a>
     </div>
 
     <script>
+        // Função para Adicionar Cliente
         function adicionarCliente() {
             const nome = document.getElementById('novoNome').value;
             const pasta = document.getElementById('novaPasta').value;
-            if(!nome || !pasta) return alert("Preencha o nome e a pasta!");
+
+            if(!nome || !pasta) return alert("Por favor, preencha o nome e o código da pasta!");
 
             const novoCliente = {
-                id: Date.now().toString(),
+                id: Date.now().toString(), // Gera ID único baseado no tempo
                 nome: nome,
                 pasta: pasta,
                 financeiro: [],
-                notas: ""
+                notas: "",
+                dataCadastro: new Date().toLocaleDateString('pt-PT')
             };
 
             let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
             clientes.push(novoCliente);
             localStorage.setItem('clientes_michelly', JSON.stringify(clientes));
-            location.reload();
+            
+            // Limpa os campos e recarrega a lista
+            document.getElementById('novoNome').value = "";
+            document.getElementById('novaPasta').value = "";
+            carregarClientes();
+            alert("Paciente cadastrado com sucesso!");
         }
 
+        // Função para Carregar a Lista
         function carregarClientes() {
             const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
             const lista = document.getElementById('listaClientes');
             
+            // Mantém o título e limpa apenas os cards
+            lista.innerHTML = '<h3 style="margin-left: 10px; margin-bottom: 15px;">Pacientes Ativos</h3>';
+            
+            if(clientes.length === 0) {
+                lista.innerHTML += '<p style="margin-left: 10px; color: #888;">Nenhum paciente cadastrado.</p>';
+                return;
+            }
+
             clientes.forEach(c => {
                 lista.innerHTML += `
                     <div class="cliente-card">
-                        <span><strong>${c.nome}</strong> (Senha: ${c.id})</span>
+                        <div>
+                            <strong>${c.nome}</strong><br>
+                            <span style="font-size: 0.8rem; color: #888;">Pasta: ${c.pasta} | Senha: ${c.id}</span>
+                        </div>
                         <div>
                             <a href="detalhes-cliente.html?id=${c.id}" class="btn-open">Abrir Prontuário</a>
-                            <button class="btn-delete" onclick="removerCliente('${c.id}')">Excluir</button>
+                            <button class="btn-delete" onclick="removerCliente('${c.id}')">✕</button>
                         </div>
                     </div>
                 `;
             });
         }
 
+        // Função para Remover
         function removerCliente(id) {
-            if(confirm("Tem certeza que deseja excluir esta pasta?")){
+            if(confirm("Tem certeza que deseja excluir permanentemente esta pasta?")){
                 let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
                 clientes = clientes.filter(c => c.id !== id);
                 localStorage.setItem('clientes_michelly', JSON.stringify(clientes));
-                location.reload();
+                carregarClientes();
             }
         }
+
+        // Inicializa a lista ao carregar a página
         carregarClientes();
     </script>
-       <footer>
-    <div class="footer-container">
-        <div class="footer-box">
-            <h3>Michelly Eufrazio Santos</h3>
-            <p>Psicanálista Clínica dedicada ao autoconhecimento e bem-estar emocional na Europa.</p>
-            <div class="redes-sociais">
-                <a href="www.linkendin.com/michellysantos" class="social-icon">In</a>
-                <a href="www.instagram.com/michellysantospsicanalista" class="social-icon">Ig</a>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-box">
+                <h3>Michelly Eufrazio Santos</h3>
+                <p>Gestão Administrativa Interna - Uso Exclusivo.</p>
+            </div>
+            <div class="footer-box">
+                <h3>Suporte</h3>
+                <p>📍 Aveiro, Portugal</p>
+                <p>📱 +351 910 377 246</p>
             </div>
         </div>
-
-        <div class="footer-box">
-            <h3>Links</h3>
-            <a href="index.html">Início</a>
-            <a href="#sobre">Sobre Mim</a>
-            <a href="contato.html">Agendar Consulta</a>
-            <a href="#" onclick="document.getElementById('loginModal').style.display='block'">Área Restrita</a>
+        <div class="footer-bottom">
+            &copy; 2026 Michelly Eufrazio Santos - Psicanalista.
         </div>
-
-        <div class="footer-box">
-            <h3>Contato</h3>
-            <p>📍 Aveiro, Portugal / Online</p>
-            <p>📧 michrllysantos@gmail.com</p>
-            <p>📱 +351 910 377 246</p>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        &copy; 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.
-    </div>
-</footer>
-
+    </footer>
 </body>
 </html>

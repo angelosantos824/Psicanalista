@@ -6,7 +6,7 @@
     <title>Prontuário | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .detalhes-container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+        .detalhes-container { max-width: 1000px; margin: 40px auto; padding: 20px; font-family: sans-serif; }
         .grid-prontuario { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .status-pago { color: #7b8f80; font-weight: bold; }
@@ -15,6 +15,13 @@
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
         textarea { width: 100%; height: 200px; border: 1px solid #eee; border-radius: 8px; padding: 15px; font-family: inherit; resize: none; margin-top: 10px; }
         .header-ficha { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        /* Novos estilos para dados pessoais e documentos */
+        .dados-pessoais-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .dados-pessoais-grid input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .btn-doc { display: block; width: 100%; padding: 10px; margin-bottom: 10px; background: #f0f4f1; border: 1px solid #7b8f80; color: #555; text-decoration: none; border-radius: 6px; text-align: center; font-size: 0.85rem; transition: 0.3s; }
+        .btn-doc:hover { background: #7b8f80; color: white; }
+        .btn-save { background: #7b8f80; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body style="background-color: #fcfbf9;">
@@ -23,10 +30,24 @@
         <div class="header-ficha">
             <div>
                 <a href="adm.html" style="text-decoration: none; color: #888;">← Voltar ao Painel</a>
-                <h1 id="nomeCliente" style="margin-top: 10px;">Carregando...</h1>
+                <h1 id="nomeDisplay">Carregando...</h1>
                 <p id="infoCliente" style="color: #666;"></p>
             </div>
-            <button class="btn" onclick="salvarTudo()">Salvar Prontuário</button>
+            <button class="btn-save" onclick="salvarTudo()">Salvar Prontuário Completo</button>
+        </div>
+
+        <div class="card">
+            <h3>Dados Pessoais</h3>
+            <div class="dados-pessoais-grid">
+                <div><label>Nome</label><input type="text" id="nome"></div>
+                <div><label>Data Nascimento</label><input type="date" id="nascimento"></div>
+                <div><label>Idade</label><input type="number" id="idade"></div>
+                <div><label>Morada</label><input type="text" id="morada"></div>
+                <div><label>Cidade</label><input type="text" id="cidade"></div>
+                <div><label>País</label><input type="text" id="pais"></div>
+                <div><label>E-mail</label><input type="email" id="email"></div>
+                <div><label>Telefone</label><input type="text" id="telefone"></div>
+            </div>
         </div>
 
         <div class="grid-prontuario">
@@ -35,12 +56,22 @@
                     <h3>Notas de Evolução (Sigiloso)</h3>
                     <textarea id="notasEvolucao" placeholder="Descreva aqui os pontos principais da sessão..."></textarea>
                 </div>
+
+                <div class="card">
+                    <h3>Documentos e Ferramentas (Drive)</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <a href="https://docs.google.com/forms/SUA_ANAMNESE" target="_blank" class="btn-doc">📋 Ficha de Anamnese</a>
+                        <a href="https://drive.google.com/drive/folders/SEU_LINK" target="_blank" class="btn-doc">📂 Pasta de Documentos</a>
+                        <a href="#" class="btn-doc">⚖️ Contrato Terapêutico</a>
+                        <a href="#" class="btn-doc">📝 Testes Aplicados</a>
+                    </div>
+                </div>
             </div>
 
             <div class="col-financeiro">
                 <div class="card">
                     <h3>Financeiro</h3>
-                    <button class="btn" style="width: 100%; font-size: 0.8rem; margin-bottom: 15px;" onclick="addSessao()">+ Lançar Débito</button>
+                    <button class="btn-save" style="width: 100%; font-size: 0.8rem; margin-bottom: 15px;" onclick="addSessao()">+ Lançar Débito</button>
                     <table id="tabelaFinanceiro">
                         <thead>
                             <tr>
@@ -49,8 +80,7 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -58,32 +88,68 @@
     </div>
 
     <script>
-        // 1. Identificar o cliente pelo ID na URL
+        // 1. Identificar o cliente
         const urlParams = new URLSearchParams(window.location.search);
         const idCliente = urlParams.get('id');
         let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-        let cliente = clientes.find(c => c.id === idCliente);
+        let cliente = clientes.find(c => c.id == idCliente);
 
         if (!cliente) {
             alert("Cliente não encontrado!");
             window.location.href = "adm.html";
         }
 
-        // 2. Preencher os dados na tela
-        document.getElementById('nomeCliente').innerText = cliente.nome;
-        document.getElementById('infoCliente').innerText = `ID: #${cliente.id} | Pasta: ${cliente.pasta}`;
-        document.getElementById('notasEvolucao').value = cliente.notas || "";
+        // Carregar dados na tela ao abrir
+        function carregarDados() {
+            document.getElementById('nomeDisplay').innerText = cliente.nome;
+            document.getElementById('infoCliente').innerText = `ID: #${cliente.id} | Pasta: ${cliente.pasta || 'N/A'}`;
+            
+            // Preencher inputs de dados pessoais
+            document.getElementById('nome').value = cliente.nome || "";
+            document.getElementById('nascimento').value = cliente.nascimento || "";
+            document.getElementById('idade').value = cliente.idade || "";
+            document.getElementById('morada').value = cliente.morada || "";
+            document.getElementById('cidade').value = cliente.cidade || "";
+            document.getElementById('pais').value = cliente.pais || "";
+            document.getElementById('email').value = cliente.email || "";
+            document.getElementById('telefone').value = cliente.telefone || "";
+            
+            document.getElementById('notasEvolucao').value = cliente.notas || "";
+            renderFinanceiro();
+        }
 
+        // 2. Salvar Tudo
+        function salvarTudo() {
+            // Atualiza o objeto cliente com os valores dos inputs
+            cliente.nome = document.getElementById('nome').value;
+            cliente.nascimento = document.getElementById('nascimento').value;
+            cliente.idade = document.getElementById('idade').value;
+            cliente.morada = document.getElementById('morada').value;
+            cliente.cidade = document.getElementById('cidade').value;
+            cliente.pais = document.getElementById('pais').value;
+            cliente.email = document.getElementById('email').value;
+            cliente.telefone = document.getElementById('telefone').value;
+            cliente.notas = document.getElementById('notasEvolucao').value;
+
+            // Salva no array geral e persiste no LocalStorage
+            const index = clientes.findIndex(c => c.id == idCliente);
+            clientes[index] = cliente;
+            localStorage.setItem('clientes_michelly', JSON.stringify(clientes));
+
+            alert("Prontuário salvo com sucesso!");
+            document.getElementById('nomeDisplay').innerText = cliente.nome;
+        }
+
+        // 3. Financeiro (Lançar Débito)
         function renderFinanceiro() {
             const tbody = document.querySelector('#tabelaFinanceiro tbody');
             tbody.innerHTML = '';
-            
             if (cliente.financeiro) {
                 cliente.financeiro.forEach((item, index) => {
                     tbody.innerHTML += `
                         <tr>
                             <td>${item.data}</td>
-                            <td>R$ ${item.valor}</td>
+                            <td>${item.valor} €</td>
                             <td class="status-${item.status.toLowerCase()}" onclick="alternarStatus(${index})" style="cursor:pointer">
                                 ${item.status}
                             </td>
@@ -93,68 +159,31 @@
             }
         }
 
-        // 3. Funções de Alimentação
-// No arquivo detalhes-cliente.html, procure e ajuste estas funções:
+        function addSessao() {
+            const opcoes = "1 - Sessão Avulsa (50€)\n2 - Pacote Mensal (180€)\n3 - Foco Total (350€)\n4 - Valor Customizado";
+            const escolha = prompt("Escolha o tipo de lançamento:\n" + opcoes);
+            
+            let valor = "";
+            if (escolha == "1") valor = "50.00";
+            else if (escolha == "2") valor = "180.00";
+            else if (escolha == "3") valor = "350.00";
+            else if (escolha == "4") valor = prompt("Digite o valor em €:");
 
-function renderFinanceiro() {
-    const tbody = document.querySelector('#tabelaFinanceiro tbody');
-    tbody.innerHTML = '';
-    
-    if (cliente.financeiro) {
-        cliente.financeiro.forEach((item, index) => {
-            tbody.innerHTML += `
-                <tr>
-                    <td>${item.data}</td>
-                    <td>${item.valor} €</td> <td class="status-${item.status.toLowerCase()}" onclick="alternarStatus(${index})" style="cursor:pointer">
-                        ${item.status}
-                    </td>
-                </tr>
-            `;
-        });
-    }
-}
+            if (valor) {
+                if (!cliente.financeiro) cliente.financeiro = [];
+                const hoje = new Date().toLocaleDateString('pt-PT');
+                cliente.financeiro.push({ data: hoje, valor: valor, status: "Pendente" });
+                renderFinanceiro();
+            }
+        }
 
-function addSessao() {
-    const valor = prompt("Valor da sessão (€):", "50.00"); // Sugestão em Euro
-    if (valor) {
-        if (!cliente.financeiro) cliente.financeiro = [];
-        const hoje = new Date().toLocaleDateString('pt-PT'); // Formato de data europeu
-        cliente.financeiro.push({ data: hoje, valor: valor, status: "Pendente" });
-        renderFinanceiro();
-    }
-}
-   <footer>
-    <div class="footer-container">
-        <div class="footer-box">
-            <h3>Michelly Eufrazio Santos</h3>
-            <p>Psicanálista Clínica dedicada ao autoconhecimento e bem-estar emocional na Europa.</p>
-            <div class="redes-sociais">
-                <a href="www.linkendin.com/michellysantos" class="social-icon">In</a>
-                <a href="www.instagram.com/michellysantospsicanalista" class="social-icon">Ig</a>
-            </div>
-        </div>
+        function alternarStatus(index) {
+            cliente.financeiro[index].status = cliente.financeiro[index].status === "Pendente" ? "Pago" : "Pendente";
+            renderFinanceiro();
+        }
 
-        <div class="footer-box">
-            <h3>Links</h3>
-            <a href="index.html">Início</a>
-            <a href="#sobre">Sobre Mim</a>
-            <a href="contato.html">Agendar Consulta</a>
-            <a href="#" onclick="document.getElementById('loginModal').style.display='block'">Área Restrita</a>
-        </div>
-
-        <div class="footer-box">
-            <h3>Contato</h3>
-            <p>📍 Aveiro, Portugal / Online</p>
-            <p>📧 michrllysantos@gmail.com</p>
-            <p>📱 +351 910 377 246</p>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        &copy; 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.
-    </div>
-</footer>
-
+        // Inicializar a página
+        carregarDados();
     </script>
 </body>
 </html>
