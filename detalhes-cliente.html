@@ -174,28 +174,35 @@
         }
 
         // 5. SALVAR TUDO NO SUPABASE
-        async function salvarTudo() {
-            const btn = document.querySelector('.btn-save');
-            btn.innerText = "Salvando...";
+async function salvarTudo() {
+    const btn = document.querySelector('.btn-save');
+    btn.innerText = "Salvando...";
 
-            const { error } = await _supabase
-                .from('pacientes')
-                .update({
-                    email: document.getElementById('email').value,
-                    telefone: document.getElementById('telefone').value,
-                    notas: document.getElementById('notasEvolucao').value,
-                    financeiro: dadosPaciente.financeiro
-                })
-                .eq('id', idCliente);
+    // Captura os valores EXATOS das caixas de texto
+    const updateData = {
+        email: document.getElementById('email').value,
+        telefone: document.getElementById('telefone').value,
+        nascimento: document.getElementById('nascimento') ? document.getElementById('nascimento').value : null,
+        idade: document.getElementById('idade') ? document.getElementById('idade').value : null,
+        morada: document.getElementById('morada') ? document.getElementById('morada').value : null,
+        notas: document.getElementById('notasEvolucao').value,
+        financeiro: dadosPaciente.financeiro // Envia a lista de pagamentos
+    };
 
-            if (error) {
-                alert("Erro ao salvar: " + error.message);
-            } else {
-                alert("✅ Prontuário e Financeiro atualizados com sucesso!");
-            }
-            btn.innerText = "Salvar Prontuário Completo";
-        }
+    try {
+        const { error } = await _supabase
+            .from('pacientes')
+            .update(updateData)
+            .eq('id', idCliente);
 
+        if (error) throw error;
+        alert("✅ Tudo salvo com sucesso no Supabase!");
+    } catch (err) {
+        alert("Erro ao salvar: " + err.message);
+    } finally {
+        btn.innerText = "Salvar Prontuário Completo";
+    }
+}
         document.addEventListener('DOMContentLoaded', carregarDados);
     </script>
 </body>
