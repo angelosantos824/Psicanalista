@@ -84,3 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 });
+
+const footerLink = document.querySelector('a[onclick*="loginModal"]');
+    if(footerLink) {
+        footerLink.removeAttribute('onclick'); // Remove o comando antigo do HTML
+        footerLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.style.display = "flex";
+        });
+    }
