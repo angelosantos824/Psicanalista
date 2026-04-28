@@ -91,34 +91,47 @@
 
 <script>
         // 1. CARREGAR TABELA
-        async function renderTable() {
-            const tbody = document.getElementById('tabelaClientes');
-            try {
-                const { data: pacientes, error } = await _supabase
-                    .from('pacientes')
-                    .select('*')
-                    .order('nome', { ascending: true });
+async function renderTable() {
+    const tbody = document.getElementById('tabelaClientes');
+    try {
+        const { data: pacientes, error } = await _supabase
+            .from('pacientes')
+            .select('*')
+            .order('nome', { ascending: true });
 
-                if (error) throw error;
+        if (error) throw error;
 
-                tbody.innerHTML = '';
-                pacientes.forEach(p => {
-                    // Usamos o codigo_acesso (4 dígitos) para exibir como senha
-                    const senhaExibir = p.codigo_acesso || "Sem senha";
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><span class="id-label">#${senhaExibir}</span></td>
-                            <td><a href="detalhes-cliente.html?id=${p.id}" style="color:#d4a373; font-weight:bold; text-decoration:none;">${p.nome}</a></td>
-                            <td>${p.email}</td>
-                            <td><button class="btn-excluir" onclick="excluirPaciente('${p.id}')">Excluir</button></td>
-                        </tr>
-                    `;
-                });
-            } catch (err) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Erro ao carregar lista.</td></tr>';
-            }
+        tbody.innerHTML = '';
+        if (pacientes.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum paciente cadastrado.</td></tr>';
+            return;
         }
 
+        pacientes.forEach(p => {
+            // Se o codigo_acesso estiver vazio, tentamos mostrar a senha_acesso
+            const senhaExibir = p.codigo_acesso || p.senha_acesso || "Sem senha";
+
+            tbody.innerHTML += `
+                <tr>
+                    <td><span class="id-label">#${senhaExibir}</span></td>
+                    <td style="font-weight: bold; color: #d4a373;">${p.nome}</td>
+                    <td>${p.email}</td>
+                    <td style="display: flex; gap: 10px;">
+                        <a href="detalhes-cliente.html?id=${p.id}" 
+                           style="background: #7b8f80; color: white; text-decoration: none; padding: 8px 15px; border-radius: 8px; font-size: 14px; font-weight: bold;">
+                           Abrir Prontuário
+                        </a>
+                        
+                        <button class="btn-excluir" onclick="excluirPaciente('${p.id}', '${p.nome}')">Excluir</button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (err) {
+        console.error(err);
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Erro ao carregar lista.</td></tr>';
+    }
+}
         // 2. SALVAR NOVO (CORRIGIDO PARA O FORMATO DO BANCO)
         async function salvarPacienteSQL() {
             const nome = document.getElementById('nomeInput').value.trim();
