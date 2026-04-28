@@ -6,190 +6,128 @@
     <title>Painel Administrativo | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .admin-container { max-width: 900px; margin: 40px auto; padding: 20px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        
-        /* Grid de Gestão Rápida */
-        .grid-gestao { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
-        .btn-doc { 
-            display: flex; align-items: center; justify-content: center; padding: 15px; 
-            background: #fff; border: 1px solid #7b8f80; color: #7b8f80; 
-            text-decoration: none; border-radius: 10px; font-weight: bold; transition: 0.3s; 
-        }
-        .btn-doc:hover { background: #7b8f80; color: white; transform: translateY(-3px); }
-
-        /* Formulário de Cadastro */
-        .form-cadastro { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-        .form-cadastro input { flex: 1; min-width: 200px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; }
-        .btn-add { background: #d4a373; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
-
-        /* Lista de Clientes */
-        .cliente-card { 
-            background: #fff; padding: 15px 20px; border-radius: 10px; margin-bottom: 10px; 
-            display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #7b8f80;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-        .btn-open { background: #7b8f80; color: white; text-decoration: none; padding: 8px 15px; border-radius: 6px; font-size: 0.85rem; }
-        .btn-delete { background: #ff4d4d; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 5px; }
-        
-        h2, h3 { color: #555; }
+        .admin-container { max-width: 900px; margin: 40px auto; padding: 20px; font-family: sans-serif; }
+        .card-cadastro { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid #e9e0d2; }
+        input { padding: 12px; border-radius: 8px; border: 1px solid #e9e0d2; outline: none; }
+        .btn-principal { background: #d4a373; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-principal:hover { background: #b88b5d; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        th { background: #fdfaf6; color: #8c7851; padding: 15px; text-align: left; border-bottom: 2px solid #f4f1ea; }
+        td { padding: 15px; border-bottom: 1px solid #f4f1ea; }
+        .btn-excluir { background: #ff9999; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 <body style="background-color: #fcfbf9;">
 
-    <div class="card-cadastro" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;">
-    <h3 style="color: #8c7851; margin-bottom: 15px;">Cadastrar Novo Paciente</h3>
-    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-        <input type="text" id="nomeInput" placeholder="Nome Completo" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #e9e0d2;">
-        <input type="email" id="emailInput" placeholder="E-mail (Login)" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #e9e0d2;">
-    </div>
-    <button onclick="salvarNovoPacienteSQL()" style="width: 100%; background: #d4a373; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px;">
-        Criar Pasta e Gerar Senha
-    </button>
-</div>
+    <div class="admin-container">
+        <h2 style="color: #8c7851; text-align: center; margin-bottom: 30px;">Gestão de Pacientes</h2>
 
-<h3 style="color: #8c7851; margin-bottom: 15px;">Pacientes Ativos</h3>
-<div style="background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-        <thead>
-            <tr style="border-bottom: 2px solid #f4f1ea; color: #8c7851;">
-                <th style="padding: 15px;">ID (Senha)</th>
-                <th style="padding: 15px;">Nome</th>
-                <th style="padding: 15px;">E-mail</th>
-                <th style="padding: 15px;">Ações</th>
-            </tr>
-        </thead>
-        <tbody id="tabelaClientes">
-            </tbody>
-    </table>
-</div>
-
-<table>
-    <thead>
-        <tr>
-            <th>ID (Senha)</th>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody id="tabelaClientes">
-        </tbody>
-</table>
-        <div id="listaClientes">
-            <h3 style="margin-left: 10px; margin-bottom: 15px;">Pacientes Ativos</h3>
+        <div class="card-cadastro">
+            <h3 style="color: #8c7851; margin-bottom: 15px;">Cadastrar Novo Paciente</h3>
+            <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
+                <input type="text" id="nomeInput" placeholder="Nome Completo" style="flex: 1; min-width: 250px;">
+                <input type="email" id="emailInput" placeholder="E-mail (Login)" style="flex: 1; min-width: 250px;">
             </div>
+            <button onclick="salvarNovoPacienteSQL()" class="btn-principal" style="width: 100%;">
+                Criar Pasta e Gerar Senha Automática
+            </button>
+        </div>
+
+        <h3 style="color: #8c7851; margin-bottom: 15px;">Pacientes Ativos (Banco SQL)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID (Senha)</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaClientes">
+                </tbody>
+        </table>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    
     <script>
-        // Função para Adicionar Cliente
-        function adicionarCliente() {
-            const nome = document.getElementById('novoNome').value;
-            const pasta = document.getElementById('novaPasta').value;
+        // 1. CARREGAR PACIENTES DO SUPABASE
+        async function renderTable() {
+            const tbody = document.getElementById('tabelaClientes');
+            if (!tbody) return;
 
-            if(!nome || !pasta) return alert("Por favor, preencha o nome e o código da pasta!");
+            const { data: pacientes, error } = await _supabase
+                .from('pacientes')
+                .select('*')
+                .order('nome', { ascending: true });
 
-            const novoCliente = {
-                id: Date.now().toString(), // Gera ID único baseado no tempo
-                nome: nome,
-                pasta: pasta,
-                financeiro: [],
-                notas: "",
-                dataCadastro: new Date().toLocaleDateString('pt-PT')
-            };
-
-            let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-            clientes.push(novoCliente);
-            localStorage.setItem('clientes_michelly', JSON.stringify(clientes));
-            
-            // Limpa os campos e recarrega a lista
-            document.getElementById('novoNome').value = "";
-            document.getElementById('novaPasta').value = "";
-            carregarClientes();
-            alert("Paciente cadastrado com sucesso!");
-        }
-
-        // Função para Carregar a Lista
-        function carregarClientes() {
-            const clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-            const lista = document.getElementById('listaClientes');
-            
-            // Mantém o título e limpa apenas os cards
-            lista.innerHTML = '<h3 style="margin-left: 10px; margin-bottom: 15px;">Pacientes Ativos</h3>';
-            
-            if(clientes.length === 0) {
-                lista.innerHTML += '<p style="margin-left: 10px; color: #888;">Nenhum paciente cadastrado.</p>';
+            if (error) {
+                console.error("Erro:", error);
                 return;
             }
 
-            clientes.forEach(c => {
-                lista.innerHTML += `
-                    <div class="cliente-card">
-                        <div>
-                            <strong>${c.nome}</strong><br>
-                            <span style="font-size: 0.8rem; color: #888;">Pasta: ${c.pasta} | Senha: ${c.id}</span>
-                        </div>
-                        <div>
-                            <a href="detalhes-cliente.html?id=${c.id}" class="btn-open">Abrir Prontuário</a>
-                            <button class="btn-delete" onclick="removerCliente('${c.id}')">✕</button>
-                        </div>
-                    </div>
+            tbody.innerHTML = '';
+            if (pacientes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum paciente no banco.</td></tr>';
+            }
+
+            pacientes.forEach((p) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>#${p.id}</strong></td>
+                        <td><a href="detalhes-cliente.html?id=${p.id}" style="color:#d4a373; font-weight:bold; text-decoration:none;">${p.nome}</a></td>
+                        <td>${p.email}</td>
+                        <td>
+                            <button onclick="excluirPaciente('${p.id}')" class="btn-excluir">Excluir</button>
+                        </td>
+                    </tr>
                 `;
             });
         }
 
-        // Função para Remover
-        function removerCliente(id) {
-            if(confirm("Tem certeza que deseja excluir permanentemente esta pasta?")){
-                let clientes = JSON.parse(localStorage.getItem('clientes_michelly')) || [];
-                clientes = clientes.filter(c => c.id !== id);
-                localStorage.setItem('clientes_michelly', JSON.stringify(clientes));
-                carregarClientes();
+        // 2. SALVAR NOVO PACIENTE (ID = SENHA)
+        async function salvarNovoPacienteSQL() {
+            const nome = document.getElementById('nomeInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+
+            if (!nome || !email) return alert("Preencha Nome e E-mail!");
+
+            // Gera ID de 4 dígitos
+            const novoId = Math.floor(1000 + Math.random() * 9000).toString();
+
+            const { error } = await _supabase
+                .from('pacientes')
+                .insert([{ 
+                    id: novoId, 
+                    nome: nome, 
+                    email: email, 
+                    senha_acesso: novoId, 
+                    financeiro: [], 
+                    notas: "" 
+                }]);
+
+            if (error) {
+                alert("Erro ao salvar: " + error.message);
+            } else {
+                alert("✅ Paciente Cadastrado!\n\nID/Senha: " + novoId);
+                document.getElementById('nomeInput').value = '';
+                document.getElementById('emailInput').value = '';
+                renderTable();
             }
         }
 
-        // Inicializa a lista ao carregar a página
-        carregarClientes();
+        // 3. EXCLUIR
+        async function excluirPaciente(id) {
+            if (confirm("Deseja excluir permanentemente?")) {
+                const { error } = await _supabase.from('pacientes').delete().eq('id', id);
+                if (error) alert("Erro ao excluir");
+                else renderTable();
+            }
+        }
+
+        // Inicia ao carregar a página
+        document.addEventListener('DOMContentLoaded', renderTable);
     </script>
-
-    <footer>
-        <div class="footer-container">
-            <div class="footer-box">
-                <h3>Michelly Eufrazio Santos</h3>
-                <p>Gestão Administrativa Interna - Uso Exclusivo.</p>
-            </div>
-            <div class="footer-box">
-                <h3>Suporte</h3>
-                <p>📍 Aveiro, Portugal</p>
-                <p>📱 +351 910 377 246</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2026 Michelly Eufrazio Santos - Psicanalista.
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="config.js"></script>
-
-<script>
-    async function cadastrarNoBanco() {
-    const nome = document.getElementById('nomeInput').value;
-    const email = document.getElementById('emailInput').value;
-    const senha = document.getElementById('senhaInput').value;
-
-    const { data, error } = await _supabase
-        .from('pacientes')
-        .insert([{ nome, email, senha_acesso: senha }]);
-
-    if (error) {
-        alert("Erro ao salvar: " + error.message);
-    } else {
-        alert("Paciente " + nome + " cadastrado com sucesso!");
-        carregarListaPacientes(); // Função para atualizar a lista na tela
-    }
-}
-</script>
 </body>
 </html>
