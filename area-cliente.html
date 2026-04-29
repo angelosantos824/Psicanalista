@@ -21,7 +21,6 @@
         }
         .header-cliente { border-bottom: 2px solid #fcfbf9; margin-bottom: 20px; padding-bottom: 10px; }
         
-        /* CARD DE AGENDAMENTO EM DESTAQUE */
         .card-agendamento {
             background: #fff9db;
             border: 1px solid #fab005;
@@ -29,10 +28,11 @@
             border-radius: 12px;
             margin-bottom: 30px;
             text-align: center;
-            display: none; /* Escondido por padrão */
+            display: none; 
         }
         .card-agendamento h4 { margin: 0; color: #85741d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
         .card-agendamento .data-destaque { font-size: 1.5rem; font-weight: bold; color: #444; margin-top: 10px; }
+        .fuso-aviso { font-size: 0.75rem; color: #85741d; margin-top: 5px; font-weight: normal; }
 
         .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
         .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; }
@@ -60,10 +60,11 @@
                 <p style="color: #666;">Bem-vindo à sua área de acompanhamento e ferramentas terapêuticas.</p>
             </div>
 
-            <!-- NOVO: CARD DE PRÓXIMA SESSÃO -->
+            <!-- CARD DE PRÓXIMA SESSÃO COM FUSO HORÁRIO -->
             <div id="cardAvisoAgenda" class="card-agendamento">
                 <h4>🗓️ Nossa Próxima Sessão</h4>
                 <div id="dataAgendada" class="data-destaque">--/-- às --:--</div>
+                <div id="fusoCliente" class="fuso-aviso">Detectando horário local...</div>
             </div>
 
             <h3>Ferramentas e Consultas</h3>
@@ -136,21 +137,32 @@
 
                 document.getElementById('nomeCliente').innerText = paciente.nome;
                 
-                // --- LÓGICA DO AGENDAMENTO ---
+                // --- LÓGICA DO AGENDAMENTO (COM FUSO HORÁRIO LOCAL) ---
                 if (paciente.proximo_agendamento) {
+                    // O JavaScript interpreta o "AAAA-MM-DDTHH:MM:00" como fuso local ou UTC
+                    // Para garantir precisão, tratamos como objeto de data
                     const dataObj = new Date(paciente.proximo_agendamento);
-                    const opcoes = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+                    
+                    // Formata para o fuso horário de onde a cliente está acessando
+                    const opcoes = { 
+                        day: '2-digit', month: '2-digit', year: 'numeric', 
+                        hour: '2-digit', minute: '2-digit' 
+                    };
+                    
                     const dataFormatada = dataObj.toLocaleDateString('pt-BR', opcoes);
+                    
+                    // Pega a sigla do fuso (Ex: GMT-3, WEST, etc)
+                    const siglaFuso = dataObj.toLocaleTimeString('pt-BR', {timeZoneName:'short'}).split(' ').pop();
                     
                     document.getElementById('cardAvisoAgenda').style.display = 'block';
                     document.getElementById('dataAgendada').innerText = dataFormatada.replace(',', ' às');
+                    document.getElementById('fusoCliente').innerText = `Horário exibido no seu fuso local (${siglaFuso})`;
                 }
 
                 if (paciente.link_drive_pasta || paciente.pasta_nome) {
                     document.getElementById('linkPasta').href = paciente.link_drive_pasta || paciente.pasta_nome;
                 }
 
-                // --- LÓGICA FINANCEIRA ---
                 const tbody = document.getElementById('tabelaFinanceiraCliente');
                 tbody.innerHTML = "";
                 const financeiro = paciente.financeiro || [];
