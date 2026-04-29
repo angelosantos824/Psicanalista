@@ -93,3 +93,32 @@ const footerLink = document.querySelector('a[onclick*="loginModal"]');
             modal.style.display = "flex";
         });
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const popup = document.getElementById('popupConvite');
+    const btnFechar = document.getElementById('fecharPopup');
+
+    // 1. Verifica se o usuário já viu o popup nesta visita
+    const jaViu = sessionStorage.getItem('popupExibido');
+
+    if (!jaViu) {
+        // 2. Exibe o popup após 3 segundos de navegação
+        setTimeout(() => {
+            popup.style.display = 'flex';
+        }, 3000);
+    }
+
+    // 3. Função para fechar o popup
+    btnFechar.addEventListener('click', () => {
+        popup.style.display = 'none';
+        sessionStorage.setItem('popupExibido', 'true');
+    });
+
+    // 4. Fechar se clicar fora do conteúdo branco
+    window.addEventListener('click', (e) => {
+        if (e.target === popup) {
+            popup.style.display = 'none';
+            sessionStorage.setItem('popupExibido', 'true');
+        }
+    });
+});
