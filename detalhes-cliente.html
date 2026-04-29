@@ -16,7 +16,17 @@
         .header-ficha { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
         
         /* Estilização da Anamnese */
-        .anamnese-box { background: #fdfaf5; border-left: 4px solid #d4a373; padding: 15px; border-radius: 4px; margin-top: 10px; font-size: 0.9rem; line-height: 1.6; color: #555; white-space: pre-wrap; }
+        .anamnese-box { 
+            background: #fdfaf5; 
+            border-left: 4px solid #d4a373; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-top: 10px; 
+            font-size: 0.95rem; 
+            line-height: 1.8; 
+            color: #444; 
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
         .no-data { color: #999; font-style: italic; font-size: 0.85rem; }
 
         .dados-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
@@ -80,10 +90,10 @@
                     </div>
                 </div>
 
-                <!-- NOVO CARD: ANAMNESE (Resposta do Google Forms) -->
+                <!-- RELATÓRIO DE ANAMNESE -->
                 <div class="card">
                     <h3>Relatório de Anamnese Inicial</h3>
-                    <div id="anamneseConteudo" class="no-data">Nenhuma resposta de anamnese vinculada a este e-mail ainda.</div>
+                    <div id="anamneseConteudo" class="no-data">Carregando dados da anamnese...</div>
                 </div>
 
                 <!-- CARD NOTAS -->
@@ -110,9 +120,7 @@
                         <tbody></tbody>
                     </table>
                     
-                    <div id="resumoFinanceiro" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; justify-content: space-between; font-size: 0.9rem;">
-                        <!-- Resumo via JS -->
-                    </div>
+                    <div id="resumoFinanceiro" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; justify-content: space-between; font-size: 0.9rem;"></div>
                 </div>
             </div>
         </div>
@@ -138,24 +146,50 @@
             dadosPaciente = data;
             if (!dadosPaciente.financeiro) dadosPaciente.financeiro = [];
 
-            // Preencher Cabeçalho
+            // 1. Cabeçalho e Senha
             document.getElementById('nomeDisplay').innerText = data.nome;
-            document.getElementById('infoCliente').innerText = `SENHA DE ACESSO: #${data.codigo_acesso || data.senha_acesso}`;
+            document.getElementById('infoCliente').innerText = `SENHA DE ACESSO: #${data.codigo_acesso || data.senha_acesso || '---'}`;
             
-            // Preencher Formulário
+            // 2. Preencher Formulário
             document.getElementById('email').value = data.email || "";
             document.getElementById('telefone').value = data.telefone || "";
             document.getElementById('nascimento').value = data.nascimento || "";
-            document.getElementById('idade').value = data.idade || "";
             document.getElementById('morada').value = data.morada || "";
             document.getElementById('statusPaciente').value = data.status || "Atendimento";
             document.getElementById('notasEvolucao').value = data.notas || "";
 
-            // Mostrar Anamnese se existir (campo 'anamnese' no SQL)
-            if (data.anamnese) {
-                const box = document.getElementById('anamneseConteudo');
+            // 3. Cálculo de idade automático
+            if (data.nascimento) {
+                calcularIdadeAutomático(data.nascimento);
+            }
+
+            // 4. Lógica de Anamnese (JSON ou Texto)
+            const box = document.getElementById('anamneseConteudo');
+            if (data.anamnese_completa) {
+                box.className = "anamnese-box";
+                const anam = data.anamnese_completa;
+                const nomesAmigaveis = {
+                    sexo: "Sexo",
+                    estado_civil: "Estado Civil",
+                    medicamentos: "Usa Medicamentos?",
+                    queixa: "Queixa Principal",
+                    trauma: "Histórico de Trauma",
+                    credo: "Frequenta Credo/Fé",
+                    profissao: "Profissão"
+                };
+
+                let relatorioHTML = `<div style="margin-bottom:10px; border-bottom:1px solid #e9e0d2; padding-bottom:5px; font-weight:bold; color:#8c7851;">DADOS COLETADOS NO FORMULÁRIO:</div>`;
+                for (const [chave, valor] of Object.entries(anam)) {
+                    const titulo = nomesAmigaveis[chave] || chave.toUpperCase();
+                    relatorioHTML += `<p style="margin: 5px 0;"><strong>${titulo}:</strong> ${valor}</p>`;
+                }
+                box.innerHTML = relatorioHTML;
+            } else if (data.anamnese) {
                 box.className = "anamnese-box";
                 box.innerText = data.anamnese;
+            } else {
+                box.innerHTML = "Nenhuma resposta de anamnese vinculada a este e-mail ainda.";
+                box.className = "no-data";
             }
 
             renderFinanceiro();
