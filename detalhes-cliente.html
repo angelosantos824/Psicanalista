@@ -6,71 +6,70 @@
     <title>Prontuário Master | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .detalhes-container { max-width: 1100px; margin: 40px auto; padding: 20px; font-family: sans-serif; }
+        body { background-color: #fcfbf9; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        .detalhes-container { max-width: 1200px; margin: 40px auto; padding: 20px; }
         .grid-prontuario { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; position: relative; }
-        .header-ficha { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         
-        /* Cores de Status */
-        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
-        .badge-atendimento { background: #e3f2fd; color: #1976d2; }
-        .badge-pausa { background: #fff3e0; color: #f57c00; }
-        .badge-alta { background: #e8f5e9; color: #388e3c; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { color: #8c7851; border-bottom: 1px solid #f4f1ea; padding-bottom: 10px; margin-top: 0; }
+        
+        .header-ficha { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+        
+        /* Estilização da Anamnese */
+        .anamnese-box { background: #fdfaf5; border-left: 4px solid #d4a373; padding: 15px; border-radius: 4px; margin-top: 10px; font-size: 0.9rem; line-height: 1.6; color: #555; white-space: pre-wrap; }
+        .no-data { color: #999; font-style: italic; font-size: 0.85rem; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
-        .status-pago { color: #7b8f80; font-weight: bold; cursor: pointer; }
-        .status-pendente { color: #d4a373; font-weight: bold; cursor: pointer; }
+        .dados-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .dados-grid label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; }
+        .dados-grid input, .dados-grid select { padding: 10px; border: 1px solid #e9e0d2; border-radius: 6px; width: 100%; box-sizing: border-box; }
         
-        textarea { width: 100%; height: 300px; border: 1px solid #eee; border-radius: 8px; padding: 15px; font-family: inherit; resize: none; margin-top: 10px; box-sizing: border-box; line-height: 1.6; }
-        
-        .btn-save { background: #7b8f80; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-save:hover { background: #637367; }
-        .btn-print { background: #f4f4f4; color: #555; border: 1px solid #ddd; padding: 8px 15px; border-radius: 6px; cursor: pointer; margin-right: 10px; }
-        
-        .btn-financeiro { background: #8c7851; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; width: 100%; margin-bottom: 10px; font-weight: bold; }
-        
-        .dados-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .dados-grid input, .dados-grid select { padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 100%; box-sizing: border-box; }
-        
-        .resumo-financeiro { display: flex; justify-content: space-between; background: #fcfbf9; padding: 10px; border-radius: 8px; margin-top: 15px; font-size: 0.8rem; border: 1px dashed #ddd; }
+        textarea { width: 100%; height: 350px; border: 1px solid #e9e0d2; border-radius: 8px; padding: 15px; font-family: inherit; resize: none; margin-top: 10px; box-sizing: border-box; line-height: 1.6; outline: none; }
+        textarea:focus { border-color: #d4a373; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid #f4f1ea; }
+        .status-pago { color: #7b8f80; font-weight: bold; }
+        .status-pendente { color: #d4a373; font-weight: bold; }
+
+        .btn-save { background: #7b8f80; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-save:hover { background: #637367; transform: translateY(-2px); }
+        .btn-print { background: white; color: #555; border: 1px solid #ddd; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; }
+        .btn-financeiro { background: #8c7851; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 15px; }
 
         @media print {
             .btn-save, .btn-print, .btn-financeiro, .header-ficha a, .col-financeiro { display: none !important; }
+            .detalhes-container { margin: 0; padding: 0; }
             .card { box-shadow: none; border: 1px solid #eee; }
-            body { background: white; }
         }
     </style>
 </head>
-<body style="background-color: #fcfbf9;">
+<body>
 
     <div class="detalhes-container">
         <div class="header-ficha">
             <div>
                 <a href="adm.html" style="text-decoration: none; color: #888; font-size: 0.9rem;">← Voltar ao Painel</a>
-                <h1 id="nomeDisplay" style="margin-top: 10px;">Carregando...</h1>
-                <p id="infoCliente" style="color: #666;"></p>
+                <h1 id="nomeDisplay" style="margin: 10px 0 5px 0; color: #555;">Carregando...</h1>
+                <p id="infoCliente" style="color: #d4a373; font-weight: bold; margin: 0;"></p>
             </div>
             <div>
-                <button class="btn-print" onclick="window.print()">🖨️ Imprimir Notas</button>
-                <button class="btn-save" onclick="salvarTudo()">Salvar Prontuário Completo</button>
+                <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
+                <button class="btn-save" onclick="salvarTudo()">Salvar Prontuário</button>
             </div>
         </div>
 
         <div class="grid-prontuario">
             <div class="col-dados">
+                <!-- CARD DADOS CADASTRAIS -->
                 <div class="card">
-                    <h3>Dados do Paciente</h3>
+                    <h3>Dados Pessoais</h3>
                     <div class="dados-grid">
-                        <div><label>E-mail</label><input type="text" id="email"></div>
+                        <div><label>E-mail (Login)</label><input type="text" id="email" readonly style="background:#f9f9f9"></div>
                         <div><label>Telefone</label><input type="text" id="telefone"></div>
-                        <div>
-                            <label>Nascimento</label>
-                            <input type="date" id="nascimento" onchange="calcularIdadeAutomático(this.value)">
-                        </div>
+                        <div><label>Nascimento</label><input type="date" id="nascimento" onchange="calcularIdadeAutomático(this.value)"></div>
                         <div><label>Idade</label><input type="text" id="idade" readonly style="background: #f9f9f9;"></div>
                         <div>
-                            <label>Status</label>
+                            <label>Status Terapêutico</label>
                             <select id="statusPaciente">
                                 <option value="Atendimento">Em Atendimento</option>
                                 <option value="Pausa">Em Pausa</option>
@@ -80,30 +79,39 @@
                         <div><label>Morada/Endereço</label><input type="text" id="morada"></div>
                     </div>
                 </div>
+
+                <!-- NOVO CARD: ANAMNESE (Resposta do Google Forms) -->
+                <div class="card">
+                    <h3>Relatório de Anamnese Inicial</h3>
+                    <div id="anamneseConteudo" class="no-data">Nenhuma resposta de anamnese vinculada a este e-mail ainda.</div>
+                </div>
+
+                <!-- CARD NOTAS -->
                 <div class="card">
                     <h3>Notas de Evolução (Sigiloso)</h3>
-                    <textarea id="notasEvolucao" placeholder="Descreva aqui o desenvolvimento do caso..."></textarea>
+                    <textarea id="notasEvolucao" placeholder="Registre aqui a evolução das sessões..."></textarea>
                 </div>
             </div>
 
             <div class="col-financeiro">
                 <div class="card">
-                    <h3>Financeiro</h3>
-                    <button class="btn-financeiro" onclick="addSessao()">+ Lançar Sessão</button>
+                    <h3>Histórico Financeiro</h3>
+                    <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
+                    
                     <table id="tabelaFinanceiro">
                         <thead>
                             <tr>
                                 <th>Data</th>
                                 <th>Valor</th>
                                 <th>Status</th>
-                                <th style="text-align:center;">Recibo</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
-                    <div class="resumo-financeiro" id="resumoFinanceiro">
-                        <span>Pendente: 0€</span>
-                        <span>Total Pago: 0€</span>
+                    
+                    <div id="resumoFinanceiro" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <!-- Resumo via JS -->
                     </div>
                 </div>
             </div>
@@ -130,18 +138,25 @@
             dadosPaciente = data;
             if (!dadosPaciente.financeiro) dadosPaciente.financeiro = [];
 
-            // Preencher Interface
-            document.getElementById('nomeDisplay').innerText = data.nome || "Sem Nome";
-            document.getElementById('infoCliente').innerText = `ID/Senha: #${data.codigo_acesso || data.senha_acesso}`;
+            // Preencher Cabeçalho
+            document.getElementById('nomeDisplay').innerText = data.nome;
+            document.getElementById('infoCliente').innerText = `SENHA DE ACESSO: #${data.codigo_acesso || data.senha_acesso}`;
             
-            // Preencher Inputs
+            // Preencher Formulário
             document.getElementById('email').value = data.email || "";
             document.getElementById('telefone').value = data.telefone || "";
             document.getElementById('nascimento').value = data.nascimento || "";
             document.getElementById('idade').value = data.idade || "";
             document.getElementById('morada').value = data.morada || "";
             document.getElementById('statusPaciente').value = data.status || "Atendimento";
-            document.getElementById('notasEvolucao').value = data.notas || data.notas_evolucao || "";
+            document.getElementById('notasEvolucao').value = data.notas || "";
+
+            // Mostrar Anamnese se existir (campo 'anamnese' no SQL)
+            if (data.anamnese) {
+                const box = document.getElementById('anamneseConteudo');
+                box.className = "anamnese-box";
+                box.innerText = data.anamnese;
+            }
 
             renderFinanceiro();
         }
@@ -151,50 +166,44 @@
             const hoje = new Date();
             const nasc = new Date(dataNasc);
             let idade = hoje.getFullYear() - nasc.getFullYear();
-            const m = hoje.getMonth() - nasc.getMonth();
-            if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+            if (hoje.getMonth() < nasc.getMonth() || (hoje.getMonth() === nasc.getMonth() && hoje.getDate() < nasc.getDate())) idade--;
             document.getElementById('idade').value = idade;
         }
 
         function renderFinanceiro() {
             const tbody = document.querySelector('#tabelaFinanceiro tbody');
             tbody.innerHTML = '';
-            let pago = 0;
-            let pendente = 0;
+            let pago = 0, pendente = 0;
             
             dadosPaciente.financeiro.forEach((item, index) => {
-                const classeStatus = item.status === "Pago" ? "status-pago" : "status-pendente";
                 const valorNum = parseFloat(item.valor) || 0;
-                
-                if(item.status === "Pago") pago += valorNum;
-                else pendente += valorNum;
+                item.status === "Pago" ? pago += valorNum : pendente += valorNum;
 
                 tbody.innerHTML += `
                     <tr>
                         <td>${item.data}</td>
-                        <td>${valorNum}€</td>
-                        <td class="${classeStatus}" onclick="alternarStatus(${index})" style="cursor:pointer">${item.status}</td>
-                        <td style="text-align:center;">
-                            <button onclick="gerarRecibo(${index})" style="border:none; background:none; cursor:pointer;">📄</button>
+                        <td style="font-weight:bold">R$ ${valorNum.toFixed(2)}</td>
+                        <td class="${item.status === 'Pago' ? 'status-pago' : 'status-pendente'}" 
+                            onclick="alternarStatus(${index})" style="cursor:pointer">
+                            ${item.status}
                         </td>
-                    </tr>
-                `;
+                        <td><button onclick="gerarRecibo(${index})" style="border:none; background:none; cursor:pointer;">📄</button></td>
+                    </tr>`;
             });
 
             document.getElementById('resumoFinanceiro').innerHTML = `
-                <strong style="color:#d4a373">Pendente: ${pendente.toFixed(2)}€</strong>
-                <strong style="color:#7b8f80">Pago: ${pago.toFixed(2)}€</strong>
+                <span class="status-pendente">A receber: R$ ${pendente.toFixed(2)}</span>
+                <span class="status-pago">Total pago: R$ ${pago.toFixed(2)}</span>
             `;
         }
 
         function addSessao() {
-            const valor = prompt("Valor da Sessão (€):", "50.00");
+            const valor = prompt("Valor da Sessão (R$):", "150.00");
             if (valor) {
                 dadosPaciente.financeiro.push({
-                    data: new Date().toLocaleDateString('pt-PT'),
+                    data: new Date().toLocaleDateString('pt-BR'),
                     valor: valor,
-                    status: "Pendente",
-                    descricao: "Atendimento Psicanalítico"
+                    status: "Pendente"
                 });
                 renderFinanceiro();
             }
@@ -205,46 +214,33 @@
             renderFinanceiro();
         }
 
-        function gerarRecibo(index) {
-            const lanc = dadosPaciente.financeiro[index];
-            const win = window.open('', '', 'height=600,width=600');
-            win.document.write(`<html><body style="font-family:sans-serif; padding:50px;"><div style="border:2px solid #7b8f80; padding:30px; border-radius:10px;"><h2 style="color:#7b8f80; text-align:center;">RECIBO</h2><p><strong>Emitente:</strong> Michelly Eufrazio Santos</p><p><strong>Paciente:</strong> ${dadosPaciente.nome}</p><hr><p>Recebi a importância de <strong>${lanc.valor}€</strong></p><p>Referente a: ${lanc.descricao}</p><p>Data: ${lanc.data}</p><br><br><p style="text-align:center;">__________________________________<br>Assinatura</p></div></body></html>`);
-            win.document.close();
-            win.print();
-        }
-
         async function salvarTudo() {
             const btn = document.querySelector('.btn-save');
-            btn.innerText = "Sincronizando...";
-            btn.disabled = true;
-
-           const updateData = {
-                email: document.getElementById('email').value,
+            btn.innerText = "Salvando...";
+            
+            const updateData = {
                 telefone: document.getElementById('telefone').value,
                 nascimento: document.getElementById('nascimento').value,
                 idade: document.getElementById('idade').value,
                 morada: document.getElementById('morada').value,
-                status: document.getElementById('statusPaciente').value, // Esta é a coluna que você vai criar no passo 1
+                status: document.getElementById('statusPaciente').value,
                 notas: document.getElementById('notasEvolucao').value,
                 financeiro: dadosPaciente.financeiro
             };
 
-           try {
-                const { error } = await _supabase
-                    .from('pacientes')
-                    .update(updateData)
-                    .eq('id', idCliente);
+            const { error } = await _supabase.from('pacientes').update(updateData).eq('id', idCliente);
 
-                if (error) throw error;
-                alert("✅ Sincronizado com sucesso!");
-                
-            } catch (err) {
-                console.error("Erro completo:", err);
-                alert("Erro ao salvar: " + err.message);
-            } finally {
-                btn.innerText = "Salvar Prontuário Completo";
-                btn.disabled = false;
-            }
+            if (error) alert("Erro ao salvar: " + error.message);
+            else alert("Prontuário atualizado com sucesso!");
+            
+            btn.innerText = "Salvar Prontuário";
+        }
+
+        function gerarRecibo(index) {
+            const lanc = dadosPaciente.financeiro[index];
+            const win = window.open('', '', 'height=600,width=600');
+            win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><div style="border:5px solid #7b8f80; padding:20px;"><h2>RECIBO DE ATENDIMENTO</h2><p>Recebi de <b>${dadosPaciente.nome}</b> a quantia de <b>R$ ${lanc.valor}</b> referente a sessão psicoterapêutica em ${lanc.data}.</p><br><br><p>Michelly Eufrazio Santos - Psicanalista</p></div></body></html>`);
+            win.print();
         }
 
         document.addEventListener('DOMContentLoaded', carregarDados);

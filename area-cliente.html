@@ -6,6 +6,7 @@
     <title>Minha Área | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
     
+    <!-- Scripts de Conexão -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
 
@@ -28,9 +29,8 @@
         .status-pendente { color: #d4a373; font-weight: bold; }
         table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        .btn-sair { margin-top: 30px; display: inline-block; text-decoration: none; color: #888; font-size: 0.9rem; cursor: pointer; }
+        .btn-sair { margin-top: 30px; display: inline-block; text-decoration: none; color: #888; font-size: 0.9rem; cursor: pointer; border: none; background: none; }
         
-        /* Estilo para o carregamento */
         #loading-overlay { text-align: center; padding: 40px; color: #d4a373; font-weight: bold; }
     </style>
 </head>
@@ -47,7 +47,8 @@
 
             <h3>Ferramentas e Consultas</h3>
             <div class="grid-acoes">
-                <a href="https://forms.gle/99qtpEuEzvtSQh5f8" target="_blank" class="btn-acao">
+                <!-- ATUALIZADO: Link para a sua página interna de anamnese -->
+                <a href="#" id="btnAnamnese" class="btn-acao">
                     <span>📋 Preencher Anamnese</span>
                     <small style="font-weight: normal; font-size: 0.7rem;">(Primeira consulta)</small>
                 </a>
@@ -86,12 +87,11 @@
                 <tbody id="tabelaFinanceiraCliente"></tbody>
             </table>
             
-            <a onclick="deslogar()" class="btn-sair">← Sair da Área Restrita</a>
+            <button onclick="deslogar()" class="btn-sair">← Sair da Área Restrita</button>
         </div>
     </div>
 
     <script>
-        // Pega o ID que veio na URL após o login
         const urlParams = new URLSearchParams(window.location.search);
         const idCliente = urlParams.get('id');
 
@@ -102,8 +102,11 @@
                 return;
             }
 
+            // Salva no localStorage para uso na página de anamnese
+            localStorage.setItem('paciente_id', idCliente);
+            document.getElementById('btnAnamnese').href = `anamnese.html?id=${idCliente}`;
+
             try {
-                // BUSCA NO SUPABASE (SELECT * FROM pacientes WHERE id = idCliente)
                 const { data: paciente, error } = await _supabase
                     .from('pacientes')
                     .select('*')
@@ -112,15 +115,12 @@
 
                 if (error || !paciente) throw error;
 
-                // Preenche Nome
                 document.getElementById('nomeCliente').innerText = paciente.nome;
                 
-                // Preenche link da pasta (se houver)
                 if (paciente.link_drive_pasta || paciente.pasta_nome) {
                     document.getElementById('linkPasta').href = paciente.link_drive_pasta || paciente.pasta_nome;
                 }
 
-                // Preenche Tabela Financeira (JSONB do Supabase)
                 const tbody = document.getElementById('tabelaFinanceiraCliente');
                 tbody.innerHTML = "";
 
@@ -141,23 +141,21 @@
                     tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:20px; color:#999;'>Nenhum registro de sessão disponível.</td></tr>";
                 }
 
-                // Mostra o conteúdo e esconde o loading
                 document.getElementById('loading-overlay').style.display = 'none';
                 document.getElementById('conteudo-principal').style.display = 'block';
 
             } catch (err) {
                 console.error("Erro ao carregar dados:", err.message);
-                alert("Erro ao carregar informações. Por favor, tente novamente.");
+                alert("Erro ao carregar informações.");
                 window.location.replace("index.html");
             }
         }
 
         function deslogar() {
-            // Limpa dados se necessário e volta para a home
+            localStorage.removeItem('paciente_id');
             window.location.href = "index.html";
         }
 
-        // Executa a função ao carregar a página
         carregarDadosPaciente();
     </script>
 </body>
