@@ -19,12 +19,27 @@
             border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
         }
-        .header-cliente { border-bottom: 2px solid #fcfbf9; margin-bottom: 30px; padding-bottom: 10px; }
+        .header-cliente { border-bottom: 2px solid #fcfbf9; margin-bottom: 20px; padding-bottom: 10px; }
+        
+        /* CARD DE AGENDAMENTO EM DESTAQUE */
+        .card-agendamento {
+            background: #fff9db;
+            border: 1px solid #fab005;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            display: none; /* Escondido por padrão */
+        }
+        .card-agendamento h4 { margin: 0; color: #85741d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .card-agendamento .data-destaque { font-size: 1.5rem; font-weight: bold; color: #444; margin-top: 10px; }
+
         .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
         .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; }
         .btn-acao:hover { background: #d4a373; color: white; transform: translateY(-3px); }
         .btn-reuniao { background: #7b8f80; color: white; border: none; }
         .btn-reuniao:hover { background: #6a7c6e; }
+        
         .status-pago { color: #7b8f80; font-weight: bold; }
         .status-pendente { color: #d4a373; font-weight: bold; }
         table { width: 100%; margin-top: 20px; border-collapse: collapse; }
@@ -45,9 +60,14 @@
                 <p style="color: #666;">Bem-vindo à sua área de acompanhamento e ferramentas terapêuticas.</p>
             </div>
 
+            <!-- NOVO: CARD DE PRÓXIMA SESSÃO -->
+            <div id="cardAvisoAgenda" class="card-agendamento">
+                <h4>🗓️ Nossa Próxima Sessão</h4>
+                <div id="dataAgendada" class="data-destaque">--/-- às --:--</div>
+            </div>
+
             <h3>Ferramentas e Consultas</h3>
             <div class="grid-acoes">
-                <!-- ATUALIZADO: Link para a sua página interna de anamnese -->
                 <a href="#" id="btnAnamnese" class="btn-acao">
                     <span>📋 Preencher Anamnese</span>
                     <small style="font-weight: normal; font-size: 0.7rem;">(Primeira consulta)</small>
@@ -58,9 +78,9 @@
                     <small style="font-weight: normal; font-size: 0.7rem;">(Contratos e Testes)</small>
                 </a>
 
-                <a href="LINK_DA_AGENDA_TERAPEUTA" target="_blank" class="btn-acao">
-                    <span>📅 Agendar/Ver Datas</span>
-                    <small style="font-weight: normal; font-size: 0.7rem;">(Sincronizado)</small>
+                <a href="https://wa.me/SEUTELEFONE" target="_blank" class="btn-acao">
+                    <span>📅 Reagendar</span>
+                    <small style="font-weight: normal; font-size: 0.7rem;">(Falar com Michelly)</small>
                 </a>
             </div>
 
@@ -102,7 +122,6 @@
                 return;
             }
 
-            // Salva no localStorage para uso na página de anamnese
             localStorage.setItem('paciente_id', idCliente);
             document.getElementById('btnAnamnese').href = `anamnese.html?id=${idCliente}`;
 
@@ -117,13 +136,23 @@
 
                 document.getElementById('nomeCliente').innerText = paciente.nome;
                 
+                // --- LÓGICA DO AGENDAMENTO ---
+                if (paciente.proximo_agendamento) {
+                    const dataObj = new Date(paciente.proximo_agendamento);
+                    const opcoes = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+                    const dataFormatada = dataObj.toLocaleDateString('pt-BR', opcoes);
+                    
+                    document.getElementById('cardAvisoAgenda').style.display = 'block';
+                    document.getElementById('dataAgendada').innerText = dataFormatada.replace(',', ' às');
+                }
+
                 if (paciente.link_drive_pasta || paciente.pasta_nome) {
                     document.getElementById('linkPasta').href = paciente.link_drive_pasta || paciente.pasta_nome;
                 }
 
+                // --- LÓGICA FINANCEIRA ---
                 const tbody = document.getElementById('tabelaFinanceiraCliente');
                 tbody.innerHTML = "";
-
                 const financeiro = paciente.financeiro || [];
 
                 if (financeiro.length > 0) {
@@ -132,7 +161,7 @@
                         tbody.innerHTML += `
                             <tr>
                                 <td>${item.data}</td>
-                                <td>${item.valor} €</td> 
+                                <td>R$ ${parseFloat(item.valor).toFixed(2)}</td> 
                                 <td class="${statusClasse}">${item.status}</td>
                             </tr>
                         `;

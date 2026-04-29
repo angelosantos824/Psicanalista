@@ -15,26 +15,20 @@
         
         .header-ficha { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
         
-        /* Estilização da Anamnese */
-        .anamnese-box { 
-            background: #fdfaf5; 
-            border-left: 4px solid #d4a373; 
-            padding: 20px; 
-            border-radius: 8px; 
-            margin-top: 10px; 
-            font-size: 0.95rem; 
-            line-height: 1.8; 
-            color: #444; 
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
-        }
+        /* Estilização da Anamnese e História */
+        .anamnese-box { background: #fdfaf5; border-left: 4px solid #d4a373; padding: 20px; border-radius: 8px; margin-top: 10px; font-size: 0.95rem; line-height: 1.8; color: #444; }
+        .historia-box { background: #f0f4f1; border-left: 4px solid #7b8f80; padding: 20px; border-radius: 8px; margin-top: 10px; font-size: 1rem; font-style: italic; color: #2d3436; }
+        
         .no-data { color: #999; font-style: italic; font-size: 0.85rem; }
 
         .dados-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .dados-grid label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; }
         .dados-grid input, .dados-grid select { padding: 10px; border: 1px solid #e9e0d2; border-radius: 6px; width: 100%; box-sizing: border-box; }
         
-        textarea { width: 100%; height: 350px; border: 1px solid #e9e0d2; border-radius: 8px; padding: 15px; font-family: inherit; resize: none; margin-top: 10px; box-sizing: border-box; line-height: 1.6; outline: none; }
-        textarea:focus { border-color: #d4a373; }
+        .agendamento-box { background: #fff9db; padding: 15px; border-radius: 8px; border: 1px solid #fab005; margin-bottom: 20px; }
+        .agendamento-box input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%; margin-top: 5px; }
+
+        textarea { width: 100%; height: 250px; border: 1px solid #e9e0d2; border-radius: 8px; padding: 15px; font-family: inherit; resize: none; margin-top: 10px; box-sizing: border-box; line-height: 1.6; outline: none; }
 
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid #f4f1ea; }
@@ -47,9 +41,7 @@
         .btn-financeiro { background: #8c7851; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 15px; }
 
         @media print {
-            .btn-save, .btn-print, .btn-financeiro, .header-ficha a, .col-financeiro { display: none !important; }
-            .detalhes-container { margin: 0; padding: 0; }
-            .card { box-shadow: none; border: 1px solid #eee; }
+            .btn-save, .btn-print, .btn-financeiro, .header-ficha a, .col-financeiro, .agendamento-box { display: none !important; }
         }
     </style>
 </head>
@@ -70,7 +62,19 @@
 
         <div class="grid-prontuario">
             <div class="col-dados">
-                <!-- CARD DADOS CADASTRAIS -->
+                
+                <!-- CARD AGENDAMENTO -->
+                <div class="agendamento-box">
+                    <label><strong>📅 Próxima Sessão (Aparece na área do cliente):</strong></label>
+                    <input type="datetime-local" id="proximoAgendamento">
+                </div>
+
+                <!-- CARD HISTÓRIA PRINCIPAL -->
+                <div class="card">
+                    <h3>Resumo da História (Queixa Principal)</h3>
+                    <div id="historiaCliente" class="historia-box">Carregando história...</div>
+                </div>
+
                 <div class="card">
                     <h3>Dados Pessoais</h3>
                     <div class="dados-grid">
@@ -90,13 +94,11 @@
                     </div>
                 </div>
 
-                <!-- RELATÓRIO DE ANAMNESE -->
                 <div class="card">
-                    <h3>Relatório de Anamnese Inicial</h3>
-                    <div id="anamneseConteudo" class="no-data">Carregando dados da anamnese...</div>
+                    <h3>Relatório de Anamnese Completo</h3>
+                    <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
                 </div>
 
-                <!-- CARD NOTAS -->
                 <div class="card">
                     <h3>Notas de Evolução (Sigiloso)</h3>
                     <textarea id="notasEvolucao" placeholder="Registre aqui a evolução das sessões..."></textarea>
@@ -107,19 +109,10 @@
                 <div class="card">
                     <h3>Histórico Financeiro</h3>
                     <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
-                    
                     <table id="tabelaFinanceiro">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Valor</th>
-                                <th>Status</th>
-                                <th></th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Data</th><th>Valor</th><th>Status</th><th></th></tr></thead>
                         <tbody></tbody>
                     </table>
-                    
                     <div id="resumoFinanceiro" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; justify-content: space-between; font-size: 0.9rem;"></div>
                 </div>
             </div>
@@ -146,28 +139,35 @@
             dadosPaciente = data;
             if (!dadosPaciente.financeiro) dadosPaciente.financeiro = [];
 
-            // 1. Cabeçalho e Senha
             document.getElementById('nomeDisplay').innerText = data.nome;
-            document.getElementById('infoCliente').innerText = `SENHA DE ACESSO: #${data.codigo_acesso || data.senha_acesso || '---'}`;
+            document.getElementById('infoCliente').innerText = `SENHA DE ACESSO: #${data.senha_acesso || '---'}`;
             
-            // 2. Preencher Formulário
             document.getElementById('email').value = data.email || "";
             document.getElementById('telefone').value = data.telefone || "";
             document.getElementById('nascimento').value = data.nascimento || "";
             document.getElementById('morada').value = data.morada || "";
             document.getElementById('statusPaciente').value = data.status || "Atendimento";
             document.getElementById('notasEvolucao').value = data.notas || "";
-
-            // 3. Cálculo de idade automático
-            if (data.nascimento) {
-                calcularIdadeAutomático(data.nascimento);
+            
+            // Preencher Agendamento
+            if (data.proximo_agendamento) {
+                // Ajuste para formato do input datetime-local
+                document.getElementById('proximoAgendamento').value = data.proximo_agendamento.substring(0, 16);
             }
 
-            // 4. Lógica de Anamnese (JSON ou Texto)
-            const box = document.getElementById('anamneseConteudo');
+            if (data.nascimento) calcularIdadeAutomático(data.nascimento);
+
+            // Lógica de História e Anamnese
+            const boxAnamnese = document.getElementById('anamneseConteudo');
+            const boxHistoria = document.getElementById('historiaCliente');
+
             if (data.anamnese_completa) {
-                box.className = "anamnese-box";
                 const anam = data.anamnese_completa;
+                
+                // Puxa o campo "queixa" como a História Principal
+                boxHistoria.innerHTML = `"${anam.queixa || 'Não informada.'}"`;
+
+                let relatorioHTML = "";
                 const nomesAmigaveis = {
                     sexo: "Sexo",
                     estado_civil: "Estado Civil",
@@ -178,18 +178,14 @@
                     profissao: "Profissão"
                 };
 
-                let relatorioHTML = `<div style="margin-bottom:10px; border-bottom:1px solid #e9e0d2; padding-bottom:5px; font-weight:bold; color:#8c7851;">DADOS COLETADOS NO FORMULÁRIO:</div>`;
                 for (const [chave, valor] of Object.entries(anam)) {
                     const titulo = nomesAmigaveis[chave] || chave.toUpperCase();
                     relatorioHTML += `<p style="margin: 5px 0;"><strong>${titulo}:</strong> ${valor}</p>`;
                 }
-                box.innerHTML = relatorioHTML;
-            } else if (data.anamnese) {
-                box.className = "anamnese-box";
-                box.innerText = data.anamnese;
+                boxAnamnese.innerHTML = relatorioHTML;
             } else {
-                box.innerHTML = "Nenhuma resposta de anamnese vinculada a este e-mail ainda.";
-                box.className = "no-data";
+                boxHistoria.innerHTML = "História não disponível.";
+                boxAnamnese.innerHTML = "Sem dados de anamnese.";
             }
 
             renderFinanceiro();
@@ -208,37 +204,18 @@
             const tbody = document.querySelector('#tabelaFinanceiro tbody');
             tbody.innerHTML = '';
             let pago = 0, pendente = 0;
-            
             dadosPaciente.financeiro.forEach((item, index) => {
                 const valorNum = parseFloat(item.valor) || 0;
                 item.status === "Pago" ? pago += valorNum : pendente += valorNum;
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${item.data}</td>
-                        <td style="font-weight:bold">R$ ${valorNum.toFixed(2)}</td>
-                        <td class="${item.status === 'Pago' ? 'status-pago' : 'status-pendente'}" 
-                            onclick="alternarStatus(${index})" style="cursor:pointer">
-                            ${item.status}
-                        </td>
-                        <td><button onclick="gerarRecibo(${index})" style="border:none; background:none; cursor:pointer;">📄</button></td>
-                    </tr>`;
+                tbody.innerHTML += `<tr><td>${item.data}</td><td>R$ ${valorNum.toFixed(2)}</td><td class="${item.status === 'Pago' ? 'status-pago' : 'status-pendente'}" onclick="alternarStatus(${index})" style="cursor:pointer">${item.status}</td><td><button onclick="gerarRecibo(${index})" style="border:none; background:none; cursor:pointer;">📄</button></td></tr>`;
             });
-
-            document.getElementById('resumoFinanceiro').innerHTML = `
-                <span class="status-pendente">A receber: R$ ${pendente.toFixed(2)}</span>
-                <span class="status-pago">Total pago: R$ ${pago.toFixed(2)}</span>
-            `;
+            document.getElementById('resumoFinanceiro').innerHTML = `<span class="status-pendente">A receber: R$ ${pendente.toFixed(2)}</span><span class="status-pago">Total pago: R$ ${pago.toFixed(2)}</span>`;
         }
 
         function addSessao() {
             const valor = prompt("Valor da Sessão (R$):", "150.00");
             if (valor) {
-                dadosPaciente.financeiro.push({
-                    data: new Date().toLocaleDateString('pt-BR'),
-                    valor: valor,
-                    status: "Pendente"
-                });
+                dadosPaciente.financeiro.push({ data: new Date().toLocaleDateString('pt-BR'), valor: valor, status: "Pendente" });
                 renderFinanceiro();
             }
         }
@@ -259,22 +236,16 @@
                 morada: document.getElementById('morada').value,
                 status: document.getElementById('statusPaciente').value,
                 notas: document.getElementById('notasEvolucao').value,
-                financeiro: dadosPaciente.financeiro
+                financeiro: dadosPaciente.financeiro,
+                proximo_agendamento: document.getElementById('proximoAgendamento').value || null
             };
 
             const { error } = await _supabase.from('pacientes').update(updateData).eq('id', idCliente);
 
             if (error) alert("Erro ao salvar: " + error.message);
-            else alert("Prontuário atualizado com sucesso!");
+            else alert("Prontuário e Agendamento salvos!");
             
             btn.innerText = "Salvar Prontuário";
-        }
-
-        function gerarRecibo(index) {
-            const lanc = dadosPaciente.financeiro[index];
-            const win = window.open('', '', 'height=600,width=600');
-            win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><div style="border:5px solid #7b8f80; padding:20px;"><h2>RECIBO DE ATENDIMENTO</h2><p>Recebi de <b>${dadosPaciente.nome}</b> a quantia de <b>R$ ${lanc.valor}</b> referente a sessão psicoterapêutica em ${lanc.data}.</p><br><br><p>Michelly Eufrazio Santos - Psicanalista</p></div></body></html>`);
-            win.print();
         }
 
         document.addEventListener('DOMContentLoaded', carregarDados);
