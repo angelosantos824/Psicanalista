@@ -7,23 +7,38 @@
     <link rel="stylesheet" href="style.css">
     <style>
         body { background-color: #fcfbf9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; }
-        .admin-container { max-width: 1000px; margin: 0 auto; }
+        .admin-container { max-width: 1100px; margin: 0 auto; }
         .header-painel { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .header-painel h2 { color: #555; margin: 0; }
+        
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
         .card h3 { color: #8c7851; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid #f4f1ea; padding-bottom: 10px; }
+        
         .grid-atalhos { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .btn-atalho { background: white; border: 1px solid #e9e0d2; padding: 15px; border-radius: 12px; text-decoration: none; color: #7b8f80; font-weight: bold; text-align: center; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-atalho:hover { background: #7b8f80; color: white; transform: translateY(-3px); }
+        
         .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
-        .form-row input { flex: 1; min-width: 250px; padding: 12px; border: 1px solid #e9e0d2; border-radius: 8px; outline: none; }
+        .form-row input, .form-row select { flex: 1; min-width: 200px; padding: 12px; border: 1px solid #e9e0d2; border-radius: 8px; outline: none; }
+        
         .btn-salvar { width: 100%; background: #d4a373; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
         .btn-salvar:hover { background: #b88b5d; }
+        
+        /* Estilos Financeiro */
+        .resumo-caixa { display: flex; gap: 20px; margin-bottom: 20px; }
+        .resumo-item { flex: 1; padding: 20px; border-radius: 12px; text-align: center; color: white; background: #8c7851; }
+        .valor-entrada { color: #2e7d32; font-weight: bold; }
+        .valor-saida { color: #d32f2f; font-weight: bold; }
+        .btn-financeiro { background: #7b8f80; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { text-align: left; padding: 15px; color: #8c7851; border-bottom: 2px solid #f4f1ea; font-size: 0.9rem; }
         td { padding: 15px; border-bottom: 1px solid #f4f1ea; color: #666; }
+        
         .id-label { background: #f4f1ea; padding: 4px 8px; border-radius: 5px; font-weight: bold; color: #8c7851; }
         .btn-excluir { background: #ff9999; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .btn-excluir:hover { background: #ff6666; }
+        
         footer { margin-top: 50px; text-align: center; padding: 20px; color: #999; border-top: 1px solid #eee; }
     </style>
 </head>
@@ -36,11 +51,12 @@
 
         <div class="grid-atalhos">
             <a href="#" class="btn-atalho">📋 Nova Anamnese</a>
-            <a href="#" class="btn-atalho">💰 Fluxo de Caixa</a>
+            <a href="#secao-caixa" class="btn-atalho">💰 Fluxo de Caixa</a>
             <a href="#" class="btn-atalho">📁 Drive de Pacientes</a>
             <a href="#" class="btn-atalho">📅 Agenda Online</a>
         </div>
 
+        <!-- SEÇÃO: CADASTRO DE PACIENTES -->
         <div class="card">
             <h3>Cadastrar Novo Paciente</h3>
             <div class="form-row">
@@ -50,28 +66,73 @@
             <button onclick="salvarPacienteSQL()" class="btn-salvar">Criar Pasta e Gerar Senha Automática</button>
         </div>
 
+        <!-- SEÇÃO: FLUXO DE CAIXA -->
+        <div class="card" id="secao-caixa">
+            <h3>💰 Fluxo de Caixa</h3>
+            
+            <div class="resumo-caixa">
+                <div class="resumo-item">
+                    <small>Saldo Geral em Caixa</small>
+                    <div id="saldoTotal" style="font-size: 1.8rem; font-weight: bold; margin-top: 5px;">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div class="form-row" style="background: #fdfaf5; padding: 15px; border-radius: 10px; border: 1px solid #eee;">
+                <input type="text" id="descFinanceiro" placeholder="Descrição (Ex: Sessão João, Aluguel...)">
+                <input type="number" id="valorFinanceiro" placeholder="Valor R$">
+                <select id="tipoFinanceiro">
+                    <option value="entrada">Entrada (+)</option>
+                    <option value="saida">Saída (-)</option>
+                </select>
+                <button onclick="salvarLancamento()" class="btn-financeiro">Lançar</button>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DATA</th>
+                            <th>DESCRIÇÃO</th>
+                            <th>TIPO</th>
+                            <th>VALOR</th>
+                            <th>AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaFinanceira">
+                        <tr><td colspan="5" style="text-align:center;">Carregando finanças...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: LISTA DE PACIENTES -->
         <div class="card">
             <h3>Pacientes Ativos</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID (SENHA)</th>
-                        <th>NOME</th>
-                        <th>E-MAIL (LOGIN)</th>
-                        <th>AÇÕES</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaClientes">
-                    <tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>
-                </tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID (SENHA)</th>
+                            <th>NOME</th>
+                            <th>E-MAIL (LOGIN)</th>
+                            <th>AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaClientes">
+                        <tr><td colspan="4" style="text-align:center;">Carregando pacientes...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
+
         <footer>&copy; 2026 Michelly Eufrazio Santos</footer>
     </div>
 
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script>
+        // --- FUNÇÕES DE PACIENTES ---
         async function renderTable() {
             const tbody = document.getElementById('tabelaClientes');
             const { data: pacientes, error } = await _supabase.from('pacientes').select('*').order('nome', { ascending: true });
@@ -96,19 +157,98 @@
         async function salvarPacienteSQL() {
             const nome = document.getElementById('nomeInput').value;
             const email = document.getElementById('emailInput').value;
+            if(!nome || !email) return alert("Preencha nome e e-mail.");
+
             const senha = Math.floor(1000 + Math.random() * 9000).toString();
             const { error } = await _supabase.from('pacientes').insert([{ nome, email, senha_acesso: senha, codigo_acesso: senha }]);
+            
             if (error) alert(error.message);
-            else { renderTable(); document.getElementById('nomeInput').value = ''; document.getElementById('emailInput').value = ''; }
+            else { 
+                renderTable(); 
+                document.getElementById('nomeInput').value = ''; 
+                document.getElementById('emailInput').value = ''; 
+            }
         }
 
         async function excluirPaciente(id) {
-            if (confirm("Excluir paciente?")) {
+            if (confirm("Excluir paciente permanentemente?")) {
                 await _supabase.from('pacientes').delete().eq('id', id);
                 renderTable();
             }
         }
-        document.addEventListener('DOMContentLoaded', renderTable);
+
+        // --- FUNÇÕES DE FLUXO DE CAIXA ---
+        async function renderFinanceiro() {
+            const tbody = document.getElementById('tabelaFinanceira');
+            const { data: lancamentos, error } = await _supabase
+                .from('fluxo_caixa')
+                .select('*')
+                .order('data', { ascending: false });
+
+            if (error) return console.error(error);
+
+            let saldo = 0;
+            tbody.innerHTML = '';
+
+            lancamentos.forEach(l => {
+                const isEntrada = l.tipo === 'entrada';
+                const valorNum = parseFloat(l.valor);
+                saldo += isEntrada ? valorNum : -valorNum;
+                
+                const dataFormatada = new Date(l.data).toLocaleDateString('pt-BR');
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${dataFormatada}</td>
+                        <td>${l.descricao}</td>
+                        <td><span style="font-size: 12px; padding: 3px 8px; border-radius: 4px; background: ${isEntrada ? '#e8f5e9' : '#ffebee'}; color: ${isEntrada ? '#2e7d32' : '#c62828'}">
+                            ${l.tipo.toUpperCase()}
+                        </span></td>
+                        <td class="${isEntrada ? 'valor-entrada' : 'valor-saida'}">
+                            ${isEntrada ? '+' : '-'} R$ ${valorNum.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                        </td>
+                        <td>
+                            <button class="btn-excluir" style="padding: 5px 10px;" onclick="excluirLancamento('${l.id}')">✕</button>
+                        </td>
+                    </tr>`;
+            });
+
+            const saldoElemento = document.getElementById('saldoTotal');
+            saldoElemento.innerText = `R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            saldoElemento.style.color = saldo >= 0 ? '#fff' : '#ff9999';
+        }
+
+        async function salvarLancamento() {
+            const descricao = document.getElementById('descFinanceiro').value;
+            const valor = document.getElementById('valorFinanceiro').value;
+            const tipo = document.getElementById('tipoFinanceiro').value;
+
+            if (!descricao || !valor) return alert("Preencha a descrição e o valor.");
+
+            const { error } = await _supabase
+                .from('fluxo_caixa')
+                .insert([{ descricao, valor: parseFloat(valor), tipo }]);
+
+            if (error) alert(error.message);
+            else {
+                document.getElementById('descFinanceiro').value = '';
+                document.getElementById('valorFinanceiro').value = '';
+                renderFinanceiro();
+            }
+        }
+
+        async function excluirLancamento(id) {
+            if (confirm("Remover este registro financeiro?")) {
+                await _supabase.from('fluxo_caixa').delete().eq('id', id);
+                renderFinanceiro();
+            }
+        }
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            renderFinanceiro();
+        });
     </script>
 </body>
 </html>
