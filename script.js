@@ -17,12 +17,21 @@ async function executarLogin(event) {
     const pass = passField.value.trim();
 
     // 2. VERIFICAÇÃO ADMIN (Acesso rápido)
-    if (user === "admin@michellysantospsi.com" && pass === "181005") {
-        console.log("✅ Acesso Admin confirmado!");
-        location.replace("adm.html"); 
-        return false; 
-    }
+// Tenta fazer o login usando o Supabase
+const { data, error } = await _supabase.auth.signInWithPassword({
+    email: user,
+    password: pass,
+});
 
+if (error) {
+    console.error("❌ Erro no login:", error.message);
+    alert("Erro ao entrar: " + error.message);
+} else {
+    console.log("✅ Acesso confirmado via Supabase!", data);
+    // Aqui você redireciona para a página admin
+    location.replace("adm.html");
+}
+return false;
     // 3. VERIFICAÇÃO CLIENTE NO SUPABASE (SQL)
     try {
         // Buscamos o paciente pelo e-mail
