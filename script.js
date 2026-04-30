@@ -17,7 +17,7 @@ async function executarLogin(event) {
     const pass = passField.value.trim();
 
     // 2. VERIFICAÇÃO ADMIN (Acesso rápido)
-    if (user === "admin@michelly.com" && pass === "123456") {
+    if (user === "admin@michellysantospsi.com" && pass === "181005") {
         console.log("✅ Acesso Admin confirmado!");
         location.replace("adm.html"); 
         return false; 
