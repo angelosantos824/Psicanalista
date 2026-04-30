@@ -1,14 +1,12 @@
 /* ==========================================
-   SISTEMA DE LOGIN SQL - MICHELLY SANTOS
+   SISTEMA DE LOGIN UNIFICADO - MICHELLY SANTOS
    ========================================== */
 
 async function executarLogin(event) {
     // 1. Previne o recarregamento da página
-    if (event) {
-        event.preventDefault();
-    }
+    if (event) event.preventDefault();
 
-    console.log("🚀 Validando login no Supabase...");
+    console.log("🚀 Iniciando processo de login...");
 
     const userField = document.getElementById('loginUser');
     const passField = document.getElementById('loginPass');
@@ -16,118 +14,108 @@ async function executarLogin(event) {
     const user = userField.value.trim();
     const pass = passField.value.trim();
 
-    // 2. VERIFICAÇÃO ADMIN (Acesso rápido)
-// Tenta fazer o login usando o Supabase
-const { data, error } = await _supabase.auth.signInWithPassword({
-    email: user,
-    password: pass,
-});
-
-if (error) {
-    console.error("❌ Erro no login:", error.message);
-    alert("Erro ao entrar: " + error.message);
-} else {
-    console.log("✅ Acesso confirmado via Supabase!", data);
-    // Aqui você redireciona para a página admin
-    location.replace("adm.html");
-}
-return false;
-    // 3. VERIFICAÇÃO CLIENTE NO SUPABASE (SQL)
     try {
-        // Buscamos o paciente pelo e-mail
-        const { data: paciente, error } = await _supabase
+        // --- PASSO 1: TENTAR LOGIN DE ADMIN (Supabase Auth) ---
+        // Este passo consulta os usuários criados na aba "Authentication"
+        const { data, error: adminError } = await _supabase.auth.signInWithPassword({
+            email: user,
+            password: pass,
+        });
+
+        // Se não deu erro e o usuário existe, é o Admin oficial
+        if (!adminError && data.user) {
+            console.log("✅ Acesso Admin confirmado via Auth!");
+            location.replace("adm.html");
+            return; // Interrompe a função aqui pois já logou
+        }
+
+        // --- PASSO 2: TENTAR LOGIN DE PACIENTE (Tabela SQL) ---
+        // Se o código chegou aqui, significa que não é um Admin. 
+        // Vamos buscar na tabela 'pacientes'.
+        console.log("🔍 Admin não detectado ou credenciais inválidas no Auth. Buscando na tabela de pacientes...");
+        
+        const { data: paciente, error: dbError } = await _supabase
             .from('pacientes')
             .select('*')
             .eq('email', user)
             .single();
 
-        if (error || !paciente) {
-            alert("Acesso Negado! Usuário não encontrado.");
-            return false;
+        // Se encontrou o paciente na tabela SQL
+        if (paciente && paciente.senha_acesso === pass) {
+            console.log("✅ Acesso Paciente confirmado!");
+            location.replace("area-cliente.html?id=" + paciente.id);
+            return;
         }
 
-        // Verifica se a senha do banco bate com a digitada
-        if (paciente.senha_acesso === pass) {
-            console.log("✅ Acesso Paciente confirmado!");
-            // Redireciona para a área do cliente passando o ID do Supabase
-            location.replace("area-cliente.html?id=" + paciente.id);
-        } else {
-            alert("Senha incorreta!");
-        }
+        // --- PASSO 3: SE CHEGOU AQUI, NADA FUNCIONOU ---
+        alert("Acesso Negado! Verifique seu e-mail e senha.");
 
     } catch (err) {
-        console.error("Erro na conexão:", err);
-        alert("Erro ao conectar com o banco de dados.");
+        console.error("Erro inesperado na conexão:", err);
+        alert("Erro ao conectar com o banco de dados. Verifique sua conexão.");
     }
-
-    return false;
 }
 
-// Inicialização do Modal
+/* ==========================================
+   CONTROLE DOS MODAIS E POPUPS
+   ========================================== */
+
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('loginModal');
     const openBtn = document.getElementById('openLogin');
     const closeBtn = document.getElementById('closeLogin');
+    const popup = document.getElementById('popupConvite');
+    const btnFecharPopup = document.getElementById('fecharPopup');
 
-    // Abre o modal
+    // --- Lógica do Modal de Login ---
     if (openBtn) {
         openBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log("Abrindo modal...");
-            // Usamos 'flex' para garantir que centralize conforme o CSS moderno
+            console.log("Abrindo modal de login...");
             modal.style.display = "flex"; 
         });
     }
 
-    // Fecha o modal
     if (closeBtn) {
         closeBtn.onclick = () => {
             modal.style.display = "none";
         };
     }
 
-    // Fecha se clicar fora da caixa branca
-    window.onclick = (e) => {
-        if (e.target === modal) {
-            modal.style.display = "none";
-        }
-    };
-});
+    // --- Lógica do Popup de Convite ---
+    const jaViuPopup = sessionStorage.getItem('popupExibido');
 
-const footerLink = document.querySelector('a[onclick*="loginModal"]');
-    if(footerLink) {
-        footerLink.removeAttribute('onclick'); // Remove o comando antigo do HTML
-        footerLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.style.display = "flex";
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-    const popup = document.getElementById('popupConvite');
-    const btnFechar = document.getElementById('fecharPopup');
-
-    // 1. Verifica se o usuário já viu o popup nesta visita
-    const jaViu = sessionStorage.getItem('popupExibido');
-
-    if (!jaViu) {
-        // 2. Exibe o popup após 3 segundos de navegação
+    if (popup && !jaViuPopup) {
         setTimeout(() => {
             popup.style.display = 'flex';
         }, 3000);
     }
 
-    // 3. Função para fechar o popup
-    btnFechar.addEventListener('click', () => {
-        popup.style.display = 'none';
-        sessionStorage.setItem('popupExibido', 'true');
-    });
+    if (btnFecharPopup) {
+        btnFecharPopup.addEventListener('click', () => {
+            popup.style.display = 'none';
+            sessionStorage.setItem('popupExibido', 'true');
+        });
+    }
 
-    // 4. Fechar se clicar fora do conteúdo branco
+    // --- Fechar elementos ao clicar fora ---
     window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
         if (e.target === popup) {
             popup.style.display = 'none';
             sessionStorage.setItem('popupExibido', 'true');
         }
     });
+
+    // --- Suporte para links de rodapé ---
+    const footerLink = document.querySelector('a[onclick*="loginModal"]');
+    if (footerLink) {
+        footerLink.removeAttribute('onclick'); 
+        footerLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.style.display = "flex";
+        });
+    }
 });
