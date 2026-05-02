@@ -90,3 +90,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Lógica do Modal de Notícias
+const modalNoticia = document.getElementById("modalNoticia");
+const btnLerMais = document.querySelectorAll(".btn-ler-mais");
+const spanFechar = document.querySelector(".fechar-noticia");
+
+btnLerMais.forEach(botao => {
+    botao.onclick = function() {
+        const titulo = this.getAttribute("data-titulo");
+        const texto = this.getAttribute("data-texto");
+        
+        document.getElementById("modalTitulo").innerText = titulo;
+        document.getElementById("modalCorpo").innerText = texto;
+        
+        modalNoticia.style.display = "block";
+    }
+});
+
+spanFechar.onclick = function() {
+    modalNoticia.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modalNoticia) {
+        modalNoticia.style.display = "none";
+    }
+}

@@ -41,33 +41,66 @@
         </div>
     </main>
     <section class="secao-clara">
-        <h2 class="titulo-secao">Por que fazer Análise?</h2>
-        <div class="grid-conteudo">
-            <article class="card-conteudo">
-                <div class="card-body">
-                    <h3>O Autoconhecimento</h3>
-                    <p>A psicanálise não busca apenas curar sintomas, mas entender as raízes do seu comportamento. Descubra como o inconsciente molda suas escolhas diárias.</p>
-                    <a href="#" style="color: #d4a373; font-weight: bold;">Ler mais...</a>
-                </div>
-            </article>
+    <h2 class="titulo-secao">Por que fazer Análise?</h2>
+    <div class="grid-conteudo">
+        <!-- Card 1 -->
+        <article class="card-conteudo">
+            <div class="card-body">
+                <h3>O Autoconhecimento</h3>
+                <p>A psicanálise não busca apenas curar sintomas, mas entender as raízes do seu comportamento...</p>
+                <button class="btn-ler-mais" 
+                    data-titulo="O Autoconhecimento" 
+                    data-texto="A psicanálise oferece um mergulho profundo naquilo que nos motiva de forma invisível. 
+                    Ao investigar o inconsciente, conseguimos dar nome a desejos e traumas que moldam nossas escolhas diárias 
+                    sem que percebamos. O objetivo não é apenas o alívio imediato, mas uma mudança estrutural na forma como você 
+                    se relaciona consigo mesmo e com o mundo. É o processo de tornar consciente o que é automático.">
+                    Ler mais...
+                </button>
+            </div>
+        </article>
 
-            <article class="card-conteudo">
-                <div class="card-body">
-                    <h3>Saúde Mental em 2026</h3>
-                    <p>Em um mundo cada vez mais acelerado, ter um espaço de fala genuíno é um ato de autocuidado essencial. Entenda como a análise ajuda na ansiedade moderna.</p>
-                    <a href="#" style="color: #d4a373; font-weight: bold;">Ler mais...</a>
-                </div>
-            </article>
+        <!-- Card 2 -->
+        <article class="card-conteudo">
+            <div class="card-body">
+                <h3>Saúde Mental em 2026</h3>
+                <p>Em um mundo cada vez mais acelerado, ter um espaço de fala genuíno é essencial...</p>
+                <button class="btn-ler-mais" 
+                    data-titulo="Saúde Mental em 2026" 
+                    data-texto="Chegamos a 2026 com um nível de estímulo digital sem precedentes. 
+                    A análise clínica se torna um refúgio contra o imperativo da produtividade e da performance constante. 
+                    É o único lugar onde você não precisa ser 'ótimo', apenas ser você. Aqui, tratamos a ansiedade moderna
+                     não como um defeito, mas como um sintoma de uma época que esqueceu a importância da pausa e da escuta.">
+                    Ler mais...
+                </button>
+            </div>
+        </article>
 
-            <article class="card-conteudo">
-                <div class="card-body">
-                    <h3>Dica: O "Setting" Analítico</h3>
-                    <p>Você sabia que o ambiente da consulta (seja online ou presencial) é fundamental para a livre associação? Prepare-se para sua primeira sessão.</p>
-                    <a href="#" style="color: #d4a373; font-weight: bold;">Ler mais...</a>
-                </div>
-            </article>
-        </div>
-    </section>
+        <!-- Card 3 -->
+        <article class="card-conteudo">
+            <div class="card-body">
+                <h3>O "Setting" Analítico</h3>
+                <p>O ambiente da consulta é fundamental para a livre associação. Prepare-se...</p>
+                <button class="btn-ler-mais" 
+                    data-titulo="O 'Setting' Analítico" 
+                    data-texto="O 'setting' é mais do que quatro paredes; é o contrato ético e o ambiente seguro (mesmo no online)
+                     que permite a 'livre associação'. Para sua primeira sessão, escolha um local onde não será interrompido e 
+                     onde sinta que sua privacidade está protegida. O silêncio do lado de fora é o que permite que a sua voz 
+                     interior apareça com clareza.">
+                    Ler mais...
+                </button>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- Estrutura do Modal de Notícias (Coloque antes do fechamento do </body>) -->
+<div id="modalNoticia" class="noticia-modal">
+    <div class="noticia-content">
+        <span class="fechar-noticia">&times;</span>
+        <h2 id="modalTitulo"></h2>
+        <div id="modalCorpo"></div>
+    </div>
+</div>
 
         <h2><span class=italic>“Onde havia silêncio, há agora palavra. </h2></span>
         <h2><span class=italic>Onde havia repetição, há agora pergunta.”</h2></span>
