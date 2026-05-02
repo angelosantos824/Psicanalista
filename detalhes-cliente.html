@@ -131,6 +131,20 @@
         const idCliente = urlParams.get('id');
         let dadosPaciente = null;
 
+            // --- NOVA FUNÇÃO: REGISTRO NO FLUXO DE CAIXA GLOBAL ---
+        async function registrarNoFluxoGlobal(valor, clienteNome) {
+            const { error } = await _supabase
+                .from('fluxo_caixa') 
+                .insert([
+                    { 
+                        descricao: `Sessão: ${clienteNome}`,
+                        valor: parseFloat(valor),
+                        tipo: 'Entrada',
+                        data: new Date().toISOString()
+                    }
+                ]);
+            if (error) console.error("Erro ao alimentar fluxo global:", error.message);
+        }
         async function carregarDados() {
             const { data, error } = await _supabase.from('pacientes').select('*').eq('id', idCliente).single();
 
@@ -220,13 +234,26 @@
         function addSessao() {
             const valor = prompt("Valor da Sessão (R$):", "150.00");
             if (valor) {
-                dadosPaciente.financeiro.push({ data: new Date().toLocaleDateString('pt-BR'), valor: valor, status: "Pendente" });
+                dadosPaciente.financeiro.push({ 
+                    data: new Date().toLocaleDateString('pt-BR'), 
+                    valor: valor, 
+                    status: "Pendente" });
                 renderFinanceiro();
             }
         }
 
-        function alternarStatus(index) {
-            dadosPaciente.financeiro[index].status = dadosPaciente.financeiro[index].status === "Pendente" ? "Pago" : "Pendente";
+        // --- FUNÇÃO ATUALIZADA: ALTERNA E JÁ ENVIA PARA O FLUXO ---
+        async function alternarStatus(index) {
+            const item = dadosPaciente.financeiro[index];
+            if (item.status === "Pendente") {
+                if(confirm(`Confirmar pagamento de R$ ${item.valor}? Isso enviará o valor para o fluxo de caixa.`)) {
+                    item.status = "Pago";
+                    await registrarNoFluxoGlobal(item.valor, dadosPaciente.nome);
+                    alert("Pagamento registrado no Fluxo de Caixa!");
+                }
+            } else {
+                item.status = "Pendente";
+            }
             renderFinanceiro();
         }
 
