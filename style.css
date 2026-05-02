@@ -680,25 +680,42 @@ footer {
     }
 
     /* 2. Ajustes da Seção Hero (Imagem de Fundo) */
+    /* 2. Ajustes da Seção Hero e do Bloco Translúcido no Mobile */
     .hero {
-        padding: 120px 5% 60px 5%; /* Aumenta o topo para não cobrir o texto com o menu */
-        height: auto; /* Deixa a altura fluida no mobile */
+        padding: 120px 0 60px 0; /* Removemos o padding lateral para o fundo encostar nas bordas */
+        height: auto;
         min-height: 100vh;
-        justify-content: center;
-        text-align: center;
-        background-position: 70% center; /* Ajusta o foco da imagem de fundo */
-    }
-
-    .content {
-        max-width: 100%;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        justify-content: center;
+        overflow-x: hidden; /* Garantia antierro de rolagem lateral */
+    }
+
+    .hero .content {
+        /* Reset das margens negativas que usamos no desktop */
+        width: 100%; 
+        left: 0;
+        right: 0;
+        margin-left: 0;
+        margin-right: 0;
+        
+        /* Ajuste do fundo para mobile */
+        background-color: rgba(255, 255, 255, 0.7); /* Um pouco mais opaco para ler melhor no celular */
+        padding: 40px 20px; /* Padding menor para não apertar o texto */
+        max-width: 100%;
+        text-align: center; /* Centraliza o texto no mobile para melhor estética */
+        box-shadow: none; /* Remove a sombra pesada que pode ficar estranha em telas pequenas */
+    }
+
+    .hero .content > * {
+        max-width: 100%; /* Permite que o texto use a largura disponível */
+        margin-left: 0; /* Reseta o recuo lateral do desktop */
+        margin-right: 0;
     }
 
     h1 {
-        font-size: 36px; /* Reduz o título para caber na tela do celular */
-        margin-bottom: 25px;
+        font-size: 32px; /* Ajuste fino para o título não quebrar de forma feia */
+        line-height: 1.2;
     }
 
     .hero p {
