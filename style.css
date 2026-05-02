@@ -655,3 +655,141 @@ footer {
 
 .btn-popup-primary:hover { background: #b88a5d; }
 .btn-popup-secondary:hover { background: #d4a373; color: white; }
+
+/* ================================================= linear
+   REGRAS DE RENDERIZAÇÃO MOBILE (Media Queries)
+   ========================================================== */
+
+@media (max-width: 768px) {
+    
+    /* 1. Ajustes de Navegação */
+    nav {
+        flex-direction: column; /* Logo em cima, menu embaixo */
+        padding: 20px 5%;
+        gap: 15px;
+    }
+
+    nav ul {
+        flex-wrap: wrap; /* Permite que os links quebrem linha se necessário */
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .logo {
+        text-align: center;
+    }
+
+    /* 2. Ajustes da Seção Hero (Imagem de Fundo) */
+    .hero {
+        padding: 120px 5% 60px 5%; /* Aumenta o topo para não cobrir o texto com o menu */
+        height: auto; /* Deixa a altura fluida no mobile */
+        min-height: 100vh;
+        justify-content: center;
+        text-align: center;
+        background-position: 70% center; /* Ajusta o foco da imagem de fundo */
+    }
+
+    .content {
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 36px; /* Reduz o título para caber na tela do celular */
+        margin-bottom: 25px;
+    }
+
+    .hero p {
+        font-size: 15px;
+        margin-bottom: 35px;
+        max-width: 100%;
+    }
+
+    /* 3. Botões Empilhados */
+    .buttons-group {
+        flex-direction: column; /* Botões um embaixo do outro */
+        width: 100%;
+        gap: 15px;
+    }
+
+    .btn-main-agendar, 
+    .btn-main-conhecer {
+        width: 100%; /* Botões ocupam a largura total disponível */
+        max-width: 320px; /* Mas não ficam gigantes em tablets */
+        justify-content: center;
+    }
+
+    /* 4. Grid de Conteúdo (Cards) */
+    .secao-clara, 
+    .secao-bege {
+        padding: 60px 5%;
+    }
+
+    .grid-conteudo {
+        grid-template-columns: 1fr; /* Força uma coluna única */
+    }
+
+    .titulo-secao {
+        font-size: 28px;
+        margin-bottom: 40px;
+    }
+
+    /* 5. Planos e Pacotes */
+    .grid-pacotes {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .pacote-card.destaque {
+        transform: none; /* Remove o aumento de escala para não bugar o scroll lateral */
+        order: -1; /* Opcional: Coloca o plano "Mais Buscado" no topo da lista */
+    }
+
+    /* 6. Footer */
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .footer-box h3 {
+        display: block;
+        width: fit-content;
+        margin: 0 auto 20px auto;
+    }
+
+    .redes-sociais {
+        justify-content: center;
+    }
+
+    /* 7. Modais e Popups */
+    .modal-content, 
+    .popup-content {
+        width: 95%;
+        padding: 30px 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.3rem;
+    }
+
+    /* 8. WhatsApp Float */
+    .whatsapp-float {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* Ajustes finos para telas muito pequenas (iPhone SE, etc) */
+@media (max-width: 380px) {
+    h1 {
+        font-size: 30px;
+    }
+    
+    .logo .nome {
+        font-size: 20px;
+    }
+}
