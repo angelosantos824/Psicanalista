@@ -827,7 +827,6 @@ footer {
         bottom: 20px;
         right: 20px;
     }
-}
 
 /* Ajustes finos para telas muito pequenas (iPhone SE, etc) */
 @media (max-width: 380px) {
