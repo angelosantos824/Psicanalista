@@ -734,36 +734,51 @@ footer {
     /* 2. Ajustes da Seção Hero (Imagem de Fundo) */
     /* 2. Ajustes da Seção Hero e do Bloco Translúcido no Mobile */
     .hero {
+        align-items: center;
         padding: 120px 0 60px 0; /* Removemos o padding lateral para o fundo encostar nas bordas */
-        height: auto;
+        height: 100vh;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        overflow-x: hidden; /* Garantia antierro de rolagem lateral */
-    }
+        justify-content: flex-start; /* Alinha o conteúdo à esquerda */
+        background: url('imagem/hero.jpg') no-repeat center center/cover;
+        position: relative;
+        overflow: hidden; /* Evita barras de rolagem */    }
 
     .hero .content {
         /* Reset das margens negativas que usamos no desktop */
-        width: 100%; 
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0; 
         left: 0;
         right: 0;
         margin-left: 0;
         margin-right: 0;
-        
         /* Ajuste do fundo para mobile */
-        background-color: rgba(255, 255, 255, 0.7); /* Um pouco mais opaco para ler melhor no celular */
+        background-color: rgba(255, 255, 255, 0.4); /* Um pouco mais opaco para ler melhor no celular */
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         padding: 40px 20px; /* Padding menor para não apertar o texto */
         max-width: 100%;
         text-align: center; /* Centraliza o texto no mobile para melhor estética */
         box-shadow: none; /* Remove a sombra pesada que pode ficar estranha em telas pequenas */
+
+    /* Padding para empurrar o texto para onde ele estava antes */
+        padding-left: 10%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centraliza o texto verticalmente dentro da faixa */
+        z-index: 2;
     }
 
-    .hero .content > * {
-        max-width: 100%; /* Permite que o texto use a largura disponível */
-        margin-left: 0; /* Reseta o recuo lateral do desktop */
-        margin-right: 0;
-    }
+    /* AJUSTE DO TEXTO INTERNO */
+.hero .content > * {
+    max-width: 600px;
+    text-align: left;
+    position: relative;
+    z-index: 3;
+}
 
     h1 {
         font-size: 32px; /* Ajuste fino para o título não quebrar de forma feia */
