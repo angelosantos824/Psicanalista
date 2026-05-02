@@ -749,9 +749,22 @@ footer {
 }
 
     /* 4. Grid de Conteúdo (Cards) */
+
+    /* Ajuste para as frases em itálico que estão sobrepostas */
+    .secao-clara h2, 
+    .frase-destaque { /* Use a classe correta se houver uma */
+        font-size: 28px !important; /* Diminui um pouco o tamanho no celular */
+        line-height: 1.4 !important; /* Aumenta o espaço entre as linhas */
+        margin-bottom: 30px !important;
+        display: block;
+        padding: 0 10px;
+    }
     .secao-clara, 
     .secao-bege {
         padding: 60px 5%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .grid-conteudo {
@@ -769,6 +782,12 @@ footer {
         gap: 20px;
     }
 
+    .pacote-card {
+        width: 100%;
+        max-width: 350px;
+        margin-bottom: 20px;
+    }
+}
     .pacote-card.destaque {
         transform: none; /* Remove o aumento de escala para não bugar o scroll lateral */
         order: -1; /* Opcional: Coloca o plano "Mais Buscado" no topo da lista */
