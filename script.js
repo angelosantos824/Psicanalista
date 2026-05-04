@@ -117,3 +117,23 @@ window.onclick = function(event) {
         modalNoticia.style.display = "none";
     }
 }
+
+// Dentro do seu script.js
+document.addEventListener('DOMContentLoaded', () => {
+    const btnLogin = document.getElementById('openLoginFooter');
+    const modal = document.getElementById('loginModal');
+    const closeBtn = document.getElementById('closeLogin');
+
+    if (btnLogin && modal) {
+        btnLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.style.display = 'block';
+        });
+    }
+
+    if (closeBtn && modal) {
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+});

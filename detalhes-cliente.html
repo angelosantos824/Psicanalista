@@ -162,8 +162,35 @@
         </div>
     </footer>
 
+        <!-- Modal de Login -->
+    <div id="loginModal" class="login-modal" style="display:none;">
+        <div class="modal-content">
+            <h2>Área Restrita</h2>
+            <input type="text" id="loginUser" placeholder="E-mail ou Usuário">
+            <input type="password" id="loginPass" placeholder="Senha">
+            
+            <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%;">Entrar</button>   
+            <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
+        </div>
+    </div>
+
+    <!-- SCRIPTS ORDENADOS E SEM DUPLICIDADE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
+    <script src="script.js"></script>
+
+    <!-- Script extra para garantir que o link do footer funcione -->
+    <script>
+        document.getElementById('openLoginFooter').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('loginModal').style.display = 'block';
+        });
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="style.css">
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
