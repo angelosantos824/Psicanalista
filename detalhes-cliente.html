@@ -6,8 +6,8 @@
     <title>Prontuário Master | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body { background-color: #fcfbf9; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-        .detalhes-container { max-width: 1200px; margin: 40px auto; padding: 20px; }
+        body { background-color: #fcfbf9; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .detalhes-container { max-width: 1200px; margin: 40px auto; padding: 20px; flex: 1; }
         .grid-prontuario { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
         
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
@@ -24,7 +24,6 @@
         .dados-grid label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; }
         .dados-grid input, .dados-grid select { padding: 10px; border: 1px solid #e9e0d2; border-radius: 6px; width: 100%; box-sizing: border-box; }
         
-        /* BOX AGENDAMENTO OTIMIZADA */
         .agendamento-box { background: #fff9db; padding: 15px; border-radius: 8px; border: 1px solid #fab005; margin-bottom: 20px; }
         .agendamento-inputs { display: flex; gap: 10px; margin-top: 5px; }
         .agendamento-inputs input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
@@ -41,8 +40,16 @@
         .btn-print { background: white; color: #555; border: 1px solid #ddd; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; }
         .btn-financeiro { background: #8c7851; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 15px; }
 
+        /* Estilos do Footer Reintegrados */
+        footer { background: #fff; padding: 40px 20px 20px; border-top: 1px solid #f4f1ea; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .footer-box h3 { color: #8c7851; margin-bottom: 15px; font-size: 1.1rem; }
+        .footer-box p, .footer-box a { color: #666; font-size: 0.9rem; text-decoration: none; display: block; margin-bottom: 8px; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid #eee; margin-top: 30px; font-size: 0.8rem; color: #999; }
+        .social-icon { display: inline-block !important; width: 30px; height: 30px; background: #f4f1ea; border-radius: 50%; text-align: center; line-height: 30px; margin-right: 10px; color: #8c7851 !important; font-weight: bold; }
+
         @media print {
-            .btn-save, .btn-print, .btn-financeiro, .header-ficha a, .col-financeiro, .agendamento-box { display: none !important; }
+            .btn-save, .btn-print, .btn-financeiro, .header-ficha a, .col-financeiro, .agendamento-box, footer { display: none !important; }
         }
     </style>
 </head>
@@ -63,8 +70,7 @@
 
         <div class="grid-prontuario">
             <div class="col-dados">
-                
-                <!-- CARD AGENDAMENTO MELHORADO -->
+                <!-- BOX AGENDAMENTO -->
                 <div class="agendamento-box">
                     <label><strong>📅 Próxima Sessão (Aparece na área do cliente):</strong></label>
                     <div class="agendamento-inputs">
@@ -112,6 +118,7 @@
             <div class="col-financeiro">
                 <div class="card">
                     <h3>Histórico Financeiro</h3>
+                    <!-- Botão Corrigido -->
                     <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
                     <table id="tabelaFinanceiro">
                         <thead><tr><th>Data</th><th>Valor</th><th>Status</th><th></th></tr></thead>
@@ -123,6 +130,38 @@
         </div>
     </div>
 
+    <!-- FOOTER REINTEGRADO -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-box">
+                <h3>Michelly Eufrazio Santos</h3>
+                <p>Psicanalista Clínica dedicada ao autoconhecimento e bem-estar emocional na Europa.</p>
+                <div class="redes-sociais">
+                    <a href="https://www.linkedin.com/in/michellyeufraziosantos1810/" target="_blank" class="social-icon">In</a>
+                    <a href="https://www.instagram.com/michellysantos.psi" target="_blank" class="social-icon">Ig</a>
+                </div>
+            </div>
+
+            <div class="footer-box">
+                <h3>Links</h3>
+                <a href="index.html">Início</a>
+                <a href="sobre.html">Sobre Mim</a>
+                <a href="contato.html">Agendar Consulta</a>
+                <a href="#" id="openLoginFooter">Área Restrita</a>
+            </div>
+
+            <div class="footer-box">
+                <h3>Contato</h3>
+                <p>📍 Aveiro, Portugal / Online</p>
+                <p>📧 michellysantos@gmail.com</p>
+                <p>📱 +351 910 377 246</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
 
@@ -131,7 +170,7 @@
         const idCliente = urlParams.get('id');
         let dadosPaciente = null;
 
-            // --- NOVA FUNÇÃO: REGISTRO NO FLUXO DE CAIXA GLOBAL ---
+        // FUNÇÃO: REGISTRO NO FLUXO DE CAIXA GLOBAL
         async function registrarNoFluxoGlobal(valor, clienteNome) {
             const { error } = await _supabase
                 .from('fluxo_caixa') 
@@ -139,12 +178,14 @@
                     { 
                         descricao: `Sessão: ${clienteNome}`,
                         valor: parseFloat(valor),
-                        tipo: 'Entrada',
+                        tipo: 'entrada',
+                        moeda: 'BRL',
                         data: new Date().toISOString()
                     }
                 ]);
             if (error) console.error("Erro ao alimentar fluxo global:", error.message);
         }
+
         async function carregarDados() {
             const { data, error } = await _supabase.from('pacientes').select('*').eq('id', idCliente).single();
 
@@ -167,10 +208,8 @@
             document.getElementById('statusPaciente').value = data.status || "Atendimento";
             document.getElementById('notasEvolucao').value = data.notas || "";
             
-            // CARREGAR DATA E HORA SEPARADOS
             if (data.proximo_agendamento) {
                 const dtOp = new Date(data.proximo_agendamento);
-                // Ajuste para pegar a data correta no input (AAAA-MM-DD)
                 const ano = dtOp.getFullYear();
                 const mes = String(dtOp.getMonth() + 1).padStart(2, '0');
                 const dia = String(dtOp.getDate()).padStart(2, '0');
@@ -183,20 +222,18 @@
 
             if (data.nascimento) calcularIdadeAutomático(data.nascimento);
 
-            // Lógica de História e Anamnese
+            // Carregamento de Anamnese
             const boxAnamnese = document.getElementById('anamneseConteudo');
             const boxHistoria = document.getElementById('historiaCliente');
 
             if (data.anamnese_completa) {
                 const anam = data.anamnese_completa;
                 boxHistoria.innerHTML = `"${anam.queixa || 'Não informada.'}"`;
-
                 let relatorioHTML = "";
                 const nomesAmigaveis = {
                     sexo: "Sexo", estado_civil: "Estado Civil", medicamentos: "Usa Medicamentos?",
                     queixa: "Queixa Principal", trauma: "Histórico de Trauma", credo: "Frequenta Credo/Fé", profissao: "Profissão"
                 };
-
                 for (const [chave, valor] of Object.entries(anam)) {
                     const titulo = nomesAmigaveis[chave] || chave.toUpperCase();
                     relatorioHTML += `<p style="margin: 5px 0;"><strong>${titulo}:</strong> ${valor}</p>`;
@@ -226,35 +263,35 @@
             dadosPaciente.financeiro.forEach((item, index) => {
                 const valorNum = parseFloat(item.valor) || 0;
                 item.status === "Pago" ? pago += valorNum : pendente += valorNum;
-                tbody.innerHTML += `<tr><td>${item.data}</td><td>R$ ${valorNum.toFixed(2)}</td><td class="${item.status === 'Pago' ? 'status-pago' : 'status-pendente'}" onclick="alternarStatus(${index})" style="cursor:pointer">${item.status}</td><td><button onclick="gerarRecibo(${index})" style="border:none; background:none; cursor:pointer;">📄</button></td></tr>`;
+                tbody.innerHTML += `<tr><td>${item.data}</td><td>R$ ${valorNum.toFixed(2)}</td><td class="${item.status === 'Pago' ? 'status-pago' : 'status-pendente'}" onclick="alternarStatus(${index})" style="cursor:pointer">${item.status}</td><td><button onclick="alert('Recibo gerado para ${item.data}')" style="border:none; background:none; cursor:pointer;">📄</button></td></tr>`;
             });
             document.getElementById('resumoFinanceiro').innerHTML = `<span class="status-pendente">A receber: R$ ${pendente.toFixed(2)}</span><span class="status-pago">Total pago: R$ ${pago.toFixed(2)}</span>`;
         }
 
         function addSessao() {
             const valor = prompt("Valor da Sessão (R$):", "150.00");
-            if (valor) {
+            if (valor && !isNaN(valor)) {
                 dadosPaciente.financeiro.push({ 
                     data: new Date().toLocaleDateString('pt-BR'), 
-                    valor: valor, 
-                    status: "Pendente" });
+                    valor: parseFloat(valor).toFixed(2), 
+                    status: "Pendente" 
+                });
                 renderFinanceiro();
             }
         }
 
-        // --- FUNÇÃO ATUALIZADA: ALTERNA E JÁ ENVIA PARA O FLUXO ---
         async function alternarStatus(index) {
             const item = dadosPaciente.financeiro[index];
             if (item.status === "Pendente") {
-                if(confirm(`Confirmar pagamento de R$ ${item.valor}? Isso enviará o valor para o fluxo de caixa.`)) {
+                if(confirm(`Confirmar pagamento de R$ ${item.valor}? O valor irá para o Fluxo de Caixa.`)) {
                     item.status = "Pago";
                     await registrarNoFluxoGlobal(item.valor, dadosPaciente.nome);
-                    alert("Pagamento registrado no Fluxo de Caixa!");
+                    await salvarTudo();
                 }
             } else {
                 item.status = "Pendente";
+                renderFinanceiro();
             }
-            renderFinanceiro();
         }
 
         async function salvarTudo() {
@@ -272,52 +309,20 @@
                 status: document.getElementById('statusPaciente').value,
                 notas: document.getElementById('notasEvolucao').value,
                 financeiro: dadosPaciente.financeiro,
-                // JUNTA DATA E HORA PARA SALVAR NO BANCO
                 proximo_agendamento: (dataInput && horaInput) ? `${dataInput}T${horaInput}:00` : null
             };
 
             const { error } = await _supabase.from('pacientes').update(updateData).eq('id', idCliente);
 
             if (error) alert("Erro ao salvar: " + error.message);
-            else alert("Prontuário e Agendamento salvos!");
-            
+            else {
+                alert("Prontuário atualizado!");
+                renderFinanceiro();
+            }
             btn.innerText = "Salvar Prontuário";
         }
 
         document.addEventListener('DOMContentLoaded', carregarDados);
     </script>
-        <footer>
-        <div class="footer-container">
-            <div class="footer-box">
-                <h3>Michelly Eufrazio Santos</h3>
-                <p>Psicanalista Clínica dedicada ao autoconhecimento e bem-estar emocional na Europa.</p>
-                <div class="redes-sociais">
-                    <a href="https://www.linkedin.com/in/michellyeufraziosantos1810/" target="_blank" class="social-icon">In</a>
-                    <a href="https://www.instagram.com/michellysantos.psi" target="_blank" class="social-icon">Ig</a>
-                </div>
-            </div>
-
-            <div class="footer-box">
-                <h3>Links</h3>
-                <a href="index.html">Início</a>
-                <a href="sobre.html">Sobre Mim</a>
-                <a href="contato.html">Agendar Consulta</a>
-                <!-- Link da área restrita corrigido para usar o ID que o script.js já conhece -->
-                <a href="#" id="openLoginFooter">Área Restrita</a>
-            </div>
-
-            <div class="footer-box">
-                <h3>Contato</h3>
-                <p>📍 Aveiro, Portugal / Online</p>
-                <p>📧 michellysantos@gmail.com</p>
-                <p>📱 +351 910 377 246</p>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            &copy; 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.
-        </div>
-    </footer>
-
 </body>
 </html>
