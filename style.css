@@ -376,44 +376,76 @@ h2 span.italic { font-style: italic; color: var(--cor-texto-claro); }
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* --- FOOTER ORGANIZADO --- */
+/* --- FOOTER RESTAURADO --- */
+/* --- FORÇANDO AS 3 COLUNAS DO FOOTER --- */
 footer {
-    background-color: #7b8f80; /* Verde Sálvia para passar tranquilidade */
-    color: white;
-    padding: 60px 10% 20px 10%;
-    font-family: inherit;
+    background-color: #7b8f80 !important; 
+    color: white !important;
+    padding: 80px 10% 40px !important;
+    width: 100% !important;
+    display: block !important; /* Garante que o footer ocupe a largura toda */
 }
 
 .footer-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    margin-bottom: 40px;
+    display: grid !important;
+    /* Define as 3 colunas fixas: Esquerda, Centro, Direita */
+    grid-template-columns: 1fr 1fr 1fr !important; 
+    gap: 20px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    text-align: left !important; /* Reseta qualquer centralização anterior */
 }
 
+/* Coluna 1: Nome e Redes (ESQUERDA) */
+.footer-container .footer-box:nth-child(1) {
+    text-align: left !important;
+    display: block !important;
+}
+
+/* Coluna 2: Links Rápidos (CENTRO) */
+.footer-container .footer-box:nth-child(2) {
+    text-align: center !important;
+    display: block !important;
+}
+
+/* Coluna 3: Contatos (DIREITA) */
+.footer-container .footer-box:nth-child(3) {
+    text-align: right !important;
+    display: block !important;
+}
+
+/* Ajuste dos Títulos */
 .footer-box h3 {
-    color: #fcfbf9;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    padding-bottom: 10px;
-    display: inline-block;
+    color: #fcfbf9 !important;
+    margin-bottom: 20px !important;
+    font-size: 1.1rem !important;
+    border-bottom: 1px solid rgba(255,255,255,0.2) !important;
+    padding-bottom: 10px !important;
+    display: block !important; 
 }
 
-.footer-box p, .footer-box a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    display: block;
-    margin-bottom: 12px;
-    font-size: 0.95rem;
-    transition: 0.3s;
+/* Ajuste dos Links e Textos */
+.footer-box p, 
+.footer-box a {
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-decoration: none !important;
+    display: block !important;
+    margin-bottom: 12px !important;
+    font-size: 0.9rem !important;
 }
 
-.footer-box a:hover {
-    color: #d4a373; /* Cor bege ao passar o mouse */
-    transform: translateX(5px);
+/* Reset para Mobile (Garante que volte a centralizar só em telas pequenas) */
+@media (max-width: 800px) {
+    .footer-container {
+        grid-template-columns: 1fr !important;
+        text-align: center !important;
+    }
+    .footer-container .footer-box:nth-child(1),
+    .footer-container .footer-box:nth-child(2),
+    .footer-container .footer-box:nth-child(3) {
+        text-align: center !important;
+    }
 }
-
 .redes-sociais {
     display: flex;
     gap: 15px;
