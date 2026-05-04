@@ -264,9 +264,9 @@ h2 span.italic { font-style: italic; color: var(--cor-texto-claro); }
 
 .btn {
     background: var(--accent-color);
-    color: white;
+    color: rgb(113, 81, 81); /* cor do botão de enviar mensagem*/
     padding: 12px 25px;
-    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     border-radius: 25px;
     cursor: pointer;
     text-transform: uppercase;
