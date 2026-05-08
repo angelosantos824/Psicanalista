@@ -74,8 +74,8 @@
             </div>
         </div>
 
-        <div class="grid-prontuario">
-        <div class="col-dados">
+<div class="grid-prontuario">
+    <div class="col-dados">
         <div class="agendamento-box">
             <label><strong>📅 Próxima Sessão:</strong></label>
             <div class="agendamento-inputs">
@@ -90,12 +90,12 @@
             </div>
         </div>
 
-               <div class="card">
-                    <h3>Resumo da História (Queixa Principal)</h3>
-                    <div id="historiaCliente" class="historia-box">Carregando história...</div>
-                </div>
+        <div class="card">
+            <h3>Resumo da História (Queixa Principal)</h3>
+            <div id="historiaCliente" class="historia-box">Carregando história...</div>
+        </div>
 
-                <div class="card">
+        <div class="card">
             <h3>Dados Pessoais</h3>
             <div class="dados-grid">
                 <div><label>E-mail (Login)</label><input type="text" id="email" readonly style="background:#f9f9f9"></div>
@@ -114,42 +114,37 @@
             </div>
         </div>
 
-                <div class="card">
-                    <h3>Relatório de Anamnese Completo</h3>
-                        <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
-                </div>
+        <div class="card">
+            <h3>Relatório de Anamnese Completo</h3>
+            <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
         </div>
 
-                <div class="card">
+        <div class="card">
             <h3>Notas de Evolução (Sigiloso)</h3>
-            <textarea id="notasEvolucao" style="height: 400px;" placeholder="Registre aqui a evolução das sessões..."></textarea>
+            <textarea id="notasEvolucao" placeholder="Registre aqui a evolução das sessões..."></textarea>
+        </div>
+    </div>
+
+    <div class="col-financeiro">
+        <div class="card">
+            <h3>Histórico Financeiro</h3>
+            <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
+            <table id="tabelaFinanceiro">
+                <thead><tr><th>Data</th><th>Valor</th><th>Status</th></tr></thead>
+                <tbody></tbody>
+            </table>
+            <div id="resumoFinanceiro" style="margin-top: 15px; font-size: 0.85rem; border-top: 1px dashed #eee; padding-top: 10px;"></div>
+        </div>
+
+        <div class="card">
+            <h3 style="font-size: 0.9rem; color: #555;">Progresso do Exercício 7 Dias</h3>
+            <div class="barra-fundo" style="background: #eee; border-radius: 10px; height: 18px; width: 100%; overflow: hidden; margin-top: 10px;">
+                <div id="barraProgresso" class="barra-preenchimento" style="background: linear-gradient(90deg, #7b8f80, #a3b8a9); height: 100%; width: 0%; transition: width 1s;"></div>
+            </div>
+            <p id="textoProgresso" style="font-size: 0.8rem; margin-top: 8px; color: #888; text-align: center;">0% concluído</p>
         </div>
     </div>
 </div>
-
-            <div class="col-financeiro" style="display: flex; flex-direction: column; gap: 20px;">
-
-    <div class="card">
-        <h3>Histórico Financeiro</h3>
-        <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
-        <table id="tabelaFinanceiro">
-            <thead><tr><th>Data</th><th>Valor</th><th>Status</th></tr></thead>
-            <tbody></tbody>
-        </table>
-        <div id="resumoFinanceiro" style="margin-top: 15px; font-size: 0.85rem; border-top: 1px dashed #eee; padding-top: 10px;"></div>
-    </div>
-
-    <div class="card" style="background: #fff;">
-        <h3 style="font-size: 0.9rem; color: #555;">Progresso do Exercício 7 Dias</h3>
-        <div class="barra-fundo" style="background: #eee; border-radius: 10px; height: 18px; width: 100%; overflow: hidden; margin-top: 10px;">
-            <div id="barraProgresso" class="barra-preenchimento" style="background: linear-gradient(90deg, #7b8f80, #a3b8a9); height: 100%; width: 0%; transition: width 1s;"></div>
-        </div>
-        <p id="textoProgresso" style="font-size: 0.8rem; margin-top: 8px; color: #888; text-align: center;">0% concluído</p>
-    </div>
-</div>
-        </div>
-    </div>
-
     <!-- FOOTER REINTEGRADO -->
     <footer>
         <div class="footer-container">
@@ -217,15 +212,34 @@
         const idCliente = urlParams.get('id');
         let dadosPaciente = null;
 
-        function atualizarBarraProgresso(paciente) {
-            const respostas = paciente.respostas_7dias || {};
-            const totalRespondido = Object.keys(respostas).length;
-            const porcentagem = Math.round((totalRespondido / 7) * 100);
+function atualizarBarraProgresso(paciente) {
+    // Garante que respostas seja um objeto, mesmo que venha nulo ou string
+    let respostas = paciente.respostas_7dias || {};
     
-    document.getElementById('barraProgresso').style.width = porcentagem + '%';
-    document.getElementById('textoProgresso').innerText = `${porcentagem}% concluído (${totalRespondido} de 7 dias)`;
-}
+    // Se por acaso o Supabase enviar como string, isso transforma em objeto
+    if (typeof respostas === 'string') {
+        try {
+            respostas = JSON.parse(respostas);
+        } catch (e) {
+            respostas = {};
+        }
+    }
 
+    // Conta quantas chaves existem (ex: "dia_1", "dia_2"...)
+    const totalRespondido = Object.keys(respostas).length;
+    
+    // Calcula a porcentagem baseada em 7 dias
+    const porcentagem = Math.min(Math.round((totalRespondido / 7) * 100), 100);
+    
+    // Atualiza o visual
+    const barra = document.getElementById('barraProgresso');
+    const texto = document.getElementById('textoProgresso');
+
+    if (barra && texto) {
+        barra.style.width = porcentagem + '%';
+        texto.innerText = `${porcentagem}% concluído (${totalRespondido} de 7 dias)`;
+    }
+}
         // FUNÇÃO: REGISTRO NO FLUXO DE CAIXA GLOBAL
         async function registrarNoFluxoGlobal(valor, clienteNome) {
             const { error } = await _supabase
