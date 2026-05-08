@@ -73,6 +73,11 @@
                     <span>📋 Preencher Anamnese</span>
                     <small style="font-weight: normal; font-size: 0.7rem;">(Primeira consulta)</small>
                 </a>
+
+                <a href="tarefa-7-dias.html" id="btnTarefa7" class="btn-acao">
+                    <span>📝 Exercício 7 Dias</span>
+                    <small style="font-weight: normal; font-size: 0.7rem;">(Escuta e Ressignificação)</small>
+                </a>
                 
                 <a href="#" id="linkPasta" target="_blank" class="btn-acao">
                     <span>📂 Meus Documentos</span>
@@ -120,11 +125,17 @@
         const idCliente = urlParams.get('id');
 
         async function carregarDadosPaciente() {
-            if (!idCliente) {
-                alert("Sessão expirada ou inválida.");
-                window.location.replace("index.html");
-                return;
-            }
+    if (!idCliente) {
+        alert("Sessão expirada ou inválida.");
+        window.location.replace("index.html");
+        return;
+    }
+
+    // Adicione esta linha abaixo para o novo botão:
+    const btnTarefa7 = document.getElementById('btnTarefa7');
+    if (btnTarefa7) {
+        btnTarefa7.href = `tarefa-7-dias.html?id=${idCliente}`;
+    }
 
             localStorage.setItem('paciente_id', idCliente);
             document.getElementById('btnAnamnese').href = `anamnese.html?id=${idCliente}`;

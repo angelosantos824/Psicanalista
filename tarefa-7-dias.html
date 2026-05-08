@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Exercício 7 Dias | Michelly Santos</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        .bloco-dia { background: white; padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 6px solid #d4a373; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .titulo-dia { color: #d4a373; font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; display: block; }
+        .instrucao { font-size: 0.85rem; color: #85741d; margin-bottom: 15px; font-style: italic; display: block; }
+        label { display: block; margin-bottom: 8px; color: #444; font-size: 0.95rem; font-weight: 500; }
+        textarea { width: 100%; border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px; font-family: inherit; margin-bottom: 15px; resize: vertical; box-sizing: border-box; }
+        textarea:focus { border-color: #d4a373; outline: none; background: #fffcf9; }
+        .btn-enviar { background: #7b8f80; color: white; border: none; padding: 18px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; transition: 0.3s; }
+        .btn-enviar:hover { background: #6a7c6e; transform: translateY(-2px); }
+    </style>
+</head>
+<body style="background-color: #fcfbf9; padding: 20px; font-family: sans-serif;">
+
+    <div style="max-width: 700px; margin: 40px auto;">
+        <h2 style="color: #4a4a4a;">7 Dias de Escuta e Ressignificação</h2>
+        <p style="color: #777; margin-bottom: 30px;">Orientações: Reserve de 10 a 15 minutos por dia. Escreva com verdade.</p>
+
+        <form id="form7Dias">
+            <div class="bloco-dia">
+                <span class="titulo-dia">Dia 1 - Nomeando a falta</span>
+                <span class="instrucao">Escreva sobre momentos em que a ausência do seu pai mais doeu.</span>
+                <label>Do que eu senti falta? Em quais momentos eu mais precisei e não tive?</label>
+                <textarea id="dia1" rows="4" required placeholder="Sua resposta..."></textarea>
+            </div>
+
+            <div class="bloco-dia">
+                <span class="titulo-dia">Dia 2 - A voz da criança</span>
+                <span class="instrucao">Escreva como se fosse a criança que você foi.</span>
+                <label>"Pai, quando você não estava, eu sentia..."</label>
+                <textarea id="dia2_sentia" rows="3" required></textarea>
+                <label>"O que eu mais queria que você tivesse me dado era..."</label>
+                <textarea id="dia2_queria" rows="3" required></textarea>
+            </div>
+
+            <div class="bloco-dia">
+                <span class="titulo-dia">Dias 3 e 4 - Marcas e o Não Dito</span>
+                <label>O que essa ausência me ensinou sobre mim? E o que eu nunca consegui te dizer?</label>
+                <textarea id="dia3_4" rows="5" required placeholder="Reflita sobre como isso aparece nos seus relacionamentos hoje..."></textarea>
+            </div>
+
+            <div class="bloco-dia">
+                <span class="titulo-dia">Dias 5 e 6 - Separando Histórias e Olhar para Si</span>
+                <label>O que foi dele e o que eu carreguei sem precisar? O que a menina que eu fui precisava ouvir?</label>
+                <textarea id="dia5_6" rows="5" required></textarea>
+            </div>
+
+            <div class="bloco-dia" style="border-left-color: #7b8f80;">
+                <span class="titulo-dia" style="color: #7b8f80;">Dia 7 - Ressignificação</span>
+                <label>Escreva sua frase de escolha para o presente:</label>
+                <textarea id="dia7" rows="3" required placeholder="Ex: A ausência que vivi não define o meu valor."></textarea>
+            </div>
+
+            <button type="submit" class="btn-enviar">Finalizar e Salvar Exercício</button>
+        </form>
+    </div>
+
+    <script>
+        // Pega o ID do paciente da URL (?id=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const idCliente = urlParams.get('id');
+
+        document.getElementById('form7Dias').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!idCliente) {
+                alert("Erro: ID do paciente não encontrado.");
+                return;
+            }
+
+            const payload = {
+                paciente_id: idCliente, // Coluna que você configurou como Chave Estrangeira
+                respostas: {
+                    dia_1: document.getElementById('dia1').value,
+                    dia_2: { 
+                        sentia: document.getElementById('dia2_sentia').value, 
+                        queria: document.getElementById('dia2_queria').value 
+                    },
+                    dia_3_4: document.getElementById('dia3_4').value,
+                    dia_5_6: document.getElementById('dia5_6').value,
+                    dia_7: document.getElementById('dia7').value,
+                    data_conclusao: new Date().toISOString()
+                }
+            };
+
+            try {
+                const { error } = await _supabase
+                    .from('Tarefa_7dias') // Nome exato da sua tabela no Supabase
+                    .insert([payload]);
+
+                if (error) throw error;
+
+                alert("Exercício salvo com sucesso!");
+                window.location.href = `cliente.html?id=${idCliente}`;
+            } catch (err) {
+                console.error("Erro ao salvar:", err);
+                alert("Erro ao salvar no banco de dados: " + err.message);
+            }
+        });
+    </script>
+</body>
+</html>
