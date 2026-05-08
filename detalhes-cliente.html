@@ -240,6 +240,7 @@
             document.getElementById('morada').value = data.morada || "";
             document.getElementById('statusPaciente').value = data.status || "Atendimento";
             document.getElementById('notasEvolucao').value = data.notas || "";
+            document.getElementById('liberar7Dias').checked = data.liberar_7dias || false;
             
             if (data.proximo_agendamento) {
                 const dtOp = new Date(data.proximo_agendamento);
@@ -342,6 +343,8 @@
                 status: document.getElementById('statusPaciente').value,
                 notas: document.getElementById('notasEvolucao').value,
                 financeiro: dadosPaciente.financeiro,
+                // ADICIONE ESTA LINHA AQUI:
+                liberar_7dias: document.getElementById('liberar7Dias').checked, 
                 proximo_agendamento: (dataInput && horaInput) ? `${dataInput}T${horaInput}:00` : null
             };
 
