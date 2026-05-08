@@ -156,18 +156,21 @@
                         btnTarefa7.style.display = 'none';
                     }
                 }
-                // ------------------------------- LÓGICA DO AGENDAMENTO ---
-                if (paciente.proximo_agendamento) {
-                    const dataObj = new Date(paciente.proximo_agendamento);
-                    const opcoes = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-                    const dataFormatada = dataObj.toLocaleDateString('pt-BR', opcoes);
-                    const siglaFuso = dataObj.toLocaleTimeString('pt-BR', {timeZoneName:'short'}).split(' ').pop();
-                    
-                    document.getElementById('cardAvisoAgenda').style.display = 'block';
-                    document.getElementById('dataAgendada').innerText = dataFormatada.replace(',', ' às');
-                    document.getElementById('fusoCliente').innerText = `Horário exibido no seu fuso local (${siglaFuso})`;
-                }
+                // No script da página do cliente:
+                if (data.proximo_agendamento) {
+                    const dataSessao = new Date(data.proximo_agendamento);
+                    const agora = new Date();
 
+                if (dataSessao > agora) {
+                // Código que você já tem para mostrar a data na tela
+                    elementoData.innerText = formatarData(dataSessao); 
+                } else {
+                // Se passou, exibe uma mensagem de espera
+                    elementoData.innerHTML = "<span style='color: #888;'>Aguardando novo agendamento...</span>";
+                }
+                } else {
+                elementoData.innerText = "Sem sessões agendadas.";
+                }
                 if (paciente.link_drive_pasta || paciente.pasta_nome) {
                     document.getElementById('linkPasta').href = paciente.link_drive_pasta || paciente.pasta_nome;
                 }

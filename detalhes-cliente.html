@@ -236,10 +236,25 @@
 
             // Agendamento
             if (data.proximo_agendamento) {
-                const dt = new Date(data.proximo_agendamento);
-                document.getElementById('agendamentoData').value = dt.toISOString().split('T')[0];
-                document.getElementById('agendamentoHora').value = dt.toTimeString().slice(0,5);
-            }
+    const dtAgendada = new Date(data.proximo_agendamento);
+    const agora = new Date();
+
+    // Se a data já passou, não preenche os inputs (deixa em espera)
+    if (dtAgendada < agora) {
+        document.getElementById('agendamentoData').value = "";
+        document.getElementById('agendamentoHora').value = "";
+    } else {
+        // Se for no futuro, preenche normalmente
+        const ano = dtAgendada.getFullYear();
+        const mes = String(dtAgendada.getMonth() + 1).padStart(2, '0');
+        const dia = String(dtAgendada.getDate()).padStart(2, '0');
+        const hora = String(dtAgendada.getHours()).padStart(2, '0');
+        const min = String(dtAgendada.getMinutes()).padStart(2, '0');
+
+        document.getElementById('agendamentoData').value = `${ano}-${mes}-${dia}`;
+        document.getElementById('agendamentoHora').value = `${hora}:${min}`;
+    }
+}
 
             // Anamnese
             const boxAnamnese = document.getElementById('anamneseConteudo');
