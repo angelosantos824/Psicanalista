@@ -72,13 +72,19 @@
             <div class="col-dados">
                 <!-- BOX AGENDAMENTO -->
                 <div class="agendamento-box">
-                    <label><strong>📅 Próxima Sessão (Aparece na área do cliente):</strong></label>
-                    <div class="agendamento-inputs">
-                         <input type="date" id="agendamentoData" style="flex: 2;">
-                         <input type="time" id="agendamentoHora" style="flex: 1;">
-                    </div>
-                    <small style="color: #85741d; display: block; margin-top: 5px;">Digite a hora direto pelo teclado numérico.</small>
-                </div>
+    <label><strong>📅 Próxima Sessão:</strong></label>
+    <div class="agendamento-inputs">
+         <input type="date" id="agendamentoData" style="flex: 2;">
+         <input type="time" id="agendamentoHora" style="flex: 1;">
+    </div>
+    
+    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #fab005;">
+        <label style="display: flex; align-items: center; cursor: pointer; color: #85741d; font-weight: bold;">
+            <input type="checkbox" id="liberar7Dias" style="width: auto; margin-right: 10px;"> 
+            🔓 Liberar Exercício 7 Dias
+        </label>
+    </div>
+</div>
 
                 <div class="card">
                     <h3>Resumo da História (Queixa Principal)</h3>
