@@ -6,7 +6,6 @@
     <title>Minha Área | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
     
-    <!-- Scripts de Conexão -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
 
@@ -60,7 +59,6 @@
                 <p style="color: #666;">Bem-vindo à sua área de acompanhamento e ferramentas terapêuticas.</p>
             </div>
 
-            <!-- CARD DE PRÓXIMA SESSÃO -->
             <div id="cardAvisoAgenda" class="card-agendamento">
                 <h4>🗓️ Nossa Próxima Sessão</h4>
                 <div id="dataAgendada" class="data-destaque">--/-- às --:--</div>
@@ -84,7 +82,7 @@
                     <small style="font-weight: normal; font-size: 0.7rem;">(Contratos e Testes)</small>
                 </a>
 
-                <a href="https://wa.me/SEUTELEFONE" target="_blank" class="btn-acao">
+                <a href="https://wa.me/351910377246" target="_blank" class="btn-acao">
                     <span>📅 Reagendar</span>
                     <small style="font-weight: normal; font-size: 0.7rem;">(Falar com Michelly)</small>
                 </a>
@@ -148,7 +146,6 @@
                 // --- LÓGICA DA TAREFA 7 DIAS ---
                 const btnTarefa7 = document.getElementById('btnTarefa7');
                 if (btnTarefa7) {
-                    // Só mostra o botão se 'liberar_7dias' for verdadeiro no banco
                     if (paciente.liberar_7dias === true) {
                         btnTarefa7.style.display = 'flex';
                         btnTarefa7.href = `tarefa-7-dias.html?id=${idCliente}`;
@@ -156,37 +153,49 @@
                         btnTarefa7.style.display = 'none';
                     }
                 }
-                // No script da página do cliente:
-                if (data.proximo_agendamento) {
-                    const dataSessao = new Date(data.proximo_agendamento);
+
+                // --- LÓGICA DO AGENDAMENTO ATUALIZADA ---
+                const elementoData = document.getElementById('dataAgendada');
+                const cardAviso = document.getElementById('cardAvisoAgenda');
+                const fusoAviso = document.getElementById('fusoCliente');
+
+                if (paciente.proximo_agendamento) {
+                    const dataSessao = new Date(paciente.proximo_agendamento);
                     const agora = new Date();
 
-                if (dataSessao > agora) {
-                // Código que você já tem para mostrar a data na tela
-                    elementoData.innerText = formatarData(dataSessao); 
+                    cardAviso.style.display = 'block';
+
+                    if (dataSessao > agora) {
+                        // Sessão Futura
+                        const opcoes = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                        const horas = String(dataSessao.getHours()).padStart(2, '0');
+                        const minutos = String(dataSessao.getMinutes()).padStart(2, '0');
+                        elementoData.innerText = `${dataSessao.toLocaleDateString('pt-BR', opcoes)} às ${horas}:${minutos}`;
+                        fusoAviso.style.display = 'block';
+                    } else {
+                        // Sessão Passada (Jessica cairá aqui)
+                        elementoData.innerHTML = "<span style='color: #85741d; font-weight: normal; font-size: 1.1rem;'>Aguardando novo agendamento...</span>";
+                        fusoAviso.style.display = 'none';
+                    }
                 } else {
-                // Se passou, exibe uma mensagem de espera
-                    elementoData.innerHTML = "<span style='color: #888;'>Aguardando novo agendamento...</span>";
+                    cardAviso.style.display = 'none';
                 }
-                } else {
-                elementoData.innerText = "Sem sessões agendadas.";
-                }
+
                 if (paciente.link_drive_pasta || paciente.pasta_nome) {
                     document.getElementById('linkPasta').href = paciente.link_drive_pasta || paciente.pasta_nome;
                 }
 
-                // --- LÓGICA FINANCEIRA ATUALIZADA (MULTIMOEDAS) ---
+                // --- LÓGICA FINANCEIRA ---
                 const tbody = document.getElementById('tabelaFinanceiraCliente');
                 tbody.innerHTML = "";
                 const financeiro = paciente.financeiro || [];
 
                 if (financeiro.length > 0) {
-                    // Mapeamento de símbolos de moeda
                     const simbolos = { 'BRL': 'R$', 'EUR': '€', 'USD': '$' };
 
                     financeiro.forEach(item => {
                         const statusClasse = item.status.toLowerCase() === 'pago' ? 'status-pago' : 'status-pendente';
-                        const moeda = item.moeda || 'BRL'; // Pega a moeda do JSON ou assume BRL se for registro antigo
+                        const moeda = item.moeda || 'BRL';
                         const simbolo = simbolos[moeda] || 'R$';
 
                         tbody.innerHTML += `
@@ -219,7 +228,8 @@
 
         carregarDadosPaciente();
     </script>
-        <footer>
+    
+    <footer>
         <div class="footer-container">
             <div class="footer-box">
                 <h3>Michelly Eufrazio Santos</h3>
@@ -235,7 +245,6 @@
                 <a href="index.html">Início</a>
                 <a href="sobre.html">Sobre Mim</a>
                 <a href="contato.html">Agendar Consulta</a>
-                <!-- Link da área restrita corrigido para usar o ID que o script.js já conhece -->
                 <a href="#" id="openLoginFooter">Área Restrita</a>
             </div>
 
@@ -251,6 +260,5 @@
             &copy; 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.
         </div>
     </footer>
-
 </body>
 </html>
