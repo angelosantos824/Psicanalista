@@ -67,7 +67,6 @@
                 <h1 id="nomeDisplay" style="margin: 10px 0 5px 0; color: #555;">Carregando...</h1>
                 <p id="infoCliente" style="color: #d4a373; font-weight: bold; margin: 0;"></p>
             </div>
-           
             <div>
                 <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
                 <button class="btn-save" onclick="salvarTudo()">Salvar Prontuário</button>
@@ -156,7 +155,6 @@
                     <a href="https://www.instagram.com/michellysantos.psi" target="_blank" class="social-icon">Ig</a>
                 </div>
             </div>
-
             <div class="footer-box">
                 <h3>Links</h3>
                 <a href="index.html">Início</a>
@@ -164,7 +162,6 @@
                 <a href="contato.html">Agendar Consulta</a>
                 <a href="#" id="openLoginFooter">Área Restrita</a>
             </div>
-
             <div class="footer-box">
                 <h3>Contato</h3>
                 <p>📍 Aveiro, Portugal / Online</p>
@@ -265,6 +262,7 @@ function atualizarBarraProgresso(paciente) {
             if (error) console.error("Erro ao alimentar fluxo global:", error.message);
         }
 
+        // --- CARREGAMENTO DE DADOS ---
         async function carregarDados() {
             const { data, error } = await _supabase.from('pacientes').select('*').eq('id', idCliente).single();
 
@@ -279,7 +277,6 @@ function atualizarBarraProgresso(paciente) {
 
             document.getElementById('nomeDisplay').innerText = data.nome;
             document.getElementById('infoCliente').innerText = `SENHA DE ACESSO: #${data.senha_acesso || '---'}`;
-            
             document.getElementById('email').value = data.email || "";
             document.getElementById('telefone').value = data.telefone || "";
             document.getElementById('nascimento').value = data.nascimento || "";
@@ -287,7 +284,8 @@ function atualizarBarraProgresso(paciente) {
             document.getElementById('statusPaciente').value = data.status || "Atendimento";
             document.getElementById('notasEvolucao').value = data.notas || "";
             document.getElementById('liberar7Dias').checked = data.liberar_7dias || false;
-            
+
+            // Agendamento
             if (data.proximo_agendamento) {
                 const dtOp = new Date(data.proximo_agendamento);
                 const ano = dtOp.getFullYear();
@@ -324,6 +322,9 @@ function atualizarBarraProgresso(paciente) {
                 boxAnamnese.innerHTML = "Sem dados de anamnese.";
             }
 
+            if (data.nascimento) calcularIdadeAutomático(data.nascimento);
+            
+            atualizarBarraProgresso(data);
             renderFinanceiro();
         }
 
@@ -351,6 +352,7 @@ function atualizarBarraProgresso(paciente) {
         function addSessao() {
             const valor = prompt("Valor da Sessão (R$):", "150.00");
             if (valor && !isNaN(valor)) {
+                if(!dadosPaciente.financeiro) dadosPaciente.financeiro = [];
                 dadosPaciente.financeiro.push({ 
                     data: new Date().toLocaleDateString('pt-BR'), 
                     valor: parseFloat(valor).toFixed(2), 
@@ -374,6 +376,7 @@ function atualizarBarraProgresso(paciente) {
             }
         }
 
+        // --- SALVAR TUDO ---
         async function salvarTudo() {
             const btn = document.querySelector('.btn-save');
             btn.innerText = "Salvando...";
@@ -389,7 +392,6 @@ function atualizarBarraProgresso(paciente) {
                 status: document.getElementById('statusPaciente').value,
                 notas: document.getElementById('notasEvolucao').value,
                 financeiro: dadosPaciente.financeiro,
-                // ADICIONE ESTA LINHA AQUI:
                 liberar_7dias: document.getElementById('liberar7Dias').checked, 
                 proximo_agendamento: (dataInput && horaInput) ? `${dataInput}T${horaInput}:00` : null
             };
@@ -405,6 +407,12 @@ function atualizarBarraProgresso(paciente) {
         }
 
         document.addEventListener('DOMContentLoaded', carregarDados);
+
+        // Abrir login do footer
+        document.getElementById('openLoginFooter').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert("Acesso restrito à administração.");
+        });
     </script>
 </body>
 </html>
