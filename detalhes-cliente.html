@@ -13,8 +13,13 @@
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .card h3 { color: #8c7851; border-bottom: 1px solid #f4f1ea; padding-bottom: 10px; margin-top: 0; }
         
-        .header-ficha { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
-        
+.header-ficha { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; /* Mudei para center para alinhar os botões com o nome */
+    margin-bottom: 30px; 
+    width: 100%; 
+}        
         .anamnese-box { background: #fdfaf5; border-left: 4px solid #d4a373; padding: 20px; border-radius: 8px; margin-top: 10px; font-size: 0.95rem; line-height: 1.8; color: #444; }
         .historia-box { background: #f0f4f1; border-left: 4px solid #7b8f80; padding: 20px; border-radius: 8px; margin-top: 10px; font-size: 1rem; font-style: italic; color: #2d3436; }
         
@@ -62,13 +67,7 @@
                 <h1 id="nomeDisplay" style="margin: 10px 0 5px 0; color: #555;">Carregando...</h1>
                 <p id="infoCliente" style="color: #d4a373; font-weight: bold; margin: 0;"></p>
             </div>
-            <div class="card">
-                <h3>Progresso do Exercício 7 Dias</h3>
-                <div style="background: #eee; border-radius: 10px; height: 20px; width: 100%;">
-                <div id="barraProgresso" style="background: #7b8f80; height: 100%; width: 0%; border-radius: 10px; transition: 0.5s;"></div>
-                </div>
-                <p id="textoProgresso" style="font-size: 0.8rem; margin-top: 5px;">0% concluído</p>
-            </div>
+           
             <div>
                 <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
                 <button class="btn-save" onclick="salvarTudo()">Salvar Prontuário</button>
@@ -76,70 +75,78 @@
         </div>
 
         <div class="grid-prontuario">
-            <div class="col-dados">
-                <!-- BOX AGENDAMENTO -->
-                <div class="agendamento-box">
-    <label><strong>📅 Próxima Sessão:</strong></label>
-    <div class="agendamento-inputs">
-         <input type="date" id="agendamentoData" style="flex: 2;">
-         <input type="time" id="agendamentoHora" style="flex: 1;">
-    </div>
-    
-    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #fab005;">
-        <label style="display: flex; align-items: center; cursor: pointer; color: #85741d; font-weight: bold;">
-            <input type="checkbox" id="liberar7Dias" style="width: auto; margin-right: 10px;"> 
-            🔓 Liberar Exercício 7 Dias
-        </label>
-    </div>
-</div>
+        <div class="col-dados">
+        <div class="agendamento-box">
+            <label><strong>📅 Próxima Sessão:</strong></label>
+            <div class="agendamento-inputs">
+                 <input type="date" id="agendamentoData" style="flex: 2;">
+                 <input type="time" id="agendamentoHora" style="flex: 1;">
+            </div>
+            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #fab005;">
+                <label style="display: flex; align-items: center; cursor: pointer; color: #85741d; font-weight: bold;">
+                    <input type="checkbox" id="liberar7Dias" style="width: auto; margin-right: 10px;"> 
+                    🔓 Liberar Exercício 7 Dias
+                </label>
+            </div>
+        </div>
 
-                <div class="card">
+               <div class="card">
                     <h3>Resumo da História (Queixa Principal)</h3>
                     <div id="historiaCliente" class="historia-box">Carregando história...</div>
                 </div>
 
                 <div class="card">
-                    <h3>Dados Pessoais</h3>
-                    <div class="dados-grid">
-                        <div><label>E-mail (Login)</label><input type="text" id="email" readonly style="background:#f9f9f9"></div>
-                        <div><label>Telefone</label><input type="text" id="telefone"></div>
-                        <div><label>Nascimento</label><input type="date" id="nascimento" onchange="calcularIdadeAutomático(this.value)"></div>
-                        <div><label>Idade</label><input type="text" id="idade" readonly style="background: #f9f9f9;"></div>
-                        <div>
-                            <label>Status Terapêutico</label>
-                            <select id="statusPaciente">
-                                <option value="Atendimento">Em Atendimento</option>
-                                <option value="Pausa">Em Pausa</option>
-                                <option value="Alta">Alta Terapêutica</option>
-                            </select>
-                        </div>
-                        <div><label>Morada/Endereço</label><input type="text" id="morada"></div>
-                    </div>
+            <h3>Dados Pessoais</h3>
+            <div class="dados-grid">
+                <div><label>E-mail (Login)</label><input type="text" id="email" readonly style="background:#f9f9f9"></div>
+                <div><label>Telefone</label><input type="text" id="telefone"></div>
+                <div><label>Nascimento</label><input type="date" id="nascimento" onchange="calcularIdadeAutomático(this.value)"></div>
+                <div><label>Idade</label><input type="text" id="idade" readonly style="background: #f9f9f9;"></div>
+                <div>
+                    <label>Status Terapêutico</label>
+                    <select id="statusPaciente">
+                        <option value="Atendimento">Em Atendimento</option>
+                        <option value="Pausa">Em Pausa</option>
+                        <option value="Alta">Alta Terapêutica</option>
+                    </select>
                 </div>
+                <div><label>Morada/Endereço</label><input type="text" id="morada"></div>
+            </div>
+        </div>
 
                 <div class="card">
                     <h3>Relatório de Anamnese Completo</h3>
-                    <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
+                        <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
                 </div>
+        </div>
 
                 <div class="card">
-                    <h3>Notas de Evolução (Sigiloso)</h3>
-                    <textarea id="notasEvolucao" placeholder="Registre aqui a evolução das sessões..."></textarea>
-                </div>
-            </div>
+            <h3>Notas de Evolução (Sigiloso)</h3>
+            <textarea id="notasEvolucao" style="height: 400px;" placeholder="Registre aqui a evolução das sessões..."></textarea>
+        </div>
+    </div>
+</div>
 
-            <div class="col-financeiro">
-                <div class="card">
-                    <h3>Histórico Financeiro</h3>
-                    <!-- Botão Corrigido -->
-                    <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
-                    <table id="tabelaFinanceiro">
-                        <thead><tr><th>Data</th><th>Valor</th><th>Status</th><th></th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                    <div id="resumoFinanceiro" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; justify-content: space-between; font-size: 0.9rem;"></div>
-                </div>
-            </div>
+            <div class="col-financeiro" style="display: flex; flex-direction: column; gap: 20px;">
+
+    <div class="card">
+        <h3>Histórico Financeiro</h3>
+        <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
+        <table id="tabelaFinanceiro">
+            <thead><tr><th>Data</th><th>Valor</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+        </table>
+        <div id="resumoFinanceiro" style="margin-top: 15px; font-size: 0.85rem; border-top: 1px dashed #eee; padding-top: 10px;"></div>
+    </div>
+
+    <div class="card" style="background: #fff;">
+        <h3 style="font-size: 0.9rem; color: #555;">Progresso do Exercício 7 Dias</h3>
+        <div class="barra-fundo" style="background: #eee; border-radius: 10px; height: 18px; width: 100%; overflow: hidden; margin-top: 10px;">
+            <div id="barraProgresso" class="barra-preenchimento" style="background: linear-gradient(90deg, #7b8f80, #a3b8a9); height: 100%; width: 0%; transition: width 1s;"></div>
+        </div>
+        <p id="textoProgresso" style="font-size: 0.8rem; margin-top: 8px; color: #888; text-align: center;">0% concluído</p>
+    </div>
+</div>
         </div>
     </div>
 
