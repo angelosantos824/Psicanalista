@@ -13,13 +13,13 @@
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .card h3 { color: #8c7851; border-bottom: 1px solid #f4f1ea; padding-bottom: 10px; margin-top: 0; }
         
-.header-ficha { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; /* Mudei para center para alinhar os botões com o nome */
-    margin-bottom: 30px; 
-    width: 100%; 
-}        
+        .header-ficha { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+            width: 100%; 
+        }        
         .anamnese-box { background: #fdfaf5; border-left: 4px solid #d4a373; padding: 20px; border-radius: 8px; margin-top: 10px; font-size: 0.95rem; line-height: 1.8; color: #444; }
         .historia-box { background: #f0f4f1; border-left: 4px solid #7b8f80; padding: 20px; border-radius: 8px; margin-top: 10px; font-size: 1rem; font-style: italic; color: #2d3436; }
         
@@ -45,7 +45,6 @@
         .btn-print { background: white; color: #555; border: 1px solid #ddd; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; }
         .btn-financeiro { background: #8c7851; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 15px; }
 
-        /* Estilos do Footer Reintegrados */
         footer { background: #fff; padding: 40px 20px 20px; border-top: 1px solid #f4f1ea; margin-top: 50px; }
         .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .footer-box h3 { color: #8c7851; margin-bottom: 15px; font-size: 1.1rem; }
@@ -73,78 +72,79 @@
             </div>
         </div>
 
-<div class="grid-prontuario">
-    <div class="col-dados">
-        <div class="agendamento-box">
-            <label><strong>📅 Próxima Sessão:</strong></label>
-            <div class="agendamento-inputs">
-                 <input type="date" id="agendamentoData" style="flex: 2;">
-                 <input type="time" id="agendamentoHora" style="flex: 1;">
-            </div>
-            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #fab005;">
-                <label style="display: flex; align-items: center; cursor: pointer; color: #85741d; font-weight: bold;">
-                    <input type="checkbox" id="liberar7Dias" style="width: auto; margin-right: 10px;"> 
-                    🔓 Liberar Exercício 7 Dias
-                </label>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Resumo da História (Queixa Principal)</h3>
-            <div id="historiaCliente" class="historia-box">Carregando história...</div>
-        </div>
-
-        <div class="card">
-            <h3>Dados Pessoais</h3>
-            <div class="dados-grid">
-                <div><label>E-mail (Login)</label><input type="text" id="email" readonly style="background:#f9f9f9"></div>
-                <div><label>Telefone</label><input type="text" id="telefone"></div>
-                <div><label>Nascimento</label><input type="date" id="nascimento" onchange="calcularIdadeAutomático(this.value)"></div>
-                <div><label>Idade</label><input type="text" id="idade" readonly style="background: #f9f9f9;"></div>
-                <div>
-                    <label>Status Terapêutico</label>
-                    <select id="statusPaciente">
-                        <option value="Atendimento">Em Atendimento</option>
-                        <option value="Pausa">Em Pausa</option>
-                        <option value="Alta">Alta Terapêutica</option>
-                    </select>
+        <div class="grid-prontuario">
+            <div class="col-dados">
+                <div class="agendamento-box">
+                    <label><strong>📅 Próxima Sessão:</strong></label>
+                    <div class="agendamento-inputs">
+                         <input type="date" id="agendamentoData" style="flex: 2;">
+                         <input type="time" id="agendamentoHora" style="flex: 1;">
+                    </div>
+                    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #fab005;">
+                        <label style="display: flex; align-items: center; cursor: pointer; color: #85741d; font-weight: bold;">
+                            <input type="checkbox" id="liberar7Dias" style="width: auto; margin-right: 10px;"> 
+                            🔓 Liberar Exercício 7 Dias
+                        </label>
+                    </div>
                 </div>
-                <div><label>Morada/Endereço</label><input type="text" id="morada"></div>
+
+                <div class="card">
+                    <h3>Resumo da História (Queixa Principal)</h3>
+                    <div id="historiaCliente" class="historia-box">Carregando história...</div>
+                </div>
+
+                <div class="card">
+                    <h3>Dados Pessoais</h3>
+                    <div class="dados-grid">
+                        <div><label>E-mail (Login)</label><input type="text" id="email" readonly style="background:#f9f9f9"></div>
+                        <div><label>Telefone</label><input type="text" id="telefone"></div>
+                        <div><label>Nascimento</label><input type="date" id="nascimento" onchange="calcularIdadeAutomático(this.value)"></div>
+                        <div><label>Idade</label><input type="text" id="idade" readonly style="background: #f9f9f9;"></div>
+                        <div>
+                            <label>Status Terapêutico</label>
+                            <select id="statusPaciente">
+                                <option value="Atendimento">Em Atendimento</option>
+                                <option value="Pausa">Em Pausa</option>
+                                <option value="Alta">Alta Terapêutica</option>
+                            </select>
+                        </div>
+                        <div><label>Morada/Endereço</label><input type="text" id="morada"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Relatório de Anamnese Completo</h3>
+                    <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
+                </div>
+
+                <div class="card">
+                    <h3>Notas de Evolução (Sigiloso)</h3>
+                    <textarea id="notasEvolucao" placeholder="Registre aqui a evolução das sessões..."></textarea>
+                </div>
             </div>
-        </div>
 
-        <div class="card">
-            <h3>Relatório de Anamnese Completo</h3>
-            <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
-        </div>
+            <div class="col-financeiro">
+                <div class="card">
+                    <h3>Histórico Financeiro</h3>
+                    <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
+                    <table id="tabelaFinanceiro">
+                        <thead><tr><th>Data</th><th>Valor</th><th>Status</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="resumoFinanceiro" style="margin-top: 15px; font-size: 0.85rem; border-top: 1px dashed #eee; padding-top: 10px;"></div>
+                </div>
 
-        <div class="card">
-            <h3>Notas de Evolução (Sigiloso)</h3>
-            <textarea id="notasEvolucao" placeholder="Registre aqui a evolução das sessões..."></textarea>
+                <div class="card">
+                    <h3 style="font-size: 0.9rem; color: #555;">Progresso do Exercício 7 Dias</h3>
+                    <div class="barra-fundo" style="background: #eee; border-radius: 10px; height: 18px; width: 100%; overflow: hidden; margin-top: 10px;">
+                        <div id="barraProgresso" class="barra-preenchimento" style="background: linear-gradient(90deg, #7b8f80, #a3b8a9); height: 100%; width: 0%; transition: width 1s;"></div>
+                    </div>
+                    <p id="textoProgresso" style="font-size: 0.8rem; margin-top: 8px; color: #888; text-align: center;">0% concluído</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="col-financeiro">
-        <div class="card">
-            <h3>Histórico Financeiro</h3>
-            <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
-            <table id="tabelaFinanceiro">
-                <thead><tr><th>Data</th><th>Valor</th><th>Status</th></tr></thead>
-                <tbody></tbody>
-            </table>
-            <div id="resumoFinanceiro" style="margin-top: 15px; font-size: 0.85rem; border-top: 1px dashed #eee; padding-top: 10px;"></div>
-        </div>
-
-        <div class="card">
-            <h3 style="font-size: 0.9rem; color: #555;">Progresso do Exercício 7 Dias</h3>
-            <div class="barra-fundo" style="background: #eee; border-radius: 10px; height: 18px; width: 100%; overflow: hidden; margin-top: 10px;">
-                <div id="barraProgresso" class="barra-preenchimento" style="background: linear-gradient(90deg, #7b8f80, #a3b8a9); height: 100%; width: 0%; transition: width 1s;"></div>
-            </div>
-            <p id="textoProgresso" style="font-size: 0.8rem; margin-top: 8px; color: #888; text-align: center;">0% concluído</p>
-        </div>
-    </div>
-</div>
-    <!-- FOOTER REINTEGRADO -->
     <footer>
         <div class="footer-container">
             <div class="footer-box">
@@ -174,91 +174,39 @@
         </div>
     </footer>
 
-        <!-- Modal de Login -->
-    <div id="loginModal" class="login-modal" style="display:none;">
-        <div class="modal-content">
-            <h2>Área Restrita</h2>
-            <input type="text" id="loginUser" placeholder="E-mail ou Usuário">
-            <input type="password" id="loginPass" placeholder="Senha">
-            
-            <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%;">Entrar</button>   
-            <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
-        </div>
-    </div>
-
-    <!-- SCRIPTS ORDENADOS E SEM DUPLICIDADE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
-    <script src="script.js"></script>
-
-    <!-- Script extra para garantir que o link do footer funcione -->
-    <script>
-        document.getElementById('openLoginFooter').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('loginModal').style.display = 'block';
-        });
-    </script>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-    <link rel="stylesheet" href="style.css">
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const idCliente = urlParams.get('id');
         let dadosPaciente = null;
 
-function atualizarBarraProgresso(paciente) {
-    if (!paciente) return;
-
-    // Pega as respostas do banco
-    let respostas = paciente.respostas_7dias;
-
-    // Se o banco retornar vazio (null/undefined), vira um objeto vazio
-    if (!respostas) {
-        respostas = {};
-    } 
-    // Se o banco retornar como texto (string), a gente transforma em objeto
-    else if (typeof respostas === 'string') {
-        try {
-            respostas = JSON.parse(respostas);
-        } catch (e) {
-            respostas = {};
+        // --- FUNÇÃO DA BARRA DE PROGRESSO ---
+        function atualizarBarraProgresso(paciente) {
+            if (!paciente) return;
+            let respostas = paciente.respostas_7dias || {};
+            if (typeof respostas === 'string') {
+                try { respostas = JSON.parse(respostas); } catch (e) { respostas = {}; }
+            }
+            const totalRespondido = Object.keys(respostas).length;
+            const porcentagem = Math.min(Math.round((totalRespondido / 7) * 100), 100);
+            
+            const barra = document.getElementById('barraProgresso');
+            const texto = document.getElementById('textoProgresso');
+            if (barra) barra.style.width = porcentagem + '%';
+            if (texto) texto.innerText = `${porcentagem}% concluído (${totalRespondido} de 7 dias)`;
         }
-    }
 
-    // Agora contamos quantas chaves existem (ex: "dia_1")
-    const totalRespondido = Object.keys(respostas).length;
-    
-    // Calcula a porcentagem (máximo 100%)
-    const porcentagem = Math.min(Math.round((totalRespondido / 7) * 100), 100);
-    
-    // Atualiza os elementos na tela
-    const barra = document.getElementById('barraProgresso');
-    const texto = document.getElementById('textoProgresso');
-
-    if (barra) barra.style.width = porcentagem + '%';
-    if (texto) texto.innerText = `${porcentagem}% concluído (${totalRespondido} de 7 dias)`;
-}
-    if (barra && texto) {
-        barra.style.width = porcentagem + '%';
-        texto.innerText = `${porcentagem}% concluído (${totalRespondido} de 7 dias)`;
-    }
-    
-        // FUNÇÃO: REGISTRO NO FLUXO DE CAIXA GLOBAL
+        // --- REGISTRO FINANCEIRO GLOBAL ---
         async function registrarNoFluxoGlobal(valor, clienteNome) {
-            const { error } = await _supabase
-                .from('fluxo_caixa') 
-                .insert([
-                    { 
-                        descricao: `Sessão: ${clienteNome}`,
-                        valor: parseFloat(valor),
-                        tipo: 'entrada',
-                        moeda: 'BRL',
-                        data: new Date().toISOString()
-                    }
-                ]);
+            const { error } = await _supabase.from('fluxo_caixa').insert([{ 
+                descricao: `Sessão: ${clienteNome}`,
+                valor: parseFloat(valor),
+                tipo: 'entrada',
+                moeda: 'BRL',
+                data: new Date().toISOString()
+            }]);
             if (error) console.error("Erro ao alimentar fluxo global:", error.message);
         }
 
@@ -275,6 +223,7 @@ function atualizarBarraProgresso(paciente) {
             dadosPaciente = data;
             if (!dadosPaciente.financeiro) dadosPaciente.financeiro = [];
 
+            // Preenche a tela
             document.getElementById('nomeDisplay').innerText = data.nome;
             document.getElementById('infoCliente').innerText = `SENHA DE ACESSO: #${data.senha_acesso || '---'}`;
             document.getElementById('email').value = data.email || "";
@@ -287,39 +236,23 @@ function atualizarBarraProgresso(paciente) {
 
             // Agendamento
             if (data.proximo_agendamento) {
-                const dtOp = new Date(data.proximo_agendamento);
-                const ano = dtOp.getFullYear();
-                const mes = String(dtOp.getMonth() + 1).padStart(2, '0');
-                const dia = String(dtOp.getDate()).padStart(2, '0');
-                const hora = String(dtOp.getHours()).padStart(2, '0');
-                const min = String(dtOp.getMinutes()).padStart(2, '0');
-
-                document.getElementById('agendamentoData').value = `${ano}-${mes}-${dia}`;
-                document.getElementById('agendamentoHora').value = `${hora}:${min}`;
+                const dt = new Date(data.proximo_agendamento);
+                document.getElementById('agendamentoData').value = dt.toISOString().split('T')[0];
+                document.getElementById('agendamentoHora').value = dt.toTimeString().slice(0,5);
             }
 
-            if (data.nascimento) calcularIdadeAutomático(data.nascimento);
-
-            // Carregamento de Anamnese
+            // Anamnese
             const boxAnamnese = document.getElementById('anamneseConteudo');
             const boxHistoria = document.getElementById('historiaCliente');
-
             if (data.anamnese_completa) {
                 const anam = data.anamnese_completa;
                 boxHistoria.innerHTML = `"${anam.queixa || 'Não informada.'}"`;
                 let relatorioHTML = "";
-                const nomesAmigaveis = {
-                    sexo: "Sexo", estado_civil: "Estado Civil", medicamentos: "Usa Medicamentos?",
-                    queixa: "Queixa Principal", trauma: "Histórico de Trauma", credo: "Frequenta Credo/Fé", profissao: "Profissão"
-                };
+                const nomesAmigaveis = { sexo: "Sexo", estado_civil: "Estado Civil", medicamentos: "Usa Medicamentos?", queixa: "Queixa Principal", trauma: "Histórico de Trauma", credo: "Frequenta Credo/Fé", profissao: "Profissão" };
                 for (const [chave, valor] of Object.entries(anam)) {
-                    const titulo = nomesAmigaveis[chave] || chave.toUpperCase();
-                    relatorioHTML += `<p style="margin: 5px 0;"><strong>${titulo}:</strong> ${valor}</p>`;
+                    relatorioHTML += `<p style="margin: 5px 0;"><strong>${nomesAmigaveis[chave] || chave.toUpperCase()}:</strong> ${valor}</p>`;
                 }
                 boxAnamnese.innerHTML = relatorioHTML;
-            } else {
-                boxHistoria.innerHTML = "História não disponível.";
-                boxAnamnese.innerHTML = "Sem dados de anamnese.";
             }
 
             if (data.nascimento) calcularIdadeAutomático(data.nascimento);
@@ -342,22 +275,17 @@ function atualizarBarraProgresso(paciente) {
             tbody.innerHTML = '';
             let pago = 0, pendente = 0;
             dadosPaciente.financeiro.forEach((item, index) => {
-                const valorNum = parseFloat(item.valor) || 0;
-                item.status === "Pago" ? pago += valorNum : pendente += valorNum;
-                tbody.innerHTML += `<tr><td>${item.data}</td><td>R$ ${valorNum.toFixed(2)}</td><td class="${item.status === 'Pago' ? 'status-pago' : 'status-pendente'}" onclick="alternarStatus(${index})" style="cursor:pointer">${item.status}</td><td><button onclick="alert('Recibo gerado para ${item.data}')" style="border:none; background:none; cursor:pointer;">📄</button></td></tr>`;
+                const v = parseFloat(item.valor) || 0;
+                item.status === "Pago" ? pago += v : pendente += v;
+                tbody.innerHTML += `<tr><td>${item.data}</td><td>R$ ${v.toFixed(2)}</td><td class="${item.status === 'Pago' ? 'status-pago' : 'status-pendente'}" onclick="alternarStatus(${index})" style="cursor:pointer">${item.status}</td><td>📄</td></tr>`;
             });
-            document.getElementById('resumoFinanceiro').innerHTML = `<span class="status-pendente">A receber: R$ ${pendente.toFixed(2)}</span><span class="status-pago">Total pago: R$ ${pago.toFixed(2)}</span>`;
+            document.getElementById('resumoFinanceiro').innerHTML = `<span class="status-pendente">A receber: R$ ${pendente.toFixed(2)}</span> | <span class="status-pago">Total pago: R$ ${pago.toFixed(2)}</span>`;
         }
 
         function addSessao() {
             const valor = prompt("Valor da Sessão (R$):", "150.00");
             if (valor && !isNaN(valor)) {
-                if(!dadosPaciente.financeiro) dadosPaciente.financeiro = [];
-                dadosPaciente.financeiro.push({ 
-                    data: new Date().toLocaleDateString('pt-BR'), 
-                    valor: parseFloat(valor).toFixed(2), 
-                    status: "Pendente" 
-                });
+                dadosPaciente.financeiro.push({ data: new Date().toLocaleDateString('pt-BR'), valor: parseFloat(valor).toFixed(2), status: "Pendente" });
                 renderFinanceiro();
             }
         }
@@ -365,7 +293,7 @@ function atualizarBarraProgresso(paciente) {
         async function alternarStatus(index) {
             const item = dadosPaciente.financeiro[index];
             if (item.status === "Pendente") {
-                if(confirm(`Confirmar pagamento de R$ ${item.valor}? O valor irá para o Fluxo de Caixa.`)) {
+                if(confirm(`Confirmar pagamento de R$ ${item.valor}?`)) {
                     item.status = "Pago";
                     await registrarNoFluxoGlobal(item.valor, dadosPaciente.nome);
                     await salvarTudo();
@@ -376,13 +304,11 @@ function atualizarBarraProgresso(paciente) {
             }
         }
 
-        // --- SALVAR TUDO ---
         async function salvarTudo() {
             const btn = document.querySelector('.btn-save');
             btn.innerText = "Salvando...";
-            
-            const dataInput = document.getElementById('agendamentoData').value;
-            const horaInput = document.getElementById('agendamentoHora').value;
+            const dt = document.getElementById('agendamentoData').value;
+            const hr = document.getElementById('agendamentoHora').value;
             
             const updateData = {
                 telefone: document.getElementById('telefone').value,
@@ -393,25 +319,20 @@ function atualizarBarraProgresso(paciente) {
                 notas: document.getElementById('notasEvolucao').value,
                 financeiro: dadosPaciente.financeiro,
                 liberar_7dias: document.getElementById('liberar7Dias').checked, 
-                proximo_agendamento: (dataInput && horaInput) ? `${dataInput}T${horaInput}:00` : null
+                proximo_agendamento: (dt && hr) ? `${dt}T${hr}:00` : null
             };
 
             const { error } = await _supabase.from('pacientes').update(updateData).eq('id', idCliente);
-
-            if (error) alert("Erro ao salvar: " + error.message);
-            else {
-                alert("Prontuário atualizado!");
-                renderFinanceiro();
-            }
+            if (error) alert("Erro: " + error.message);
+            else { alert("Salvo!"); renderFinanceiro(); }
             btn.innerText = "Salvar Prontuário";
         }
 
         document.addEventListener('DOMContentLoaded', carregarDados);
-
-        // Abrir login do footer
+        
         document.getElementById('openLoginFooter').addEventListener('click', function(e) {
             e.preventDefault();
-            alert("Acesso restrito à administração.");
+            alert("Área Administrativa");
         });
     </script>
 </body>
