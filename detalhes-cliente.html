@@ -62,6 +62,13 @@
                 <h1 id="nomeDisplay" style="margin: 10px 0 5px 0; color: #555;">Carregando...</h1>
                 <p id="infoCliente" style="color: #d4a373; font-weight: bold; margin: 0;"></p>
             </div>
+            <div class="card">
+                <h3>Progresso do Exercício 7 Dias</h3>
+                <div style="background: #eee; border-radius: 10px; height: 20px; width: 100%;">
+                <div id="barraProgresso" style="background: #7b8f80; height: 100%; width: 0%; border-radius: 10px; transition: 0.5s;"></div>
+                </div>
+                <p id="textoProgresso" style="font-size: 0.8rem; margin-top: 5px;">0% concluído</p>
+            </div>
             <div>
                 <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
                 <button class="btn-save" onclick="salvarTudo()">Salvar Prontuário</button>
@@ -202,6 +209,15 @@
         const urlParams = new URLSearchParams(window.location.search);
         const idCliente = urlParams.get('id');
         let dadosPaciente = null;
+
+        function atualizarBarraProgresso(paciente) {
+            const respostas = paciente.respostas_7dias || {};
+            const totalRespondido = Object.keys(respostas).length;
+            const porcentagem = Math.round((totalRespondido / 7) * 100);
+    
+    document.getElementById('barraProgresso').style.width = porcentagem + '%';
+    document.getElementById('textoProgresso').innerText = `${porcentagem}% concluído (${totalRespondido} de 7 dias)`;
+}
 
         // FUNÇÃO: REGISTRO NO FLUXO DE CAIXA GLOBAL
         async function registrarNoFluxoGlobal(valor, clienteNome) {

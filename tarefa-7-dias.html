@@ -103,7 +103,31 @@
                 console.error("Erro ao salvar:", err);
                 alert("Erro ao salvar no banco de dados: " + err.message);
             }
-        });
+            function calcularDiaAtual(dataInicio) {
+                if (!dataInicio) return 0;
+                    const inicio = new Date(dataInicio);
+                    const hoje = new Date();
+    
+         // Diferença em dias
+                    const diffTime = Math.abs(hoje - inicio);
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    
+                return diffDays > 7 ? 7 : diffDays; // No máximo 7
+}
+
+        // Exemplo de como esconder/mostrar os exercícios no HTML
+                    const diaLiberado = calcularDiaAtual(paciente.data_inicio_7dias);
+
+                        for (let i = 1; i <= 7; i++) {
+                    const divExercicio = document.getElementById(`dia-${i}`);
+                        if (i <= diaLiberado) {
+                    divExercicio.style.display = 'block'; // Liberado
+                        } 
+                        else {
+                    divExercicio.style.display = 'none';  // Bloqueado
+                        }
+                    }
+                });
     </script>
 </body>
 </html>
