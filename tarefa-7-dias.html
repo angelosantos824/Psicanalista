@@ -11,7 +11,7 @@
             background: white; padding: 25px; border-radius: 15px; 
             margin-bottom: 20px; border-left: 6px solid #d4a373; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            display: none; /* Escondido por padrão, o JS libera */
+            display: none; 
         }
         .titulo-dia { color: #d4a373; font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; display: block; }
         .instrucao { font-size: 0.85rem; color: #85741d; margin-bottom: 15px; font-style: italic; display: block; }
@@ -34,7 +34,14 @@
             background: #fdfaf5; padding: 20px; border-radius: 12px; 
             text-align: center; margin-bottom: 30px; border: 1px solid #e9e0d2;
         }
-        #progresso-texto { font-weight: bold; color: #d4a373; }
+
+        /* AJUSTE DE ESPAÇAMENTO DO PROGRESSO */
+        #progresso-texto { 
+            margin-top: 25px; 
+            font-weight: bold; 
+            color: #d4a373; 
+            display: block; 
+        }
     </style>
 </head>
 <body style="background-color: #fcfbf9; padding: 20px; font-family: sans-serif;">
@@ -104,36 +111,42 @@
             if (error || !data) return;
             pacienteData = data;
 
-            // Se o paciente não tiver data de início, o dia atual é 1 mas precisamos gravar o início
             if (!data.data_inicio_7dias) {
                 await _supabase.from('pacientes').update({ data_inicio_7dias: new Date().toISOString() }).eq('id', idCliente);
                 location.reload();
                 return;
             }
 
+            // LÓGICA DE ATUALIZAÇÃO À MEIA-NOITE (RESET 00:00:00)
             const inicio = new Date(data.data_inicio_7dias);
+            inicio.setHours(0, 0, 0, 0); 
+
             const hoje = new Date();
-            const diffDias = Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)) + 1;
+            hoje.setHours(0, 0, 0, 0); 
+
+            const diffTempo = hoje.getTime() - inicio.getTime();
+            const diffDias = Math.floor(diffTempo / (1000 * 60 * 60 * 24)) + 1;
+            
             const diaAtual = diffDias > 7 ? 7 : diffDias;
 
-            document.getElementById('progresso-texto').innerText = `Você está no DIA ${diaAtual} da sua jornada.`;
+            // Ajuste visual
+            const elementoProgresso = document.getElementById('progresso-texto');
+            elementoProgresso.innerText = `Você está no DIA ${diaAtual} da sua jornada.`;
 
             // Lógica de exibição e preenchimento
             const respostas = data.respostas_7dias || {};
-            const blocos = [1, 2, 3, 5, 7]; // IDs dos nossos blocos
+            const blocos = [1, 2, 3, 5, 7]; 
 
             blocos.forEach(num => {
                 const bloco = document.getElementById(`bloco-${num}`);
                 if (num <= diaAtual) {
                     bloco.style.display = 'block';
                     
-                    // Se já existe resposta salva
                     if (respostas[`dia_${num}`]) {
                         const btn = document.getElementById(`btn-${num}`);
                         btn.innerText = "✅ Resposta Salva";
                         btn.disabled = true;
                         
-                        // Preenche os campos (trata o dia 2 que é especial)
                         if (num === 2) {
                             document.getElementById('dia-2-sentia').value = respostas.dia_2.sentia;
                             document.getElementById('dia-2-queria').value = respostas.dia_2.queria;
