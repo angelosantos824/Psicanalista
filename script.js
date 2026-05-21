@@ -1,139 +1,142 @@
 /* ==========================================
-   SISTEMA DE LOGIN UNIFICADO - MICHELLY SANTOS
-   ========================================== */
+   SISTEMA GERAL - MICHELLY SANTOS
+========================================== */
 
+/* LOGIN */
 async function executarLogin(event) {
     if (event) event.preventDefault();
 
     const userField = document.getElementById('loginUser');
     const passField = document.getElementById('loginPass');
+
+    if (!userField || !passField) {
+        alert("Campos de login não encontrados.");
+        return;
+    }
+
     const user = userField.value.trim();
     const pass = passField.value.trim();
 
-    console.log("🚀 Iniciando tentativa de login para:", user);
+    if (!user || !pass) {
+        alert("Preencha e-mail e senha.");
+        return;
+    }
 
     try {
-        // --- PASSO 1: LOGIN DE ADMIN (AUTENTICAÇÃO OFICIAL) ---
         const { data: authData, error: authError } = await _supabase.auth.signInWithPassword({
             email: user,
-            password: pass,
+            password: pass
         });
 
         if (!authError && authData.user) {
-            console.log("✅ Admin reconhecido pelo Supabase Auth!");
             window.location.replace("adm.html");
-            return; // PARA O CÓDIGO AQUI
+            return;
         }
 
-        // --- PASSO 2: LOGIN DE PACIENTE (TABELA SQL) ---
-        // Só chega aqui se o Passo 1 falhar
-        console.log("🔍 Não é Admin. Buscando na tabela de pacientes...");
-        
         const { data: paciente, error: dbError } = await _supabase
             .from('pacientes')
             .select('*')
             .eq('email', user)
             .single();
 
-        if (paciente && paciente.senha_acesso === pass) {
-            console.log("✅ Paciente reconhecido na tabela SQL!");
+        if (!dbError && paciente && paciente.senha_acesso === pass) {
             window.location.replace("area-cliente.html?id=" + paciente.id);
             return;
         }
 
-        // --- PASSO 3: FALHA TOTAL ---
-        alert("Acesso Negado! Verifique seu e-mail e senha.");
-
+        alert("Acesso negado. Verifique e-mail e senha.");
     } catch (err) {
-        console.error("❌ Erro inesperado:", err);
-        alert("Erro técnico ao conectar. Verifique o console.");
+        console.error("Erro no login:", err);
+        alert("Erro técnico ao conectar.");
     }
 }
 
-/* ==========================================
-   MODAIS E POPUPS
-   ========================================== */
-
-document.addEventListener('DOMContentLoaded', () => {
+/* MODAL LOGIN */
+function abrirLogin() {
     const modal = document.getElementById('loginModal');
-    const openBtn = document.getElementById('openLogin');
-    const closeBtn = document.getElementById('closeLogin');
-    const popup = document.getElementById('popupConvite');
-    const btnFecharPopup = document.getElementById('fecharPopup');
+    if (modal) modal.style.display = "flex";
+}
 
-    if (openBtn) {
-        openBtn.addEventListener('click', (e) => {
+function fecharLogin() {
+    const modal = document.getElementById('loginModal');
+    if (modal) modal.style.display = "none";
+}
+
+/* MODAL NOTÍCIA */
+function abrirNoticia(titulo, texto) {
+    const modal = document.getElementById('noticiaModal');
+    const tituloEl = document.getElementById('noticiaTitulo');
+    const textoEl = document.getElementById('noticiaTexto');
+
+    if (!modal || !tituloEl || !textoEl) return;
+
+    tituloEl.innerText = titulo;
+    textoEl.innerText = texto;
+    modal.style.display = "flex";
+}
+
+function fecharNoticia() {
+    const modal = document.getElementById('noticiaModal');
+    if (modal) modal.style.display = "none";
+}
+
+/* POPUP */
+function fecharPopup() {
+    const popup = document.getElementById('popupCta');
+    if (popup) {
+        popup.style.display = "none";
+        sessionStorage.setItem('popupExibido', 'true');
+    }
+}
+
+/* INICIALIZAÇÃO */
+document.addEventListener('DOMContentLoaded', () => {
+    const loginHeader = document.getElementById('openLogin');
+    const loginFooter = document.getElementById('openLoginFooter');
+    const closeLogin = document.getElementById('closeLogin');
+    const popup = document.getElementById('popupCta');
+
+    if (loginHeader) {
+        loginHeader.addEventListener('click', (e) => {
             e.preventDefault();
-            modal.style.display = "flex"; 
+            abrirLogin();
         });
     }
 
-    if (closeBtn) closeBtn.onclick = () => modal.style.display = "none";
-
-    const jaViuPopup = sessionStorage.getItem('popupExibido');
-    if (popup && !jaViuPopup) {
-        setTimeout(() => popup.style.display = 'flex', 3000);
-    }
-
-    if (btnFecharPopup) {
-        btnFecharPopup.addEventListener('click', () => {
-            popup.style.display = 'none';
-            sessionStorage.setItem('popupExibido', 'true');
+    if (loginFooter) {
+        loginFooter.addEventListener('click', (e) => {
+            e.preventDefault();
+            abrirLogin();
         });
     }
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) modal.style.display = "none";
-        if (e.target === popup) {
-            popup.style.display = 'none';
-            sessionStorage.setItem('popupExibido', 'true');
-        }
+    if (closeLogin) {
+        closeLogin.addEventListener('click', fecharLogin);
+    }
+
+    document.querySelectorAll('.reveal').forEach((el) => {
+        el.classList.add('visible');
+    });
+
+    if (popup && !sessionStorage.getItem('popupExibido')) {
+        setTimeout(() => {
+            popup.style.display = "flex";
+        }, 3000);
+    }
+
+    window.addEventListener('click', (event) => {
+        const loginModal = document.getElementById('loginModal');
+        const noticiaModal = document.getElementById('noticiaModal');
+        const popupCta = document.getElementById('popupCta');
+
+        if (event.target === loginModal) fecharLogin();
+        if (event.target === noticiaModal) fecharNoticia();
+        if (event.target === popupCta) fecharPopup();
     });
 });
 
-// Lógica do Modal de Notícias
-const modalNoticia = document.getElementById("modalNoticia");
-const btnLerMais = document.querySelectorAll(".btn-ler-mais");
-const spanFechar = document.querySelector(".fechar-noticia");
-
-btnLerMais.forEach(botao => {
-    botao.onclick = function() {
-        const titulo = this.getAttribute("data-titulo");
-        const texto = this.getAttribute("data-texto");
-        
-        document.getElementById("modalTitulo").innerText = titulo;
-        document.getElementById("modalCorpo").innerText = texto;
-        
-        modalNoticia.style.display = "block";
-    }
-});
-
-spanFechar.onclick = function() {
-    modalNoticia.style.display = "none";
-}
-
-window.onclick = function(event) {
-    if (event.target == modalNoticia) {
-        modalNoticia.style.display = "none";
-    }
-}
-
-// Dentro do seu script.js
 document.addEventListener('DOMContentLoaded', () => {
-    const btnLogin = document.getElementById('openLoginFooter');
-    const modal = document.getElementById('loginModal');
-    const closeBtn = document.getElementById('closeLogin');
-
-    if (btnLogin && modal) {
-        btnLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.style.display = 'block';
-        });
-    }
-
-    if (closeBtn && modal) {
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-    }
+    document.querySelectorAll('.reveal').forEach((el) => {
+        el.classList.add('visible');
+    });
 });

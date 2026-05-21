@@ -261,7 +261,7 @@
             const boxHistoria = document.getElementById('historiaCliente');
             if (data.anamnese_completa) {
                 const anam = data.anamnese_completa;
-                boxHistoria.innerHTML = `"${anam.queixa || 'Não informada.'}"`;
+                boxHistoria.innerHTML = `"${anam.queixa_principal || 'Não informada.'}"`;
                 let relatorioHTML = "";
                 const nomesAmigaveis = { sexo: "Sexo", estado_civil: "Estado Civil", medicamentos: "Usa Medicamentos?", queixa: "Queixa Principal", trauma: "Histórico de Trauma", credo: "Frequenta Credo/Fé", profissao: "Profissão" };
                 for (const [chave, valor] of Object.entries(anam)) {

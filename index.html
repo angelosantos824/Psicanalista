@@ -1,148 +1,122 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michelly Santos | Psicanálise Clínica</title>
-    <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Psicanálise clínica em Aveiro e online com Michelly Eufrazio Santos. Um espaço ético e seguro para autoconhecimento e cuidado emocional.">
+  <meta name="theme-color" content="#7b8f80">
+  <title>Michelly Santos | Psicanálise Clínica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">
-                <div class="nome">Michelly Santos</div>
-                <div class="subtitulo">PSICANALISTA CLÍNICA</div>
-            </div>
-            <ul>
-                <li><a href="index.html">Início</a></li>
-                <li><a href="sobre.html">Sobre</a></li>
-                <li><a href="contato.html">Contato</a></li>
-                <!-- ID openLogin para o script.js detectar -->
-                <li><a href="#" class="btn-login" id="openLogin">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+    <header class="site-header">
+    <nav aria-label="Navegação principal">
+      <a class="logo" href="index.html" aria-label="Página inicial Michelly Santos">
+        <span class="nome">Michelly Santos</span>
+        <span class="subtitulo">Psicanalista Clínica</span>
+      </a>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <button class="link-login" type="button" onclick="abrirLogin()">Login</button>      </ul>
+    </nav>
+  </header>
 
-<main class="hero">
-        <div class="content">
-            <!-- Adicionado o subtítulo que aparece acima do H1 na imagem -->
-            <div class="subtitle-main">PSICANÁLISE CLÍNICA . AVEIRO . ONLINE</div>
-            
-            <!-- H1 atualizado com span para itálico na palavra 'caminho' -->
-            <h1>A escuta como <span class="italic">caminho</span> para o autoconhecimento.</h1>
-            
-            <p>Um espaço ético e seguro onde a sua palavra encontra acolhimento — e onde o que parecia silêncio começa, enfim, a falar.</p>
-            
-            <!-- Grupo de botões atualizado para os dois botões da imagem -->
-            <div class="buttons-group">
-                <a href="contato.html" class="btn-main-agendar">Agendar Sessão</a>
-                <a href="sobre.html" class="btn-main-conhecer">Conhecer Michelly</a>
-            </div>
+<main>
+    <section class="hero" aria-label="Apresentação">
+      <div class="content reveal">
+        <span class="subtitle-main">Psicanálise Clínica · Aveiro · Online</span>
+        <h1>A escuta como caminho para o <span class="italic">autoconhecimento.</span></h1>
+        <p>Um espaço ético e seguro onde a sua palavra encontra acolhimento — e onde o que parecia silêncio começa, enfim, a falar.</p>
+        <div class="buttons-group">
+          <a class="btn-main-agendar" href="contato.html">Agendar Sessão</a>
+          <a class="btn-main-conhecer" href="sobre.html">Conhecer Michelly</a>
         </div>
-    </main>
+      </div>
+    </section>
+    
     <section class="secao-clara">
-    <h2 class="titulo-secao">Por que fazer Análise?</h2>
-    <div class="grid-conteudo">
-        <!-- Card 1 -->
-        <article class="card-conteudo">
-            <div class="card-body">
-                <h3>O Autoconhecimento</h3>
-                <p>A psicanálise não busca apenas curar sintomas, mas entender as raízes do seu comportamento...</p>
-                <button class="btn-ler-mais" 
-                    data-titulo="O Autoconhecimento" 
-                    data-texto="A psicanálise oferece um mergulho profundo naquilo que nos motiva de forma invisível. Ao investigar o inconsciente, conseguimos dar nome a desejos e traumas que moldam nossas escolhas diárias sem que percebamos. O objetivo não é apenas o alívio imediato, mas uma mudança estrutural na forma como você se relaciona consigo mesmo e com o mundo. É o processo de tornar consciente o que é automático.">
-                    Ler mais...
-                </button>
-            </div>
+      <span class="section-eyebrow">Cuidado emocional</span>
+      <h2 class="titulo-secao">Por que fazer <span class="italic">análise?</span></h2>
+      <div class="grid-conteudo">
+        <article class="card-conteudo reveal">
+          <div class="card-body">
+            <span class="card-icon">◇</span>
+            <h3>Autoconhecimento</h3>
+            <p>A psicanálise não busca apenas aliviar sintomas, mas abrir caminhos para compreender repetições, escolhas e modos de sofrer.</p>
+            <button class="btn-ler-mais" 
+            onclick="abrirNoticia('Autoconhecimento', 'A análise oferece um tempo de escuta para que você reconheça padrões, nomeie afetos e encontre novas formas de lidar com a própria história.')">Ler mais...</button>
+          </div>
         </article>
-
-        <!-- Card 2 -->
-        <article class="card-conteudo">
-            <div class="card-body">
-                <h3>Saúde Mental em 2026</h3>
-                <p>Em um mundo cada vez mais acelerado, ter um espaço de fala genuíno é essencial...</p>
-                <button class="btn-ler-mais" 
-                    data-titulo="Saúde Mental em 2026" 
-                    data-texto="Chegamos a 2026 com um nível de estímulo digital sem precedentes. A análise clínica se torna um refúgio contra o imperativo da produtividade e da performance constante. É o único lugar onde você não precisa ser 'ótimo', apenas ser você. Aqui, tratamos a ansiedade moderna não como um defeito, mas como um sintoma de uma época que esqueceu a importância da pausa e da escuta.">
-                    Ler mais...
-                </button>
-            </div>
+        <article class="card-conteudo reveal">
+          <div class="card-body">
+            <span class="card-icon">✦</span>
+            <h3>Saúde mental em 2026</h3>
+            <p>Em um mundo acelerado, ter um espaço de fala genuíno pode ajudar a reorganizar sentimentos, vínculos e decisões.</p>
+            <button class="btn-ler-mais" onclick="abrirNoticia('Saúde mental em 2026', 'A escuta clínica favorece pausas importantes em meio à rotina, ajudando a transformar ansiedade, culpa e excesso em elaboração e cuidado.')">Ler mais...</button>
+          </div>
         </article>
-
-        <!-- Card 3 -->
-        <article class="card-conteudo">
-            <div class="card-body">
-                <h3>O "Setting" Analítico</h3>
-                <p>O ambiente da consulta é fundamental para a livre associação. Prepare-se...</p>
-                <button class="btn-ler-mais" 
-                    data-titulo="O 'Setting' Analítico" 
-                    data-texto="O 'setting' é mais do que quatro paredes; é o contrato ético e o ambiente seguro (mesmo no online) que permite a 'livre associação'. Para sua primeira sessão, escolha um local onde não será interrompido e onde sinta que sua privacidade está protegida. O silêncio do lado de fora é o que permite que a sua voz interior apareça com clareza.">
-                    Ler mais...
-                </button>
-            </div>
+        <article class="card-conteudo reveal">
+          <div class="card-body">
+            <span class="card-icon">◌</span>
+            <h3>O setting analítico</h3>
+            <p>O ambiente da consulta sustenta a confidencialidade, a regularidade e a liberdade necessária para falar sem julgamentos.</p>
+            <button class="btn-ler-mais" onclick="abrirNoticia('O setting analítico', 'O setting é o enquadre que protege o processo: horário, sigilo, escuta e presença. Ele permite que a fala encontre continuidade.')">Ler mais...</button>
+          </div>
         </article>
-    </div>
-</section>
-
-<!-- Estrutura do Modal de Notícias (Coloque antes do fechamento do </body>) -->
-<div id="modalNoticia" class="noticia-modal">
-    <div class="noticia-content">
-        <span class="fechar-noticia">&times;</span>
-        <h2 id="modalTitulo"></h2>
-        <div id="modalCorpo"></div>
-    </div>
-</div>
-
-        <h2><span class=italic>“Onde havia silêncio, há agora palavra. </h2></span>
-        <h2><span class=italic>Onde havia repetição, há agora pergunta.”</h2></span>
-
-    <section class="secao-bege">
-        <h2 class="titulo-secao">Planos e Pacotes</h2>
-        <p style="text-align: center; color: #888;">Escolha a melhor forma de investir na sua evolução.</p>
-        
-        <div class="grid-pacotes">
-            <div class="pacote-card">
-                <h4>Sessão Avulsa</h4>
-                <div class="preco">50 €</div>
-                <p>Atendimento focado e flexível.</p>
-                <a href="contato.html" class="btn-pacote">Agendar</a>
-            </div>
-
-            <div class="pacote-card destaque">
-                <span class="tag-promo">MAIS BUSCADO</span>
-                <h4>Pacote Mensal</h4>
-                <p>4 Sessões (1x por semana)</p>
-                <div class="preco">180 €</div>
-                <p>Economia de 20 € por mês.</p>
-                <a href="contato.html" class="btn-pacote" style="color: #d4a373;">Quero este</a>
-            </div>
-
-            <div class="pacote-card">
-                <h4>Foco Total</h4>
-                <p>8 Sessões (2x por semana)</p>
-                <div class="preco">350 €</div>
-                <p>Para processos profundos.</p>
-                <a href="contato.html" class="btn-pacote">Agendar</a>
-            </div>
-        </div>
+      </div>
     </section>
 
-    <!-- Botão WhatsApp corrigido -->
-    <a href="https://wa.me/351910377246?text=Olá%20Michelly,%20gostaria%20de%20informações%20sobre%20as%20sessões%20de%20análise." class="whatsapp-float" target="_blank">
-        <svg class="whatsapp-icon" viewBox="0 0 24 24">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.659 1.437 5.634 1.437h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-        </svg>
-    </a>
+        <section class="frase-section">
+            <h2>“Onde havia silêncio, há agora palavra.<br>Onde havia repetição, há agora pergunta.”</h2>
+        </section>
+    
+    <section class="secao-bege">
+      <span class="section-eyebrow">Investimento</span>
+      <h2 class="titulo-secao">Planos e <span class="italic">pacotes</span></h2>
+      <p class="intro-secao">Escolha a melhor forma de investir na sua evolução.</p>
+      <div class="grid-pacotes">
+        <article class="pacote-card">
+          <h4>Sessão Avulsa</h4>
+          <div class="preco">50 €</div>
+          <p>Atendimento focado e flexível.</p>
+          <a class="btn-pacote" href="contato.html">Agendar</a>
+        </article>
+        <article class="pacote-card destaque">
+          <span class="tag-promo">Mais buscado</span>
+          <h4>Pacote Mensal</h4>
+          <p>4 sessões · 1x por semana</p>
+          <div class="preco">180 €</div>
+          <p>Economia de 20 € por mês.</p>
+          <a class="btn-pacote" href="contato.html">Quero este</a>
+        </article>
+        <article class="pacote-card">
+          <h4>Foco Total</h4>
+          <p>8 sessões · 2x por semana</p>
+          <div class="preco">350 €</div>
+          <p>Para processos profundos.</p>
+          <a class="btn-pacote" href="contato.html">Agendar</a>
+        </article>
+      </div>
+    </section>
+</main>
+
+    <a class="whatsapp-float" href="https://wa.me/351910377246?text=Olá%20Michelly,%20gostaria%20de%20informações%20sobre%20as%20sessões%20de%20análise." target="_blank" rel="noopener" aria-label="Falar pelo WhatsApp">
+    <svg class="whatsapp-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16.04 3C8.86 3 3.02 8.82 3.02 15.98c0 2.29.6 4.53 1.73 6.5L3 29l6.7-1.71a12.95 12.95 0 0 0 6.34 1.62c7.18 0 13.02-5.82 13.02-12.98S23.22 3 16.04 3Zm0 23.7c-1.95 0-3.85-.52-5.52-1.5l-.4-.24-3.97 1.01 1.06-3.85-.26-.4a10.66 10.66 0 0 1-1.7-5.74c0-5.94 4.84-10.77 10.79-10.77s10.79 4.83 10.79 10.77-4.84 10.72-10.79 10.72Zm5.91-8.06c-.32-.16-1.9-.94-2.2-1.04-.3-.11-.52-.16-.74.16-.21.32-.84 1.04-1.03 1.25-.19.21-.38.24-.7.08-.32-.16-1.36-.5-2.59-1.6-.96-.85-1.6-1.9-1.79-2.22-.19-.32-.02-.5.14-.66.15-.15.32-.38.49-.57.16-.19.21-.32.32-.54.11-.21.05-.4-.03-.57-.08-.16-.74-1.78-1.01-2.44-.27-.64-.54-.56-.74-.57h-.63c-.21 0-.57.08-.86.4-.3.32-1.14 1.12-1.14 2.73s1.17 3.16 1.33 3.38c.16.21 2.31 3.52 5.59 4.94.78.34 1.39.54 1.87.69.78.25 1.49.21 2.05.13.63-.09 1.9-.77 2.17-1.52.27-.75.27-1.39.19-1.52-.08-.13-.3-.21-.62-.37Z"/></svg>
+  </a>
    
     <footer>
-        <div class="footer-container">
+       <div class="footer-container">
             <div class="footer-box">
                 <h3>Michelly Eufrazio Santos</h3>
                 <p>Psicanalista Clínica dedicada ao autoconhecimento e bem-estar emocional na Europa.</p>
                 <div class="redes-sociais">
-                    <a href="https://www.linkedin.com/in/michellyeufraziosantos1810/" target="_blank" class="social-icon">Linkedin</a>
-                    <br>
-                    <a href="https://www.instagram.com/michellysantos.psi" target="_blank" class="social-icon">Instagram</a>
+                    <a class="social-icon" href="https://www.linkedin.com/in/michellyeufraziosantos1810/" target="_blank" rel="noopener">in</a>
+                    <a class="social-icon" href="https://www.instagram.com/michellysantos.psi" target="_blank" rel="noopener">ig</a>
                 </div>
             </div>
 
@@ -151,62 +125,55 @@
                 <a href="index.html">Início</a>
                 <a href="sobre.html">Sobre Mim</a>
                 <a href="contato.html">Agendar Consulta</a>
-                <!-- Link da área restrita corrigido para usar o ID que o script.js já conhece -->
-                <a href="#" id="openLoginFooter">Área Restrita</a>
-            </div>
-
+                <button id="openLoginFooter" class="footer-login" type="button">Área Restrita</button>            </div>
             <div class="footer-box">
                 <h3>Contato</h3>
-                <p>📍 Aveiro, Portugal / Online</p>
-                <p>📧 contato@michellysantospsi.com</p>
-            </div>
+                <p>Aveiro, Portugal / Online</p>
+                <a href="mailto:contato@michellysantospsi.com">contato@michellysantospsi.com</a>
+                <a href="https://wa.me/351910377246" target="_blank" rel="noopener">+351 910 377 246</a>
+            </div>    
         </div>
-
-        <div class="footer-bottom">
-            &copy; 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.
-        </div>
+        <div class="footer-bottom">© 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.</div>
     </footer>
+<!-- Estrutura do Modal de Notícias (Coloque antes do fechamento do </body>) -->
+ <div id="noticiaModal" class="noticia-modal" role="dialog" aria-modal="true" aria-labelledby="noticiaTitulo">
+    <div class="noticia-content">
+      <button class="fechar-noticia" onclick="fecharNoticia()" aria-label="Fechar">×</button>
+      <h2 id="noticiaTitulo"></h2>
+      <div id="noticiaTexto"></div>
+    </div>
+  </div>
 
     <!-- Modal de Login -->
-    <div id="loginModal" class="login-modal" style="display:none;">
-        <div class="modal-content">
-            <h2>Área Restrita</h2>
-            <input type="text" id="loginUser" placeholder="E-mail ou Usuário">
-            <input type="password" id="loginPass" placeholder="Senha">
-            
-            <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%;">Entrar</button>   
-            <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
-        </div>
-    </div>
+    <div id="loginModal" class="login-modal" role="dialog" aria-modal="true" aria-labelledby="loginTitulo">
+    <form class="modal-content" onsubmit="executarLogin(event)">
+      <button class="fechar-noticia" type="button" onclick="fecharLogin()" aria-label="Fechar">×</button>
+      <h2 id="loginTitulo">Área Restrita</h2>
+      <input id="loginUser" type="email" placeholder="E-mail" autocomplete="username" required>
+      <input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password" required>
+      <button class="btn" type="submit">Entrar</button>
+      <button class="btn-cancelar" type="button" onclick="fecharLogin()">Cancelar</button>
+    </form>
+  </div>
 
-    <!-- SCRIPTS ORDENADOS E SEM DUPLICIDADE -->
+    <!-- Popup de Convite Terapêutico -->
+<div id="popupCta" class="popup-overlay">
+    <div class="popup-content">
+      <button class="popup-close" onclick="fecharPopup()" aria-label="Fechar">×</button>
+      <span class="popup-icon">♡</span>
+      <h2>Sua saúde mental não pode esperar</h2>
+      <p>Que tal dar o primeiro passo na sua jornada de autoconhecimento?</p>
+      <div class="popup-buttons">
+        <a class="btn-popup-primary" href="contato.html">Agendar Sessão</a>
+        <a class="btn-popup-secondary" href="https://wa.me/351910377246" target="_blank" rel="noopener">Falar pelo WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+<!-- SCRIPTS ORDENADOS E SEM DUPLICIDADE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="script.js"></script>
-
-    <!-- Script extra para garantir que o link do footer funcione -->
-    <script>
-        document.getElementById('openLoginFooter').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('loginModal').style.display = 'block';
-        });
-    </script>
-
-    <!-- Popup de Convite Terapêutico -->
-<div id="popupConvite" class="popup-overlay">
-    <div class="popup-content">
-        <button class="popup-close" id="fecharPopup">&times;</button>
-        <div class="popup-header">
-            <span class="popup-icon">🌿</span>
-        </div>
-        <h2>Sua saúde mental não pode esperar</h2>
-        <p>Que tal dar o primeiro passo na sua jornada de autoconhecimento? Agende uma sessão de psicanálise online agora mesmo.</p>
-        <div class="popup-buttons">
-            <a href="contato.html" class="btn-popup-primary">Agendar Sessão</a>
-            <a href="https://wa.me/351910377246" class="btn-popup-secondary">Falar pelo WhatsApp</a>
-        </div>
-    </div>
-</div>
 
 </body>
 </html>

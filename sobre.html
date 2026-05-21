@@ -1,125 +1,169 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-PT">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Michelly Santos | Psicanálise</title>
-    <link rel="stylesheet" href="style.css">
+  <!-- =========================================================
+       METADADOS DA PÁGINA
+  ========================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Conheça Michelly Eufrazio Santos, psicanalista clínica em Aveiro e online.">
+
+  <title>Sobre Michelly Santos | Psicanálise</title>
+
+  <!-- =========================================================
+       FONTES EXTERNAS
+  ========================================================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <!-- =========================================================
+       CSS PRINCIPAL
+  ========================================================== -->
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <header>
-        <nav>
-            <div class="logo">
-                <div class="nome">Michelly Santos</div>
-                <div class="subtitulo">PSICANALISTA CLÍNICA</div>
-            </div>
-            <ul>
-                <li><a href="index.html">Início</a></li>
-                <li><a href="sobre.html">Sobre</a></li>
-                <li><a href="contato.html">Contato</a></li>
-                <!-- ID corrigido para abrir o login -->
-                <li><a href="#" class="btn-login" id="openLogin">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+  <!-- =========================================================
+       CABEÇALHO / MENU DE NAVEGAÇÃO
+  ========================================================== -->
+  <header class="site-header header-interno">
+    <nav>
+      <a class="logo" href="index.html">
+        <span class="nome">Michelly Santos</span>
+        <span class="subtitulo">Psicanalista Clínica</span>
+      </a>
 
-    <section class="sobre-analista" id="sobre">
-        <div class="sobre-container">
-            <div class="sobre-texto">
-                <h2 class="titulo-secao-esquerda">Sobre a Analista</h2>
-                <p>Eu sou a <strong>Michelly Santos</strong>, psicanalista dedicada a investigar os processos do inconsciente e o alívio do sofrimento psíquico.</p>
-                <p>Acredito que a psicanálise oferece um tempo e um espaço preciosos para que possamos falar sobre aquilo que nos angustia, revelando nossa singularidade.</p>
-                <p>Minha prática é fundamentada na ética da escuta, oferecendo um acolhimento livre de julgamentos, onde a palavra é o principal instrumento de transformação.</p>
-                <a href="contato.html" class="btn-contato-sobre">Agendar Consulta</a>
-            </div>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li>
+        <button class="link-login" type="button" onclick="abrirLogin()">Login</button>        </li>
+      </ul>
+    </nav>
+  </header>
 
-            <div class="sobre-foto">
-                <img src="imagem/michelly.jpg" alt="Michelly Santos - Psicanalista">
-            </div>
-        </div>
-    </section>
+ <!-- =========================================================
+       SEÇÃO SOBRE / BLOCO ADICIONAL
+  ========================================================== -->
+  <main class="page-main">
+  <section class="sobre-analista">
+    <div class="sobre-container">
+      <div class="sobre-texto reveal">
+        <span class="section-eyebrow">Sobre a analista</span>
+        <h1>Uma escuta ética para aquilo que pede <span class="italic">palavra.</span></h1>
+        <p>Eu sou a Michelly Santos, psicanalista dedicada a investigar os processos do inconsciente e o alívio do sofrimento psíquico.</p>
+        <p>Acredito que a psicanálise oferece um tempo e um espaço preciosos para que possamos falar sobre aquilo que nos angustia, revelando nossa singularidade.</p>
+        <p>Minha prática é fundamentada na ética da escuta, oferecendo um acolhimento livre de julgamentos, onde a palavra é o principal instrumento de transformação.</p>
+        <p class="intro-secao">A escuta clínica é um convite para transformar silêncio em elaboração.</p>
+        <a class="btn-contato-sobre" href="contato.html">Agendar Consulta</a>
+      </div>
 
-    <!-- Botão Flutuante WhatsApp -->
-    <a href="https://wa.me/+351910377246?text=Olá%20Michelly,%20gostaria%20de%20informações%20sobre%20as%20sessões%20de%20análise." class="whatsapp-float" target="_blank">
-        <svg class="whatsapp-icon" viewBox="0 0 24 24">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.659 1.437 5.634 1.437h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-        </svg>
-    </a>
-
-    <footer>
-        <div class="footer-container">
-            <div class="footer-box">
-                <h3>Michelly Eufrazio Santos</h3>
-                <p>Psicanalista Clínica dedicada ao autoconhecimento e bem-estar emocional na Europa.</p>
-                <div class="redes-sociais">
-                    <a href="https://www.linkedin.com/in/michellyeufraziosantos1810/" target="_blank" class="social-icon">Linkedin</a>
-                    <br>
-                    <a href="https://www.instagram.com/michellysantos.psi" target="_blank" class="social-icon">Instagram</a>
-                </div>
-            </div>
-
-            <div class="footer-box">
-                <h3>Links</h3>
-                <a href="index.html">Início</a>
-                <a href="sobre.html">Sobre Mim</a>
-                <a href="contato.html">Agendar Consulta</a>
-                <a href="#" id="openLoginFooter">Área Restrita</a>
-            </div>
-
-            <div class="footer-box">
-                <h3>Contato</h3>
-                <p>📍 Aveiro, Portugal / Online</p>
-                <p>📧 contato@michellysantospsi.com</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.
-        </div>
-    </footer>
-
-    <!-- MODAL DE LOGIN -->
-    <div id="loginModal" class="login-modal" style="display:none;">
-        <div class="modal-content">
-            <h2>Área Restrita</h2>
-            <input type="text" id="loginUser" placeholder="E-mail ou Usuário">
-            <input type="password" id="loginPass" placeholder="Senha">
-            <button type="button" onclick="executarLogin(event)" class="btn" style="width: 100%;">Entrar</button> 
-            <p id="closeLogin" style="cursor:pointer; margin-top:20px; font-size:12px; color: #888;">Cancelar</p>
-        </div>
+      <div class="sobre-foto reveal">
+        <img src="imagem/michelly.jpg" alt="Michelly Santos - Psicanalista" loading="lazy">
+      </div>
     </div>
+  </section>
+</main>
 
-    <!-- SCRIPTS ORDENADOS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-    <script src="script.js"></script>
+  <!-- =========================================================
+       BOTÃO FLUTUANTE WHATSAPP
+  ========================================================== -->
+  <a
+    class="whatsapp-float"
+    href="https://wa.me/351910377246?text=Olá%20Michelly,%20gostaria%20de%20informações%20sobre%20as%20sessões%20de%20análise."
+    target="_blank"
+    rel="noopener"
+    aria-label="Falar pelo WhatsApp"
+  >☎</a>
 
-    <script>
-        // Lógica de abertura e fechamento do modal
-        const modal = document.getElementById('loginModal');
-        const btnHeader = document.getElementById('openLogin');
-        const btnFooter = document.getElementById('openLoginFooter');
-        const btnClose = document.getElementById('closeLogin');
+  <!-- =========================================================
+       RODAPÉ
+  ========================================================== -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-box">
+        <h3>Michelly Eufrazio Santos</h3>
+        <p>Psicanalista Clínica dedicada ao autoconhecimento e bem-estar emocional na Europa.</p>
+        <div class="redes-sociais">
+          <a class="social-icon" href="https://www.linkedin.com/in/michellyeufraziosantos1810/" target="_blank" rel="noopener">in</a>
+          <a class="social-icon" href="https://www.instagram.com/michellysantos.psi" target="_blank" rel="noopener">ig</a>
+        </div>
+      </div>
+      <div class="footer-box">
+        <h3>Links</h3>
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Sobre Mim</a>
+        <a href="contato.html">Agendar Consulta</a>
+        <button class="footer-login" type="button" onclick="abrirLogin()">Área Restrita</button>
+      </div>
+      <div class="footer-box">
+        <h3>Contato</h3>
+        <p>Aveiro, Portugal / Online</p>
+        <a href="mailto:contato@michellysantospsi.com">contato@michellysantospsi.com</a>
+        <a href="https://wa.me/351910377246" target="_blank" rel="noopener">+351 910 377 246</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Michelly Eufrazio Santos - Psicanalista. Todos os direitos reservados.</div>
+  </footer>
 
-        [btnHeader, btnFooter].forEach(btn => {
-            if(btn) {
-                btn.onclick = function(e) {
-                    e.preventDefault();
-                    modal.style.display = "block";
-                }
-            }
-        });
+  <!-- =========================================================
+       MODAL DE LOGIN
+  ========================================================== -->
+  <div id="loginModal" class="login-modal">
+    <form class="modal-content" onsubmit="executarLogin(event)">
+      <button class="fechar-noticia" type="button" onclick="fecharLogin()">×</button>
 
-        if(btnClose) {
-            btnClose.onclick = function() {
-                modal.style.display = "none";
-            }
+      <h2>Área Restrita</h2>
+
+      <input id="loginUser" type="email" placeholder="E-mail" required>
+      <input id="loginPass" type="password" placeholder="Senha" required>
+
+      <button class="btn" type="submit">Entrar</button>
+      <button class="btn-cancelar" type="button" onclick="fecharLogin()">Cancelar</button>
+    </form>
+  </div>
+
+  <!-- =========================================================
+       SCRIPTS EXTERNOS
+  ========================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+
+  <!-- =========================================================
+       SCRIPT INTERNO DO MODAL DE LOGIN
+  ========================================================== -->
+  <script>
+    // Lógica de abertura e fechamento do modal
+    const modal = document.getElementById('loginModal');
+    const btnHeader = document.getElementById('openLogin');
+    const btnFooter = document.getElementById('openLoginFooter');
+    const btnClose = document.getElementById('closeLogin');
+
+    [btnHeader, btnFooter].forEach(btn => {
+      if (btn) {
+        btn.onclick = function(e) {
+          e.preventDefault();
+          modal.style.display = "block";
         }
+      }
+    });
 
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
+    if (btnClose) {
+      btnClose.onclick = function() {
+        modal.style.display = "none";
+      }
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
 </body>
+
 </html>
