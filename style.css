@@ -1094,3 +1094,91 @@ h2{
   height:19px !important;
   display:block !important;
 }
+
+/* ==========================================
+   MOBILE FIX GERAL
+========================================== */
+
+@media (max-width: 768px){
+
+  body{
+    overflow-x:hidden;
+  }
+
+  section{
+    padding-inline:20px;
+  }
+
+  h1{
+    font-size:clamp(38px,11vw,58px) !important;
+    line-height:1.05;
+  }
+
+  h2{
+    font-size:clamp(30px,9vw,44px) !important;
+    line-height:1.1;
+  }
+
+  p{
+    font-size:15px;
+    line-height:1.7;
+  }
+
+  /* GRIDS */
+
+  .grid-conteudo,
+  .grid-pacotes,
+  .cards,
+  .benefits-grid,
+  .services-grid,
+  .stats,
+  .hero-grid,
+  .about-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  /* CARDS */
+
+  .benefit-card,
+  .service-card,
+  .card,
+  .pacote-card,
+  .stat-card{
+    width:100% !important;
+    min-width:0 !important;
+  }
+
+  /* TEXTOS DOS CARDS */
+
+  .benefit-card h3,
+  .service-card h3,
+  .card h3{
+    font-size:34px !important;
+    line-height:1.2;
+    word-break:break-word;
+  }
+
+  .benefit-card p,
+  .service-card p,
+  .card p{
+    font-size:15px !important;
+  }
+
+  /* HERO */
+
+  .hero{
+    min-height:auto;
+    padding-top:130px;
+  }
+
+  .hero-content{
+    text-align:center;
+  }
+
+  /* MENU */
+
+  .nav{
+    width:100%;
+  }
+
+}
