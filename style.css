@@ -1182,3 +1182,46 @@ h2{
   }
 
 }
+
+/* CORREÇÃO MOBILE - AGENDAR CONSULTA */
+
+@media (max-width: 768px){
+
+  .contato-grid,
+  .agendamento-grid,
+  .contact-grid{
+    grid-template-columns: 1fr !important;
+    display: grid !important;
+  }
+
+  .contato-info,
+  .agendamento-info,
+  .contact-info{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 30px;
+    border-radius: 28px !important;
+    padding: 30px 24px !important;
+  }
+
+  .contato-form,
+  .agendamento-form,
+  .contact-form{
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 30px 22px !important;
+  }
+
+  .contato-secao,
+  .agendamento-secao,
+  .contact-section{
+    padding: 60px 20px !important;
+    overflow: hidden;
+  }
+
+  input,
+  select,
+  textarea{
+    max-width: 100% !important;
+  }
+}
