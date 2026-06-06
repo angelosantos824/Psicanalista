@@ -48,18 +48,29 @@ async function salvarNovoPacienteSQL() {
         return;
     }
 
+    const { data: sessionData, error: sessionError } = await _supabase.auth.getSession();
+
+    if (sessionError || !sessionData.session || !sessionData.session.user) {
+        alert("Sessão expirada. Faça login novamente.");
+        window.location.replace("index.html");
+        return;
+    }
+
+    const user = sessionData.session.user;
+
     // Gerar ID de 4 dígitos (Senha)
     const novoId = Math.floor(1000 + Math.random() * 9000).toString();
 
     const { error } = await _supabase
         .from('pacientes')
-        .insert([{ 
-            id: novoId, 
-            nome: nome, 
-            email: email, 
-            senha_acesso: novoId, // Senha igual ao ID
+        .insert([{
+            id: novoId,
+            nome: nome,
+            email: email,
+            senha_acesso: novoId,
             financeiro: [],
-            notas: ""
+            notas: "",
+            user_id: user.id
         }]);
 
     if (error) {
@@ -68,7 +79,7 @@ async function salvarNovoPacienteSQL() {
         alert("✅ Paciente cadastrado!\nSenha de acesso: " + novoId);
         document.getElementById('nomeInput').value = '';
         document.getElementById('emailInput').value = '';
-        renderTable(); // Atualiza a lista automaticamente
+        renderTable();
     }
 }
 
