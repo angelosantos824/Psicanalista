@@ -223,11 +223,37 @@ async function excluirLancamento(id) {
                 "Nenhuma história registrada.";
         }
 
-        if (document.getElementById('anamneseConteudo')) {
-            document.getElementById('anamneseConteudo').innerText =
-                paciente.anamnese ||
-                "Nenhuma anamnese registrada.";
+        const anamneseConteudo = document.getElementById('anamneseConteudo');
+
+if (anamneseConteudo) {
+    let anamnese =
+        paciente.anamnese_completa ||
+        paciente.anamnese ||
+        null;
+
+    if (!anamnese) {
+        anamneseConteudo.innerHTML =
+            "Nenhuma anamnese registrada.";
+    } else {
+        if (typeof anamnese === "string") {
+            try {
+                anamnese = JSON.parse(anamnese);
+            } catch (e) {
+                anamneseConteudo.innerHTML = anamnese;
+                return;
+            }
         }
+
+        anamneseConteudo.innerHTML = Object.entries(anamnese)
+            .map(([campo, valor]) => `
+                <p>
+                    <strong>${campo.replaceAll('_', ' ')}:</strong><br>
+                    ${valor || "---"}
+                </p>
+            `)
+            .join("");
+    }
+}
 
         if (document.getElementById('notasEvolucao')) {
             document.getElementById('notasEvolucao').value =
@@ -249,6 +275,39 @@ async function excluirLancamento(id) {
         if (liberar7Dias) {
             liberar7Dias.checked = paciente.liberar_7dias === true;
         }
+
+        // --- PROGRESSO DO EXERCÍCIO 7 DIAS ---
+const barraProgresso =
+    document.getElementById('barraProgresso');
+
+const textoProgresso =
+    document.getElementById('textoProgresso');
+
+if (barraProgresso && textoProgresso) {
+
+    let respostas7 =
+        paciente.respostas_7dias || {};
+
+    if (typeof respostas7 === "string") {
+        try {
+            respostas7 = JSON.parse(respostas7);
+        } catch {
+            respostas7 = {};
+        }
+    }
+
+    const diasRespondidos =
+        Object.keys(respostas7).length;
+
+    const percentual =
+        Math.round((diasRespondidos / 7) * 100);
+
+    barraProgresso.style.width =
+        `${percentual}%`;
+
+    textoProgresso.innerText =
+        `${percentual}% concluído (${diasRespondidos}/7 dias)`;
+}
 
         // Agenda no painel do cliente
         const elementoData = document.getElementById('dataAgendada');
@@ -378,9 +437,8 @@ function renderFinanceiroPacienteTabela(tbody, financeiro) {
         USD: '$'
     };
 
-    financeiro.forEach(item => {
+    financeiro.forEach((item, index) => {
         const status = item.status || "Pendente";
-
         const statusClasse =
             status.toLowerCase() === 'pago'
                 ? 'status-pago'
@@ -393,13 +451,68 @@ function renderFinanceiroPacienteTabela(tbody, financeiro) {
         tbody.innerHTML += `
             <tr>
                 <td>${item.data || "---"}</td>
-                <td><strong>${moeda}</strong> ${simbolo} ${valor.toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2
-                })}</td>
-                <td class="${statusClasse}">${status}</td>
+
+                <td>
+                    <strong>${moeda}</strong> ${simbolo} ${valor.toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2
+                    })}
+                </td>
+
+                <td class="${statusClasse}">
+                    ${status}
+
+                    ${
+                        status.toLowerCase() !== 'pago'
+                            ? `<br>
+                               <button 
+                                   onclick="marcarSessaoPaga(${index})"
+                                   style="margin-top:6px; padding:5px 8px; border:none; border-radius:6px; background:#7b8f80; color:white; cursor:pointer; font-size:11px;">
+                                   Marcar pago
+                               </button>`
+                            : ""
+                    }
+                </td>
             </tr>
         `;
     });
+}
+
+async function marcarSessaoPaga(index) {
+    const { data: paciente, error: erroBusca } = await _supabase
+        .from('pacientes')
+        .select('financeiro')
+        .eq('id', idCliente)
+        .single();
+
+    if (erroBusca) {
+        console.error(erroBusca);
+        alert("Erro ao buscar financeiro.");
+        return;
+    }
+
+    const financeiroAtual = paciente.financeiro || [];
+
+    if (!financeiroAtual[index]) {
+        alert("Sessão não encontrada.");
+        return;
+    }
+
+    financeiroAtual[index].status = "Pago";
+
+    const { error } = await _supabase
+        .from('pacientes')
+        .update({
+            financeiro: financeiroAtual
+        })
+        .eq('id', idCliente);
+
+    if (error) {
+        console.error(error);
+        alert("Erro ao atualizar pagamento.");
+        return;
+    }
+
+    carregarDadosPaciente();
 }
 
 async function addSessao() {
