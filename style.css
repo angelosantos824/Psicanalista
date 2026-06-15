@@ -1288,62 +1288,56 @@ h2{
 ========================================== */
 
 @media print {
-
     body {
-        background: white !important;
-        margin: 0 !important;
+        background: #fff !important;
         padding: 0 !important;
     }
 
-    .header,
-    .sidebar,
-    .menu,
-    .btn,
-    button,
-    .acoes-prontuario,
-    .footer,
-    .navbar {
+    .header-ficha {
+        display: block !important;
+    }
+
+    .header-ficha a,
+    .btn-print,
+    .btn-save,
+    .col-financeiro,
+    .agendamento-box,
+    footer {
         display: none !important;
     }
 
-    .container,
-    .prontuario-container,
-    .dashboard-grid,
-    .grid-detalhes,
-    .grid-cards {
-        display: block !important;
+    .detalhes-container {
         width: 100% !important;
         max-width: 100% !important;
+        margin: 0 !important;
+        padding: 25px !important;
     }
 
-    .card,
-    .bloco,
-    .box,
-    .info-card {
+    .grid-prontuario {
+        display: block !important;
+    }
+
+    .card {
         width: 100% !important;
         max-width: 100% !important;
-        display: block !important;
-        page-break-inside: avoid;
-        break-inside: avoid;
-        margin-bottom: 20px !important;
         box-shadow: none !important;
         border: 1px solid #ddd !important;
-    }
-
-    h1, h2, h3 {
-        page-break-after: avoid;
-    }
-
-    table {
-        width: 100% !important;
-        border-collapse: collapse;
-    }
-
-    tr {
         page-break-inside: avoid;
+        break-inside: avoid;
     }
 
-    .page-break {
-        page-break-before: always;
+    input,
+    select,
+    textarea {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        font-size: 13px !important;
+    }
+
+    .dados-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 18px !important;
     }
 }
