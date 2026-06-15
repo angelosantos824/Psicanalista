@@ -1288,13 +1288,20 @@ h2{
 ========================================== */
 
 @media print {
+    @page {
+        size: A4 portrait;
+        margin: 18mm 14mm;
+    }
+
     body {
         background: #fff !important;
         padding: 0 !important;
+        margin: 0 !important;
     }
 
     .header-ficha {
         display: block !important;
+        margin-bottom: 20px !important;
     }
 
     .header-ficha a,
@@ -1308,22 +1315,46 @@ h2{
 
     .detalhes-container {
         width: 100% !important;
-        max-width: 100% !important;
+        max-width: none !important;
         margin: 0 !important;
-        padding: 25px !important;
+        padding: 0 !important;
     }
 
-    .grid-prontuario {
+    .grid-prontuario,
+    .col-dados {
         display: block !important;
+        width: 100% !important;
     }
 
     .card {
+        display: block !important;
         width: 100% !important;
-        max-width: 100% !important;
         box-shadow: none !important;
         border: 1px solid #ddd !important;
-        page-break-inside: avoid;
-        break-inside: avoid;
+        margin: 0 0 18px 0 !important;
+        padding: 18px !important;
+
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    .card h3 {
+        break-after: avoid !important;
+        page-break-after: avoid !important;
+    }
+
+    .historia-box,
+    .anamnese-box,
+    textarea,
+    table {
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+    }
+
+    .dados-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
     }
 
     input,
@@ -1332,12 +1363,19 @@ h2{
         border: none !important;
         background: transparent !important;
         padding: 0 !important;
-        font-size: 13px !important;
+        font-size: 12px !important;
     }
 
-    .dados-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 18px !important;
+    textarea {
+        height: auto !important;
+        min-height: 120px !important;
+        overflow: visible !important;
+        white-space: pre-wrap !important;
+    }
+
+    tr,
+    p {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
     }
 }
