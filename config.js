@@ -156,12 +156,6 @@ async function excluirLancamento(id) {
         return;
     }
 
-    const fusoPacienteSelect = document.getElementById('fusoPaciente');
-
-if (fusoPacienteSelect) {
-    fusoPacienteSelect.value = paciente.fuso_paciente || 'Europe/Lisbon';
-}
-
     localStorage.setItem('paciente_id', idCliente);
 
     try {
@@ -172,6 +166,12 @@ if (fusoPacienteSelect) {
             .single();
 
         if (error || !paciente) throw error;
+
+        const fusoPacienteSelect = document.getElementById('fusoPaciente');
+
+        if (fusoPacienteSelect) {
+            fusoPacienteSelect.value = paciente.fuso_paciente || 'Europe/Lisbon';
+        }
 
         // Nome no painel do cliente
         const nomeCliente = document.getElementById('nomeCliente');
@@ -620,8 +620,6 @@ async function salvarTudo() {
         return;
     }
 
-    fuso_paciente: document.getElementById('fusoPaciente')?.value || 'Europe/Lisbon'
-
     let proximoAgendamento = null;
 
     const data = document.getElementById('agendamentoData')?.value;
@@ -639,7 +637,8 @@ async function salvarTudo() {
         .update({
             proximo_agendamento: proximoAgendamento,
             liberar_7dias: liberar7Dias,
-            link_reuniao: document.getElementById('linkReuniao')?.value || null
+            link_reuniao: document.getElementById('linkReuniao')?.value || null,
+            fuso_paciente: document.getElementById('fusoPaciente')?.value || 'Europe/Lisbon'
         })
         .eq('id', idCliente);
 
