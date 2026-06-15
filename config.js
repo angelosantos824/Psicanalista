@@ -216,6 +216,37 @@ async function excluirLancamento(id) {
             document.getElementById('morada').value = paciente.morada || "";
         }
 
+       const linkReuniao = document.getElementById('linkReuniao');
+
+if (linkReuniao) {
+    linkReuniao.value = paciente.link_reuniao || "";
+}
+
+const btnReuniaoCliente = document.getElementById('btnReuniaoCliente');
+const semLinkReuniao = document.getElementById('semLinkReuniao');
+
+if (btnReuniaoCliente && semLinkReuniao) {
+
+    if (paciente.link_reuniao) {
+
+        btnReuniaoCliente.href =
+            paciente.link_reuniao;
+
+        btnReuniaoCliente.style.display =
+            'inline-block';
+
+        semLinkReuniao.style.display =
+            'none';
+
+    } else {
+
+        btnReuniaoCliente.style.display =
+            'none';
+
+        semLinkReuniao.style.display =
+            'block';
+    }
+}
         if (document.getElementById('historiaCliente')) {
             document.getElementById('historiaCliente').innerText =
                 paciente.historia ||
@@ -592,7 +623,8 @@ async function salvarTudo() {
         .from('pacientes')
         .update({
             proximo_agendamento: proximoAgendamento,
-            liberar_7dias: liberar7Dias
+            liberar_7dias: liberar7Dias,
+            link_reuniao: document.getElementById('linkReuniao')?.value || null
         })
         .eq('id', idCliente);
 
@@ -777,11 +809,11 @@ async function salvarDia(num) {
         return;
     }
 
-    alert("Sua reflexão foi salva com sucesso.");
-    location.reload();
-}
+            alert("Sua reflexão foi salva com sucesso.");
+            location.reload();
+    }
 
-document.addEventListener('DOMContentLoaded', carregarExercicio7Dias);
+        document.addEventListener('DOMContentLoaded', carregarExercicio7Dias);
 
         function deslogar() {
             localStorage.removeItem('paciente_id');

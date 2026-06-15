@@ -48,15 +48,27 @@
             </div>
 
             <h3>Minha Sessão Online</h3>
-            <div class="grid-acoes" style="grid-template-columns: 1fr;">
-                <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px dashed #7b8f80; text-align: center;">
-                    <p style="margin-bottom: 15px; font-size: 0.9rem;">Acesse sua sala virtual no horário agendado:</p>
-                    <div style="display: flex; gap: 10px; justify-content: center;">
-                        <a href="https://us02web.zoom.us/j/85844194665?pwd=Mur0SgWJs9lqzCxe9WGNhjSdLasCFM.1#success" target="_blank" class="btn-acao btn-reuniao" style="flex: 1;">Entrar via Zoom</a>
-                        <a href="https://meet.google.com/landing" target="_blank" class="btn-acao btn-reuniao" style="flex: 1; background: #4285f4;">Entrar via Meet</a>
-                    </div>
-                </div>
-            </div>
+
+<div class="grid-acoes" style="grid-template-columns: 1fr;">
+    <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px dashed #7b8f80; text-align: center;">
+        <p style="margin-bottom: 15px; font-size: 0.9rem;">
+            Acesse sua sala virtual no horário agendado:
+        </p>
+
+        <a 
+            id="btnReuniaoCliente"
+            href="#"
+            target="_blank"
+            class="btn-acao btn-reuniao"
+            style="display:none;">
+            Entrar na Sessão Online
+        </a>
+
+        <p id="semLinkReuniao" style="color:#999; font-size:0.85rem;">
+            O link da reunião ainda não foi disponibilizado.
+        </p>
+    </div>
+</div>
 
             <h3>Extrato de Sessões</h3>
             <div style="overflow-x: auto;">
