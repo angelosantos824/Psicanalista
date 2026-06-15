@@ -156,6 +156,12 @@ async function excluirLancamento(id) {
         return;
     }
 
+    const fusoPacienteSelect = document.getElementById('fusoPaciente');
+
+if (fusoPacienteSelect) {
+    fusoPacienteSelect.value = paciente.fuso_paciente || 'Europe/Lisbon';
+}
+
     localStorage.setItem('paciente_id', idCliente);
 
     try {
@@ -353,20 +359,27 @@ if (barraProgresso && textoProgresso) {
                 cardAviso.style.display = 'block';
 
                 if (dataSessao > agora) {
-                    const opcoes = {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                    };
 
-                    const horas =
-                        String(dataSessao.getHours()).padStart(2, '0');
+    const fuso =
+        paciente.fuso_paciente || 'Europe/Lisbon';
 
-                    const minutos =
-                        String(dataSessao.getMinutes()).padStart(2, '0');
+    const dataFormatada =
+        dataSessao.toLocaleDateString('pt-BR', {
+            timeZone: fuso,
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
 
-                    elementoData.innerText =
-                        `${dataSessao.toLocaleDateString('pt-BR', opcoes)} às ${horas}:${minutos}`;
+    const horaFormatada =
+        dataSessao.toLocaleTimeString('pt-BR', {
+            timeZone: fuso,
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+    elementoData.innerText =
+        `${dataFormatada} às ${horaFormatada}`;
 
                     if (fusoAviso) {
                         fusoAviso.style.display = 'block';
@@ -606,6 +619,8 @@ async function salvarTudo() {
         alert("Paciente não identificado.");
         return;
     }
+
+    fuso_paciente: document.getElementById('fusoPaciente')?.value || 'Europe/Lisbon'
 
     let proximoAgendamento = null;
 
