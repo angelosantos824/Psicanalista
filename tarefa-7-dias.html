@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>Exercício 7 Dias | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
     <style>
         .bloco-dia { 
             background: white; padding: 25px; border-radius: 15px; 
@@ -94,114 +92,9 @@
         </div>
     </div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const idCliente = urlParams.get('id');
-        let pacienteData = null;
-
-        async function carregarDados() {
-            if (!idCliente) return alert("Acesso inválido.");
-
-            const { data, error } = await _supabase
-                .from('pacientes')
-                .select('*')
-                .eq('id', idCliente)
-                .single();
-
-            if (error || !data) return;
-            pacienteData = data;
-
-            if (!data.data_inicio_7dias) {
-                await _supabase.from('pacientes').update({ data_inicio_7dias: new Date().toISOString() }).eq('id', idCliente);
-                location.reload();
-                return;
-            }
-
-            // LÓGICA DE ATUALIZAÇÃO À MEIA-NOITE (RESET 00:00:00)
-            const inicio = new Date(data.data_inicio_7dias);
-            inicio.setHours(0, 0, 0, 0); 
-
-            const hoje = new Date();
-            hoje.setHours(0, 0, 0, 0); 
-
-            const diffTempo = hoje.getTime() - inicio.getTime();
-            const diffDias = Math.floor(diffTempo / (1000 * 60 * 60 * 24)) + 1;
-            
-            const diaAtual = diffDias > 7 ? 7 : diffDias;
-
-            // Ajuste visual
-            const elementoProgresso = document.getElementById('progresso-texto');
-            elementoProgresso.innerText = `Você está no DIA ${diaAtual} da sua jornada.`;
-
-            // Lógica de exibição e preenchimento
-            const respostas = data.respostas_7dias || {};
-            const blocos = [1, 2, 3, 5, 7]; 
-
-            blocos.forEach(num => {
-                const bloco = document.getElementById(`bloco-${num}`);
-                if (num <= diaAtual) {
-                    bloco.style.display = 'block';
-                    
-                    if (respostas[`dia_${num}`]) {
-                        const btn = document.getElementById(`btn-${num}`);
-                        btn.innerText = "✅ Resposta Salva";
-                        btn.disabled = true;
-                        
-                        if (num === 2) {
-                            document.getElementById('dia-2-sentia').value = respostas.dia_2.sentia;
-                            document.getElementById('dia-2-queria').value = respostas.dia_2.queria;
-                            document.getElementById('dia-2-sentia').disabled = true;
-                            document.getElementById('dia-2-queria').disabled = true;
-                        } else {
-                            const campo = document.getElementById(`dia-${num}`);
-                            campo.value = respostas[`dia_${num}`];
-                            campo.disabled = true;
-                        }
-                    }
-                }
-            });
-        }
-
-        async function salvarDia(num) {
-            const btn = document.getElementById(`btn-${num}`);
-            btn.innerText = "Salvando...";
-
-            let valor;
-            if (num === 2) {
-                valor = {
-                    sentia: document.getElementById('dia-2-sentia').value,
-                    queria: document.getElementById('dia-2-queria').value
-                };
-            } else {
-                valor = document.getElementById(`dia-${num}`).value;
-            }
-
-            if (!valor || (num === 2 && (!valor.sentia || !valor.queria))) {
-                alert("Por favor, preencha o campo antes de salvar.");
-                btn.innerText = "Salvar Resposta";
-                return;
-            }
-
-            const novasRespostas = {
-                ...(pacienteData.respostas_7dias || {}),
-                [`dia_${num}`]: valor
-            };
-
-            const { error } = await _supabase
-                .from('pacientes')
-                .update({ respostas_7dias: novasRespostas })
-                .eq('id', idCliente);
-
-            if (error) {
-                alert("Erro ao salvar.");
-                btn.innerText = "Tentar novamente";
-            } else {
-                alert("Sua reflexão foi salva com sucesso.");
-                location.reload();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', carregarDados);
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+    
 </body>
 </html>

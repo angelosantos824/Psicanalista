@@ -606,6 +606,183 @@ async function salvarTudo() {
     carregarDadosPaciente();
 }
 
+let pacienteData = null;
+
+async function carregarExercicio7Dias() {
+    const progressoTexto = document.getElementById('progresso-texto');
+
+    if (!progressoTexto) return;
+
+    if (!idCliente) {
+        alert("Acesso inválido.");
+        return;
+    }
+
+    const { data, error } = await _supabase
+        .from('pacientes')
+        .select('*')
+        .eq('id', idCliente)
+        .single();
+
+    if (error || !data) {
+        console.error(error);
+        progressoTexto.innerText = "Erro ao carregar exercício.";
+        return;
+    }
+
+    pacienteData = data;
+
+    if (data.liberar_7dias !== true) {
+        progressoTexto.innerText = "Exercício ainda não liberado.";
+        return;
+    }
+
+    if (!data.data_inicio_7dias) {
+        await _supabase
+            .from('pacientes')
+            .update({
+                data_inicio_7dias: new Date().toISOString()
+            })
+            .eq('id', idCliente);
+
+        location.reload();
+        return;
+    }
+
+    const inicio = new Date(data.data_inicio_7dias);
+    inicio.setHours(0, 0, 0, 0);
+
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const diffTempo = hoje.getTime() - inicio.getTime();
+    const diffDias = Math.floor(diffTempo / (1000 * 60 * 60 * 24)) + 1;
+
+    const diaAtual = diffDias > 7 ? 7 : diffDias;
+
+    progressoTexto.innerText =
+        `Você está no DIA ${diaAtual} da sua jornada.`;
+
+    let respostas = data.respostas_7dias || {};
+
+    if (typeof respostas === "string") {
+        try {
+            respostas = JSON.parse(respostas);
+        } catch {
+            respostas = {};
+        }
+    }
+
+    const blocos = [1, 2, 3, 5, 7];
+
+    blocos.forEach(num => {
+        const bloco = document.getElementById(`bloco-${num}`);
+        if (!bloco) return;
+
+        if (num <= diaAtual) {
+            bloco.style.display = 'block';
+
+            if (respostas[`dia_${num}`]) {
+                const btn = document.getElementById(`btn-${num}`);
+
+                if (btn) {
+                    btn.innerText = "✅ Resposta Salva";
+                    btn.disabled = true;
+                }
+
+                if (num === 2) {
+                    const sentia = document.getElementById('dia-2-sentia');
+                    const queria = document.getElementById('dia-2-queria');
+
+                    if (sentia) {
+                        sentia.value = respostas.dia_2.sentia || "";
+                        sentia.disabled = true;
+                    }
+
+                    if (queria) {
+                        queria.value = respostas.dia_2.queria || "";
+                        queria.disabled = true;
+                    }
+                } else {
+                    const campo = document.getElementById(`dia-${num}`);
+
+                    if (campo) {
+                        campo.value = respostas[`dia_${num}`];
+                        campo.disabled = true;
+                    }
+                }
+            }
+        }
+    });
+}
+
+async function salvarDia(num) {
+    const btn = document.getElementById(`btn-${num}`);
+
+    if (btn) {
+        btn.innerText = "Salvando...";
+    }
+
+    let valor;
+
+    if (num === 2) {
+        valor = {
+            sentia: document.getElementById('dia-2-sentia').value,
+            queria: document.getElementById('dia-2-queria').value
+        };
+    } else {
+        valor = document.getElementById(`dia-${num}`).value;
+    }
+
+    if (!valor || (num === 2 && (!valor.sentia || !valor.queria))) {
+        alert("Por favor, preencha o campo antes de salvar.");
+
+        if (btn) {
+            btn.innerText = "Salvar Resposta";
+        }
+
+        return;
+    }
+
+    let respostasAtuais = pacienteData?.respostas_7dias || {};
+
+    if (typeof respostasAtuais === "string") {
+        try {
+            respostasAtuais = JSON.parse(respostasAtuais);
+        } catch {
+            respostasAtuais = {};
+        }
+    }
+
+    const novasRespostas = {
+        ...respostasAtuais,
+        [`dia_${num}`]: valor
+    };
+
+    const { error } = await _supabase
+        .from('pacientes')
+        .update({
+            respostas_7dias: novasRespostas
+        })
+        .eq('id', idCliente);
+
+    if (error) {
+        console.error(error);
+        alert("Erro ao salvar.");
+
+        if (btn) {
+            btn.innerText = "Tentar novamente";
+        }
+
+        return;
+    }
+
+    alert("Sua reflexão foi salva com sucesso.");
+    location.reload();
+}
+
+document.addEventListener('DOMContentLoaded', carregarExercicio7Dias);
+
         function deslogar() {
             localStorage.removeItem('paciente_id');
             window.location.href = "index.html";
