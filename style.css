@@ -1225,3 +1225,62 @@ h2{
     max-width: 100% !important;
   }
 }
+
+ /* Estilos Financeiro Multimoedas */
+        .resumo-caixa { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .resumo-item { padding: 15px; border-radius: 12px; text-align: center; color: white; }
+        .bg-real { background: #8c7851; }
+        .bg-euro { background: #7b8f80; }
+        .bg-dolar { background: #5a6e81; }
+
+        .valor-entrada { color: #2e7d32; font-weight: bold; }
+        .valor-saida { color: #d32f2f; font-weight: bold; }
+        .btn-financeiro { background: #7b8f80; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 15px; color: #8c7851; border-bottom: 2px solid #f4f1ea; font-size: 0.85rem; }
+        td { padding: 15px; border-bottom: 1px solid #f4f1ea; color: #666; font-size: 0.9rem; }
+        
+        .id-label { background: #f4f1ea; padding: 4px 8px; border-radius: 5px; font-weight: bold; color: #8c7851; }
+        .btn-excluir { background: #ff9999; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        
+        footer { margin-top: 50px; text-align: center; padding: 20px; color: #999; border-top: 1px solid #eee; }
+
+        .cliente-container { 
+            max-width: 800px; 
+            margin: 50px auto; 
+            padding: 30px; 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }
+        .header-cliente { border-bottom: 2px solid #fcfbf9; margin-bottom: 20px; padding-bottom: 10px; }
+        
+        .card-agendamento {
+            background: #fff9db;
+            border: 1px solid #fab005;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            display: none; 
+        }
+        .card-agendamento h4 { margin: 0; color: #85741d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .card-agendamento .data-destaque { font-size: 1.5rem; font-weight: bold; color: #444; margin-top: 10px; }
+        .fuso-aviso { font-size: 0.75rem; color: #85741d; margin-top: 5px; font-weight: normal; }
+
+        .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; }
+        .btn-acao:hover { background: #d4a373; color: white; transform: translateY(-3px); }
+        .btn-reuniao { background: #7b8f80; color: white; border: none; }
+        .btn-reuniao:hover { background: #6a7c6e; }
+        
+        .status-pago { color: #7b8f80; font-weight: bold; }
+        .status-pendente { color: #d4a373; font-weight: bold; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .btn-sair { margin-top: 30px; display: inline-block; text-decoration: none; color: #888; font-size: 0.9rem; cursor: pointer; border: none; background: none; }
+        
+        #loading-overlay { text-align: center; padding: 40px; color: #d4a373; font-weight: bold; }
+
+        

@@ -5,48 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minha Área | Michelly Santos</title>
     <link rel="stylesheet" href="style.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-
-    <style>
-        .cliente-container { 
-            max-width: 800px; 
-            margin: 50px auto; 
-            padding: 30px; 
-            background: white; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
-        }
-        .header-cliente { border-bottom: 2px solid #fcfbf9; margin-bottom: 20px; padding-bottom: 10px; }
-        
-        .card-agendamento {
-            background: #fff9db;
-            border: 1px solid #fab005;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            text-align: center;
-            display: none; 
-        }
-        .card-agendamento h4 { margin: 0; color: #85741d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
-        .card-agendamento .data-destaque { font-size: 1.5rem; font-weight: bold; color: #444; margin-top: 10px; }
-        .fuso-aviso { font-size: 0.75rem; color: #85741d; margin-top: 5px; font-weight: normal; }
-
-        .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
-        .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; }
-        .btn-acao:hover { background: #d4a373; color: white; transform: translateY(-3px); }
-        .btn-reuniao { background: #7b8f80; color: white; border: none; }
-        .btn-reuniao:hover { background: #6a7c6e; }
-        
-        .status-pago { color: #7b8f80; font-weight: bold; }
-        .status-pendente { color: #d4a373; font-weight: bold; }
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        .btn-sair { margin-top: 30px; display: inline-block; text-decoration: none; color: #888; font-size: 0.9rem; cursor: pointer; border: none; background: none; }
-        
-        #loading-overlay { text-align: center; padding: 40px; color: #d4a373; font-weight: bold; }
-    </style>
+   
 </head>
 <body style="background-color: #fcfbf9;">
 
@@ -118,116 +77,7 @@
         </div>
     </div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const idCliente = urlParams.get('id');
-
-        async function carregarDadosPaciente() {
-            if (!idCliente) {
-                alert("Sessão expirada ou inválida.");
-                window.location.replace("index.html");
-                return;
-            }
-
-            localStorage.setItem('paciente_id', idCliente);
-            document.getElementById('btnAnamnese').href = `anamnese.html?id=${idCliente}`;
-
-            try {
-                const { data: paciente, error } = await _supabase
-                    .from('pacientes')
-                    .select('*')
-                    .eq('id', idCliente)
-                    .single();
-
-                if (error || !paciente) throw error;
-
-                document.getElementById('nomeCliente').innerText = paciente.nome;
-
-                // --- LÓGICA DA TAREFA 7 DIAS ---
-                const btnTarefa7 = document.getElementById('btnTarefa7');
-                if (btnTarefa7) {
-                    if (paciente.liberar_7dias === true) {
-                        btnTarefa7.style.display = 'flex';
-                        btnTarefa7.href = `tarefa-7-dias.html?id=${idCliente}`;
-                    } else {
-                        btnTarefa7.style.display = 'none';
-                    }
-                }
-
-                // --- LÓGICA DO AGENDAMENTO ATUALIZADA ---
-                const elementoData = document.getElementById('dataAgendada');
-                const cardAviso = document.getElementById('cardAvisoAgenda');
-                const fusoAviso = document.getElementById('fusoCliente');
-
-                if (paciente.proximo_agendamento) {
-                    const dataSessao = new Date(paciente.proximo_agendamento);
-                    const agora = new Date();
-
-                    cardAviso.style.display = 'block';
-
-                    if (dataSessao > agora) {
-                        // Sessão Futura
-                        const opcoes = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                        const horas = String(dataSessao.getHours()).padStart(2, '0');
-                        const minutos = String(dataSessao.getMinutes()).padStart(2, '0');
-                        elementoData.innerText = `${dataSessao.toLocaleDateString('pt-BR', opcoes)} às ${horas}:${minutos}`;
-                        fusoAviso.style.display = 'block';
-                    } else {
-                        // Sessão Passada (Jessica cairá aqui)
-                        elementoData.innerHTML = "<span style='color: #85741d; font-weight: normal; font-size: 1.1rem;'>Aguardando novo agendamento...</span>";
-                        fusoAviso.style.display = 'none';
-                    }
-                } else {
-                    cardAviso.style.display = 'none';
-                }
-
-                if (paciente.link_drive_pasta || paciente.pasta_nome) {
-                    document.getElementById('linkPasta').href = paciente.link_drive_pasta || paciente.pasta_nome;
-                }
-
-                // --- LÓGICA FINANCEIRA ---
-                const tbody = document.getElementById('tabelaFinanceiraCliente');
-                tbody.innerHTML = "";
-                const financeiro = paciente.financeiro || [];
-
-                if (financeiro.length > 0) {
-                    const simbolos = { 'BRL': 'R$', 'EUR': '€', 'USD': '$' };
-
-                    financeiro.forEach(item => {
-                        const statusClasse = item.status.toLowerCase() === 'pago' ? 'status-pago' : 'status-pendente';
-                        const moeda = item.moeda || 'BRL';
-                        const simbolo = simbolos[moeda] || 'R$';
-
-                        tbody.innerHTML += `
-                            <tr>
-                                <td>${item.data}</td>
-                                <td><strong>${moeda}</strong></td>
-                                <td>${simbolo} ${parseFloat(item.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td> 
-                                <td class="${statusClasse}">${item.status}</td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; padding:20px; color:#999;'>Nenhum registro de sessão disponível.</td></tr>";
-                }
-
-                document.getElementById('loading-overlay').style.display = 'none';
-                document.getElementById('conteudo-principal').style.display = 'block';
-
-            } catch (err) {
-                console.error("Erro ao carregar dados:", err.message);
-                alert("Erro ao carregar informações.");
-                window.location.replace("index.html");
-            }
-        }
-
-        function deslogar() {
-            localStorage.removeItem('paciente_id');
-            window.location.href = "index.html";
-        }
-
-        carregarDadosPaciente();
-    </script>
+    
     
     <!-- =========================================================
        RODAPÉ
@@ -365,6 +215,9 @@
   </div>
 
 </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
 
 </body>
 </html>

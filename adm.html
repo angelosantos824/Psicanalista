@@ -24,25 +24,7 @@
         .btn-salvar { width: 100%; background: #d4a373; color: white; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
         .btn-salvar:hover { background: #b88b5d; }
         
-        /* Estilos Financeiro Multimoedas */
-        .resumo-caixa { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .resumo-item { padding: 15px; border-radius: 12px; text-align: center; color: white; }
-        .bg-real { background: #8c7851; }
-        .bg-euro { background: #7b8f80; }
-        .bg-dolar { background: #5a6e81; }
-
-        .valor-entrada { color: #2e7d32; font-weight: bold; }
-        .valor-saida { color: #d32f2f; font-weight: bold; }
-        .btn-financeiro { background: #7b8f80; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; padding: 15px; color: #8c7851; border-bottom: 2px solid #f4f1ea; font-size: 0.85rem; }
-        td { padding: 15px; border-bottom: 1px solid #f4f1ea; color: #666; font-size: 0.9rem; }
-        
-        .id-label { background: #f4f1ea; padding: 4px 8px; border-radius: 5px; font-weight: bold; color: #8c7851; }
-        .btn-excluir { background: #ff9999; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-        
-        footer { margin-top: 50px; text-align: center; padding: 20px; color: #999; border-top: 1px solid #eee; }
+       
     </style>
 </head>
 <body>
@@ -138,120 +120,7 @@
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-    <script>
-        // --- GESTÃO DE PACIENTES ---
-        async function renderTable() {
-            const tbody = document.getElementById('tabelaClientes');
-            const { data: pacientes, error } = await _supabase.from('pacientes').select('*').order('nome');
-            if (error) return;
-            
-            tbody.innerHTML = '';
-            pacientes.forEach(p => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><span class="id-label">#${p.senha_acesso || '---'}</span></td>
-                        <td style="font-weight: bold; color: #d4a373;">${p.nome}</td>
-                        <td>
-                            <a href="detalhes-cliente.html?id=${p.id}" style="background: #7b8f80; color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 12px;">Prontuário</a>
-                            <button class="btn-excluir" style="padding: 6px 12px;" onclick="excluirPaciente('${p.id}')">Excluir</button>
-                        </td>
-                    </tr>`;
-            });
-        }
-
-        async function salvarPacienteSQL() {
-            const nome = document.getElementById('nomeInput').value;
-            const email = document.getElementById('emailInput').value;
-            if(!nome || !email) return alert("Preencha nome e e-mail.");
-            const senha = Math.floor(1000 + Math.random() * 9000).toString();
-            await _supabase.from('pacientes').insert([{ nome, email, senha_acesso: senha, codigo_acesso: senha }]);
-            document.getElementById('nomeInput').value = ''; 
-            document.getElementById('emailInput').value = ''; 
-            renderTable();
-        }
-
-        async function excluirPaciente(id) {
-            if (confirm("Excluir permanentemente?")) {
-                await _supabase.from('pacientes').delete().eq('id', id);
-                renderTable();
-            }
-        }
-
-        // --- GESTÃO FINANCEIRA MULTIMOEDAS ---
-        async function renderFinanceiro() {
-            const tbody = document.getElementById('tabelaFinanceira');
-            const { data: lancamentos, error } = await _supabase.from('fluxo_caixa').select('*').order('data', { ascending: false });
-            if (error) return;
-
-            let saldos = { BRL: 0, EUR: 0, USD: 0 };
-            const simbolos = { BRL: 'R$', EUR: '€', USD: '$' };
-            
-            tbody.innerHTML = '';
-            lancamentos.forEach(l => {
-                const valorNum = parseFloat(l.valor);
-                const moeda = l.moeda || 'BRL'; // Fallback para registros antigos
-                const isEntrada = l.tipo === 'entrada';
-                
-                // Soma no saldo da moeda específica
-                saldos[moeda] += isEntrada ? valorNum : -valorNum;
-                
-                const dataFormatada = new Date(l.data).toLocaleDateString('pt-BR');
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${dataFormatada}</td>
-                        <td>${l.descricao}</td>
-                        <td><strong>${moeda}</strong></td>
-                        <td class="${isEntrada ? 'valor-entrada' : 'valor-saida'}">
-                            ${isEntrada ? '+' : '-'} ${simbolos[moeda]} ${valorNum.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
-                        </td>
-                        <td><button class="btn-excluir" style="padding: 5px 10px;" onclick="excluirLancamento('${l.id}')">✕</button></td>
-                    </tr>`;
-            });
-
-            // Atualiza os cards de saldo
-            document.getElementById('saldoBRL').innerText = `R$ ${saldos.BRL.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('saldoEUR').innerText = `€ ${saldos.EUR.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('saldoUSD').innerText = `$ ${saldos.USD.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        }
-
-        async function salvarLancamento() {
-            const descricao = document.getElementById('descFinanceiro').value;
-            const valor = document.getElementById('valorFinanceiro').value;
-            const moeda = document.getElementById('moedaFinanceiro').value;
-            const tipo = document.getElementById('tipoFinanceiro').value;
-
-            if (!descricao || !valor) return alert("Preencha descrição e valor.");
-
-            await _supabase.from('fluxo_caixa').insert([{ 
-                descricao, 
-                valor: parseFloat(valor), 
-                moeda, 
-                tipo 
-            }]);
-
-            document.getElementById('descFinanceiro').value = '';
-            document.getElementById('valorFinanceiro').value = '';
-            renderFinanceiro();
-        }
-
-        async function excluirLancamento(id) {
-            if (confirm("Remover registro?")) {
-                await _supabase.from('fluxo_caixa').delete().eq('id', id);
-                renderFinanceiro();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderTable();
-            renderFinanceiro();
-        });
-    </script>
-        
-        
-        <footer class="footer-premium">
+<footer class="footer-premium">
 
   <div class="footer-overlay"></div>
 
@@ -384,6 +253,9 @@
   </div>
 
 </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
 
 </body>
 </html>

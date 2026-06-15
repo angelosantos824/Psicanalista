@@ -140,3 +140,4 @@ document.addEventListener('DOMContentLoaded', () => {
         el.classList.add('visible');
     });
 });
+

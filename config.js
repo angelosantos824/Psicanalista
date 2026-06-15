@@ -5,3 +5,461 @@ const supabaseKey = 'sb_publishable_54DeRkbOo3SwBZSXZawFiA_i6FEnBqg';
 // 2. Use as constantes dentro do createClient
 // Certifique-se de que o script do Supabase está no seu HTML antes deste arquivo!
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// --- GESTÃO DE PACIENTES ---
+        async function renderTable() {
+            const tbody = document.getElementById('tabelaClientes');
+            const { data: pacientes, error } = await _supabase.from('pacientes').select('*').order('nome');
+            if (error) return;
+            
+            tbody.innerHTML = '';
+            pacientes.forEach(p => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="id-label">#${p.senha_acesso || '---'}</span></td>
+                        <td style="font-weight: bold; color: #d4a373;">${p.nome}</td>
+                        <td>
+                            <a href="detalhes-cliente.html?id=${p.id}" style="background: #7b8f80; color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 12px;">Prontuário</a>
+                            <button class="btn-excluir" style="padding: 6px 12px;" onclick="excluirPaciente('${p.id}')">Excluir</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        async function salvarPacienteSQL() {
+            const nome = document.getElementById('nomeInput').value;
+            const email = document.getElementById('emailInput').value;
+            if(!nome || !email) return alert("Preencha nome e e-mail.");
+            const senha = Math.floor(1000 + Math.random() * 9000).toString();
+            await _supabase.from('pacientes').insert([{ nome, email, senha_acesso: senha, codigo_acesso: senha }]);
+            document.getElementById('nomeInput').value = ''; 
+            document.getElementById('emailInput').value = ''; 
+            renderTable();
+        }
+
+        async function excluirPaciente(id) {
+            if (confirm("Excluir permanentemente?")) {
+                await _supabase.from('pacientes').delete().eq('id', id);
+                renderTable();
+            }
+        }
+
+        // --- GESTÃO FINANCEIRA MULTIMOEDAS ---
+        async function renderFinanceiro() {
+            const tbody = document.getElementById('tabelaFinanceira');
+            const { data: lancamentos, error } = await _supabase.from('fluxo_caixa').select('*').order('data', { ascending: false });
+            if (error) return;
+
+            let saldos = { BRL: 0, EUR: 0, USD: 0 };
+            const simbolos = { BRL: 'R$', EUR: '€', USD: '$' };
+            
+            tbody.innerHTML = '';
+            lancamentos.forEach(l => {
+                const valorNum = parseFloat(l.valor);
+                const moeda = l.moeda || 'BRL'; // Fallback para registros antigos
+                const isEntrada = l.tipo === 'entrada';
+                
+                // Soma no saldo da moeda específica
+                saldos[moeda] += isEntrada ? valorNum : -valorNum;
+                
+                const dataFormatada = new Date(l.data).toLocaleDateString('pt-BR');
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${dataFormatada}</td>
+                        <td>${l.descricao}</td>
+                        <td><strong>${moeda}</strong></td>
+                        <td class="${isEntrada ? 'valor-entrada' : 'valor-saida'}">
+                            ${isEntrada ? '+' : '-'} ${simbolos[moeda]} ${valorNum.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                        </td>
+                        <td><button class="btn-excluir" style="padding: 5px 10px;" onclick="excluirLancamento('${l.id}')">✕</button></td>
+                    </tr>`;
+            });
+
+            // Atualiza os cards de saldo
+            document.getElementById('saldoBRL').innerText = `R$ ${saldos.BRL.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('saldoEUR').innerText = `€ ${saldos.EUR.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('saldoUSD').innerText = `$ ${saldos.USD.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        }
+
+       async function salvarLancamento() {
+    const descricao =
+        document.getElementById('descFinanceiro').value.trim();
+
+    const valor =
+        document.getElementById('valorFinanceiro').value;
+
+    const moeda =
+        document.getElementById('moedaFinanceiro').value;
+
+    const tipo =
+        document.getElementById('tipoFinanceiro').value;
+
+    if (!descricao || !valor) {
+        alert("Preencha descrição e valor.");
+        return;
+    }
+
+    const { error } =
+        await _supabase
+            .from('fluxo_caixa')
+            .insert([{
+                descricao: descricao,
+                valor: parseFloat(valor),
+                moeda: moeda,
+                tipo: tipo
+            }]);
+
+    if (error) {
+        console.error(error);
+        alert("Erro ao salvar lançamento.");
+        return;
+    }
+
+    document.getElementById('descFinanceiro').value = '';
+    document.getElementById('valorFinanceiro').value = '';
+    document.getElementById('tipoFinanceiro').value = 'entrada';
+
+    renderFinanceiro();
+}
+
+async function excluirLancamento(id) {
+
+    if (!confirm("Remover registro?")) return;
+
+    const { error } =
+        await _supabase
+            .from('fluxo_caixa')
+            .delete()
+            .eq('id', id);
+
+    if (error) {
+        console.error(error);
+        alert("Erro ao excluir lançamento.");
+        return;
+    }
+
+    renderFinanceiro();
+}
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            renderFinanceiro();
+        });
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const idCliente = urlParams.get('id');
+
+        async function carregarDadosPaciente() {
+    if (!idCliente) {
+        console.warn("Nenhum ID recebido.");
+        return;
+    }
+
+    localStorage.setItem('paciente_id', idCliente);
+
+    try {
+        const { data: paciente, error } = await _supabase
+            .from('pacientes')
+            .select('*')
+            .eq('id', idCliente)
+            .single();
+
+        if (error || !paciente) throw error;
+
+        // Nome no painel do cliente
+        const nomeCliente = document.getElementById('nomeCliente');
+        if (nomeCliente) {
+            nomeCliente.innerText = paciente.nome || "Paciente";
+        }
+
+        // Nome no detalhes-cliente.html
+        const nomeDisplay = document.getElementById('nomeDisplay');
+        if (nomeDisplay) {
+            nomeDisplay.innerText = paciente.nome || "Paciente";
+        }
+
+        const infoCliente = document.getElementById('infoCliente');
+        if (infoCliente) {
+            infoCliente.innerText =
+                `Código de acesso: ${paciente.senha_acesso || paciente.codigo_acesso || '---'}`;
+        }
+
+        const btnAnamnese = document.getElementById('btnAnamnese');
+        if (btnAnamnese) {
+            btnAnamnese.href = `anamnese.html?id=${idCliente}`;
+        }
+
+        // Dados pessoais do prontuário
+        if (document.getElementById('email')) {
+            document.getElementById('email').value = paciente.email || "";
+        }
+
+        if (document.getElementById('telefone')) {
+            document.getElementById('telefone').value = paciente.telefone || "";
+        }
+
+        if (document.getElementById('nascimento')) {
+            document.getElementById('nascimento').value = paciente.nascimento || "";
+        }
+
+        if (document.getElementById('idade')) {
+            document.getElementById('idade').value = paciente.idade || "";
+        }
+
+        if (document.getElementById('statusPaciente')) {
+            document.getElementById('statusPaciente').value =
+                paciente.status || "Atendimento";
+        }
+
+        if (document.getElementById('morada')) {
+            document.getElementById('morada').value = paciente.morada || "";
+        }
+
+        if (document.getElementById('historiaCliente')) {
+            document.getElementById('historiaCliente').innerText =
+                paciente.historia ||
+                paciente.queixa_principal ||
+                "Nenhuma história registrada.";
+        }
+
+        if (document.getElementById('anamneseConteudo')) {
+            document.getElementById('anamneseConteudo').innerText =
+                paciente.anamnese ||
+                "Nenhuma anamnese registrada.";
+        }
+
+        if (document.getElementById('notasEvolucao')) {
+            document.getElementById('notasEvolucao').value =
+                paciente.notas || "";
+        }
+
+        // Tarefa 7 dias
+        const btnTarefa7 = document.getElementById('btnTarefa7');
+        if (btnTarefa7) {
+            if (paciente.liberar_7dias === true) {
+                btnTarefa7.style.display = 'flex';
+                btnTarefa7.href = `tarefa-7-dias.html?id=${idCliente}`;
+            } else {
+                btnTarefa7.style.display = 'none';
+            }
+        }
+
+        const liberar7Dias = document.getElementById('liberar7Dias');
+        if (liberar7Dias) {
+            liberar7Dias.checked = paciente.liberar_7dias === true;
+        }
+
+        // Agenda no painel do cliente
+        const elementoData = document.getElementById('dataAgendada');
+        const cardAviso = document.getElementById('cardAvisoAgenda');
+        const fusoAviso = document.getElementById('fusoCliente');
+
+        if (elementoData && cardAviso) {
+            if (paciente.proximo_agendamento) {
+                const dataSessao = new Date(paciente.proximo_agendamento);
+                const agora = new Date();
+
+                cardAviso.style.display = 'block';
+
+                if (dataSessao > agora) {
+                    const opcoes = {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    };
+
+                    const horas =
+                        String(dataSessao.getHours()).padStart(2, '0');
+
+                    const minutos =
+                        String(dataSessao.getMinutes()).padStart(2, '0');
+
+                    elementoData.innerText =
+                        `${dataSessao.toLocaleDateString('pt-BR', opcoes)} às ${horas}:${minutos}`;
+
+                    if (fusoAviso) {
+                        fusoAviso.style.display = 'block';
+                    }
+                } else {
+                    elementoData.innerHTML =
+                        "<span style='color: #85741d; font-weight: normal; font-size: 1.1rem;'>Aguardando novo agendamento...</span>";
+
+                    if (fusoAviso) {
+                        fusoAviso.style.display = 'none';
+                    }
+                }
+            } else {
+                cardAviso.style.display = 'none';
+            }
+        }
+
+        // Agenda no detalhes-cliente.html
+        if (paciente.proximo_agendamento) {
+            const data = new Date(paciente.proximo_agendamento);
+
+            const agendamentoData = document.getElementById('agendamentoData');
+            const agendamentoHora = document.getElementById('agendamentoHora');
+
+            if (agendamentoData) {
+                agendamentoData.value = data.toISOString().split('T')[0];
+            }
+
+            if (agendamentoHora) {
+                agendamentoHora.value = data.toTimeString().slice(0, 5);
+            }
+        }
+
+        // Link da pasta
+        const linkPasta = document.getElementById('linkPasta');
+        if (linkPasta && (paciente.link_drive_pasta || paciente.pasta_nome)) {
+            linkPasta.href = paciente.link_drive_pasta || paciente.pasta_nome;
+        }
+
+        // Financeiro no painel do cliente
+        const tabelaFinanceiraCliente =
+            document.getElementById('tabelaFinanceiraCliente');
+
+        if (tabelaFinanceiraCliente) {
+            renderFinanceiroPacienteTabela(
+                tabelaFinanceiraCliente,
+                paciente.financeiro || []
+            );
+        }
+
+        // Financeiro no detalhes-cliente.html
+        const tabelaFinanceiroDetalhes =
+            document.querySelector('#tabelaFinanceiro tbody');
+
+        if (tabelaFinanceiroDetalhes) {
+            renderFinanceiroPacienteTabela(
+                tabelaFinanceiroDetalhes,
+                paciente.financeiro || []
+            );
+        }
+
+        const loadingOverlay =
+            document.getElementById('loading-overlay');
+
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+        }
+
+        const conteudoPrincipal =
+            document.getElementById('conteudo-principal');
+
+        if (conteudoPrincipal) {
+            conteudoPrincipal.style.display = 'block';
+        }
+
+    } catch (err) {
+        console.error("Erro ao carregar dados:", err);
+        alert("Erro ao carregar informações.");
+    }
+}
+
+function renderFinanceiroPacienteTabela(tbody, financeiro) {
+    tbody.innerHTML = "";
+
+    if (!financeiro || financeiro.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align:center; padding:20px; color:#999;">
+                    Nenhum registro de sessão disponível.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    const simbolos = {
+        BRL: 'R$',
+        EUR: '€',
+        USD: '$'
+    };
+
+    financeiro.forEach(item => {
+        const status = item.status || "Pendente";
+
+        const statusClasse =
+            status.toLowerCase() === 'pago'
+                ? 'status-pago'
+                : 'status-pendente';
+
+        const moeda = item.moeda || 'BRL';
+        const simbolo = simbolos[moeda] || 'R$';
+        const valor = parseFloat(item.valor || 0);
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.data || "---"}</td>
+                <td><strong>${moeda}</strong> ${simbolo} ${valor.toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2
+                })}</td>
+                <td class="${statusClasse}">${status}</td>
+            </tr>
+        `;
+    });
+}
+
+async function addSessao() {
+    if (!idCliente) {
+        alert("Paciente não identificado.");
+        return;
+    }
+
+    const valor = prompt("Valor da sessão:");
+    if (!valor) return;
+
+    const moeda = prompt("Moeda: BRL, EUR ou USD", "EUR");
+    if (!moeda) return;
+
+    const status = prompt("Status: Pago ou Pendente", "Pendente");
+    if (!status) return;
+
+    const hoje = new Date().toLocaleDateString('pt-BR');
+
+    const { data: paciente, error: erroBusca } = await _supabase
+        .from('pacientes')
+        .select('financeiro')
+        .eq('id', idCliente)
+        .single();
+
+    if (erroBusca) {
+        console.error(erroBusca);
+        alert("Erro ao buscar financeiro.");
+        return;
+    }
+
+    const financeiroAtual = paciente.financeiro || [];
+
+    financeiroAtual.push({
+        data: hoje,
+        valor: parseFloat(valor),
+        moeda: moeda.toUpperCase(),
+        status: status
+    });
+
+    const { error } = await _supabase
+        .from('pacientes')
+        .update({
+            financeiro: financeiroAtual
+        })
+        .eq('id', idCliente);
+
+    if (error) {
+        console.error(error);
+        alert("Erro ao registrar sessão.");
+        return;
+    }
+
+    alert("Sessão registrada com sucesso.");
+    carregarDadosPaciente();
+}
+
+        function deslogar() {
+            localStorage.removeItem('paciente_id');
+            window.location.href = "index.html";
+        }
+
+        carregarDadosPaciente();
