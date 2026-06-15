@@ -1283,4 +1283,67 @@ h2{
         
         #loading-overlay { text-align: center; padding: 40px; color: #d4a373; font-weight: bold; }
 
-        
+        /* ==========================================
+   IMPRESSÃO DO PRONTUÁRIO
+========================================== */
+
+@media print {
+
+    body {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .header,
+    .sidebar,
+    .menu,
+    .btn,
+    button,
+    .acoes-prontuario,
+    .footer,
+    .navbar {
+        display: none !important;
+    }
+
+    .container,
+    .prontuario-container,
+    .dashboard-grid,
+    .grid-detalhes,
+    .grid-cards {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .card,
+    .bloco,
+    .box,
+    .info-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin-bottom: 20px !important;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
+
+    table {
+        width: 100% !important;
+        border-collapse: collapse;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+}
