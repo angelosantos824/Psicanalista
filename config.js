@@ -570,6 +570,42 @@ async function addSessao() {
     carregarDadosPaciente();
 }
 
+async function salvarTudo() {
+    if (!idCliente) {
+        alert("Paciente não identificado.");
+        return;
+    }
+
+    let proximoAgendamento = null;
+
+    const data = document.getElementById('agendamentoData')?.value;
+    const hora = document.getElementById('agendamentoHora')?.value;
+
+    if (data && hora) {
+        proximoAgendamento = `${data}T${hora}:00`;
+    }
+
+    const liberar7Dias =
+        document.getElementById('liberar7Dias')?.checked || false;
+
+    const { error } = await _supabase
+        .from('pacientes')
+        .update({
+            proximo_agendamento: proximoAgendamento,
+            liberar_7dias: liberar7Dias
+        })
+        .eq('id', idCliente);
+
+    if (error) {
+        console.error(error);
+        alert("Erro ao salvar prontuário.");
+        return;
+    }
+
+    alert("Prontuário salvo com sucesso.");
+    carregarDadosPaciente();
+}
+
         function deslogar() {
             localStorage.removeItem('paciente_id');
             window.location.href = "index.html";
