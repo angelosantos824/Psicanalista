@@ -1,56 +1,44 @@
-# 🧠 Psicanalista - Projeto de Bem-Estar Mental
+# Psicanalista
 
-O **Psicanalista** é um sistema projetado para auxiliar profissionais da saúde mental e pessoas interessadas no autoconhecimento. Este projeto visa conectar psicanalistas com seus clientes, oferecendo recursos para gestão de consultas e conteúdo educativo.
+Projeto em HTML, CSS e JavaScript puro para site institucional, area do cliente, painel administrativo, prontuario, anamnese, exercicio de 7 dias e controle financeiro.
 
----
+O frontend usa Supabase diretamente no navegador com chave publica anonima. As regras de seguranca devem ser configuradas no Supabase com RLS. Nunca use uma service role key no frontend.
 
-## 🚀 Funcionalidades
-- **Agenda Simples e Eficiente:**
-  - Gerenciamento de horários de atendimento.
-  - Notificações automáticas para consultas agendadas.
+## Tecnologias
 
-- **Área do Cliente:**
-  - Histórico de sessões intuitivo.
-  - Acompanhamento individualizado e personalizado.
+- HTML5
+- CSS3
+- JavaScript puro
+- Supabase
 
-- **Biblioteca Educativa:**
-  - Textos curados sobre saúde mental e psicanálise.
-  - Recomendações baseadas na jornada do cliente.
+## Como rodar
 
-- **Feedbacks:**
-  - Coleta de opiniões sobre sessões realizadas para melhoria contínua.
+1. Abra a pasta do projeto no VS Code.
+2. Instale a extensao Live Server, se ainda nao tiver.
+3. Clique com o botao direito em `index.html` e selecione `Open with Live Server`.
+4. Acesse as paginas pelo navegador usando a URL local gerada pelo Live Server.
 
----
+## Configuracao do Supabase
 
-## 🛠️ Tecnologias Utilizadas
-- HTML5 e CSS3 (Base visual e responsividade)
-- JavaScript (Interatividade e manipulação de dados no navegador)
-- Framework XYZ (*Coloque o framework usado*)
-- Banco de Dados: (*Adicione o banco se aplicável*)
+O arquivo `supabase-client.js` concentra a URL e a chave publica do projeto.
 
----
+Tabelas usadas:
 
-## 🚀 Como Rodar o Projeto
-1. Clone o repositório:
-   ```
-   git clone https://github.com/angelosantos824/Psicanalista.git
-   ```
-2. Acesse a pasta do projeto:
-   ```
-   cd Psicanalista
-   ```
-3. Execute o projeto (ex.: abra o index.html).
-4. (*Adicione mais instruções conforme necessário*).
+- `pacientes`
+- `fluxo_caixa`
 
----
+Campos usados em `pacientes` incluem dados cadastrais, acesso do paciente, anamnese, financeiro, agenda, links, notas e respostas do exercicio de 7 dias.
 
-## 🔜 Planejamento Futuro
-- **Inteligência Artificial:** Ferramenta para responder perguntas frequentes relacionadas à saúde mental.
-- **Aplicativo Mobile:** Expansão para maior acessibilidade.
+Campos usados em `fluxo_caixa` incluem descricao, valor, moeda, tipo e data.
 
----
+## Estrutura JavaScript
 
-### 🌟 Contribua
-Este é um projeto aberto! Caso tenha interesse em colaborar, envie sugestões ou faça um **pull request**. Toda ajuda é bem-vinda.
+- `supabase-client.js`: URL, chave publica e client Supabase.
+- `auth.js`: login, logout e validacao de acesso administrativo.
+- `pacientes.js`: cadastro, listagem e exclusao de pacientes.
+- `financeiro.js`: fluxo de caixa e tabelas de sessoes pagas/pendentes.
+- `prontuario.js`: detalhes do cliente, agenda, links, anamnese, notas e salvamento.
+- `exercicio-7-dias.js`: logica da tarefa de 7 dias.
+- `ui.js`: modal, popup, reveal, validacoes e helpers visuais.
 
-Acesse o projeto no GitHub: [Psicanalista](https://github.com/angelosantos824/Psicanalista).
+Os arquivos `config.js`, `script.js` e `adm-script.js` foram mantidos apenas como legados de compatibilidade, mas as paginas atuais usam os arquivos separados acima.

@@ -74,36 +74,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script>
-    const form = document.getElementById('formAnamnese');
-    
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        const btn = document.querySelector('.btn-enviar');
-        btn.innerText = "Enviando...";
-        btn.disabled = true;
-
-        const formData = new FormData(form);
-        const anamneseData = Object.fromEntries(formData.entries());
-        
-        // Pegamos o ID do paciente logado que deve estar no localStorage
-        const idPaciente = localStorage.getItem('paciente_id'); 
-
-        const { error } = await _supabase
-            .from('pacientes')
-            .update({ anamnese_completa: anamneseData })
-            .eq('id', idPaciente);
-
-        if (error) {
-            alert("Erro ao enviar: " + error.message);
-            btn.innerText = "Tentar Novamente";
-            btn.disabled = false;
-        } else {
-            alert("Anamnese enviada com sucesso! Obrigado.");
-            window.location.href = "area-cliente.html";
-        }
-    };
-</script>
+<script src="supabase-client.js"></script>
+<script src="ui.js"></script>
+<script src="prontuario.js"></script>
 </body>
 </html>
