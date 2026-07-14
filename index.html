@@ -179,7 +179,7 @@
       <a href="termos.html">Termos</a>
     </nav>
 
-    <div class="footer-dev">Desenvolvido por <a href="https://www.dozedev.pt" target="_blank" rel="noopener">DOZEDEV.COM</a></div>
+    <div class="footer-dev">Desenvolvido por <a class="dozedev-link" href="https://www.dozedev.pt" target="_blank" rel="noopener noreferrer">dozedev.pt</a></div>
   </div>
 </footer>
 
@@ -205,15 +205,16 @@
   </div>
 
     <!-- Popup de Convite Terapêutico -->
-<div id="popupCta" class="popup-overlay">
-    <div class="popup-content">
+<div id="popupCta" class="popup-overlay" role="dialog" aria-modal="true" aria-labelledby="popupTitulo" aria-describedby="popupDescricao">
+    <div class="popup-content" tabindex="-1">
       <button class="popup-close" onclick="fecharPopup()" aria-label="Fechar">×</button>
-      <span class="popup-icon">♡♡♡</span>
-      <h2>Sua saúde mental não pode esperar</h2>
-      <p>Que tal dar o primeiro passo na sua jornada de autoconhecimento?</p>
+      <span class="popup-icon" aria-hidden="true">♡♡♡</span>
+      <h2 id="popupTitulo">Atendimentos por agendamento</h2>
+      <p id="popupDescricao">Além dos atendimentos clínicos, Michelly Santos também está disponível, mediante agendamento, para reuniões, palestras e atendimentos empresariais.</p>
+      <p>Entre em contato para consultar disponibilidade e solicitar uma proposta personalizada.</p>
       <div class="popup-buttons">
-        <a class="btn-popup-primary" href="contato.html">Agendar Sessão</a>
-        <a class="btn-popup-secondary" href="https://wa.me/351910377246" target="_blank" rel="noopener">Me chama aqui no WhatsApp</a>
+        <a class="btn-popup-primary" href="https://wa.me/351910377246?text=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20informa%C3%A7%C3%B5es%20sobre%20reuni%C3%B5es%2C%20palestras%20ou%20atendimentos%20empresariais%20com%20Michelly%20Santos." target="_blank" rel="noopener noreferrer">Solicitar agendamento</a>
+        <button class="btn-popup-secondary" type="button" onclick="fecharPopup()">Fechar</button>
       </div>
     </div>
   </div>

@@ -596,6 +596,8 @@ h2{
 .footer-box{
     display:flex;
     flex-direction:column;
+    align-items:center;
+    text-align:center;
     gap:12px;
 }
 
@@ -635,7 +637,7 @@ h2{
 .footer-brand{
     display:flex;
     flex-direction:column;
-    align-items:flex-start;
+    align-items:center;
 }
 
 .footer-logo{
@@ -664,6 +666,7 @@ h2{
     display:flex;
     flex-direction:row;
     align-items:center;
+    justify-content:center;
     gap:12px;
 
     margin-top:10px;
@@ -808,16 +811,20 @@ h2{
     color:#fff;
 }
 
-.footer-dev a{
-    color:#d8a07f;
+.footer-dev a,
+.footer-dev .dozedev-link{
+    color:#d86cff;
 
     font-weight:800;
 
     letter-spacing:.04em;
+
+    text-shadow:0 0 12px rgba(216,108,255,.36);
 }
 
-.footer-dev a:hover{
-    color:#fff;
+.footer-dev a:hover,
+.footer-dev .dozedev-link:hover{
+    color:#f3c7ff;
 }
 
 /* ==========================================
@@ -864,7 +871,7 @@ h2{
     }
 
     .redes-sociais{
-        justify-content:flex-start;
+        justify-content:center;
     }
 }
 .noticia-modal,
@@ -943,7 +950,19 @@ h2{
 }
 
 .popup-content{
-    text-align:center
+    text-align:center;
+    background:linear-gradient(180deg,#18100d,#0b0706);
+    border:1px solid rgba(212,163,115,.28);
+    color:#fff8f0
+}
+
+.popup-content h2{
+    color:#fff8f0
+}
+
+.popup-content p{
+    color:rgba(255,248,240,.76);
+    margin-bottom:16px
 }
 
 .popup-icon{
@@ -962,7 +981,10 @@ h2{
     padding:14px;
     border-radius:14px;
     text-decoration:none;
-    font-weight:700
+    font-weight:700;
+    border:0;
+    cursor:pointer;
+    font:inherit
 }
 
 .btn-popup-primary{
@@ -972,7 +994,15 @@ h2{
 
 .btn-popup-secondary{
     border:1px solid var(--bege-destaque);
-    color:var(--cor-texto-claro)
+    color:#f3c7a9;
+    background:transparent
+}
+
+.popup-close:focus-visible,
+.btn-popup-primary:focus-visible,
+.btn-popup-secondary:focus-visible{
+    outline:3px solid rgba(212,163,115,.35);
+    outline-offset:3px
 }
 
 .reveal{
@@ -1096,7 +1126,7 @@ h2{
   display:flex !important;
   flex-direction:row !important;
   align-items:center !important;
-  justify-content:flex-start !important;
+  justify-content:center !important;
   gap:12px !important;
   margin-top:12px !important;
 }

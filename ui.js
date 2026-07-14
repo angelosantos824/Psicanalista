@@ -43,8 +43,20 @@ function fecharPopup() {
     const popup = document.getElementById('popupCta');
     if (popup) {
         popup.style.display = 'none';
+        document.body.style.overflow = '';
         sessionStorage.setItem('popupExibido', 'true');
     }
+}
+
+function abrirPopup() {
+    const popup = document.getElementById('popupCta');
+    if (!popup || sessionStorage.getItem('popupExibido')) return;
+
+    popup.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    const popupContent = popup.querySelector('.popup-content');
+    if (popupContent) popupContent.focus();
 }
 
 function criarCelula(texto, className) {
@@ -100,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginFooter = document.getElementById('openLoginFooter');
     const closeLogin = document.getElementById('closeLogin');
     const popup = document.getElementById('popupCta');
+    const popupPrimary = popup ? popup.querySelector('.btn-popup-primary') : null;
 
     if (loginHeader) {
         loginHeader.addEventListener('click', (event) => {
@@ -117,14 +130,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (closeLogin) closeLogin.addEventListener('click', fecharLogin);
 
+    if (popupPrimary) {
+        popupPrimary.addEventListener('click', () => {
+            document.body.style.overflow = '';
+            sessionStorage.setItem('popupExibido', 'true');
+        });
+    }
+
     document.querySelectorAll('.reveal').forEach((el) => {
         el.classList.add('visible');
     });
 
     if (popup && !sessionStorage.getItem('popupExibido')) {
         setTimeout(() => {
-            popup.style.display = 'flex';
-        }, 3000);
+            abrirPopup();
+        }, 5000);
     }
 
     window.addEventListener('click', (event) => {
@@ -135,5 +155,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target === loginModal) fecharLogin();
         if (event.target === noticiaModal) fecharNoticia();
         if (event.target === popupCta) fecharPopup();
+    });
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            const popupCta = document.getElementById('popupCta');
+            if (popupCta && popupCta.style.display === 'flex') fecharPopup();
+        }
     });
 });
