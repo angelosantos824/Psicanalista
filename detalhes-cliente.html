@@ -69,6 +69,10 @@
         .resposta-7dias-card.pendente p { color: #999; font-style: italic; }
         .resposta-7dias-subresposta { margin-top: 10px; }
         .resposta-7dias-subresposta strong { display: block; color: #7b8f80; margin-bottom: 4px; }
+        .acoes-exercicio-7dias { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .acoes-exercicio-7dias label { margin: 0; }
+        .btn-ver-respostas-7dias { border: 0; border-radius: 8px; background: #7b8f80; color: #fff; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+        .btn-ver-respostas-7dias:hover { background: #637367; }
 
         @media (max-width: 1180px) {
             .grid-prontuario { grid-template-columns: 1fr; }
@@ -139,13 +143,6 @@
                     <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
                 </div>
 
-                <div class="card card-respostas-7dias">
-                    <h3>Respostas do Exercício 7 Dias</h3>
-                    <div id="respostas7DiasConteudo" class="respostas-7dias-lista">
-                        <p class="no-data">Carregando respostas...</p>
-                    </div>
-                </div>
-
                 <div class="print-section-header print-notas-header">
                     <strong>PRONTUÁRIO CLÍNICO</strong>
                     <span>Notas de Evolução</span>
@@ -179,11 +176,14 @@
                         placeholder="Cole aqui o link do Zoom ou Google Meet"
                         style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; margin-top:8px;"
                     >
-                    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #fab005;">
+                    <div class="acoes-exercicio-7dias" style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #fab005;">
                         <label style="display: flex; align-items: center; cursor: pointer; color: #85741d; font-weight: bold;">
                             <input type="checkbox" id="liberar7Dias" style="width: auto; margin-right: 10px;">
                             🔓 Liberar Exercício 7 Dias
                         </label>
+                        <button type="button" class="btn-ver-respostas-7dias" onclick="abrirModalPaciente('modalRespostas7Dias')">
+                            Ver respostas
+                        </button>
                     </div>
                 </div>
 
@@ -210,6 +210,16 @@
                     </div>
                     <p id="textoProgresso" style="font-size: 0.8rem; margin-top: 8px; color: #888; text-align: center;">0% concluído</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalRespostas7Dias" class="modal-paciente" aria-hidden="true">
+        <div class="modal-paciente-conteudo modal-paciente-amplo">
+            <button type="button" class="modal-paciente-fechar" onclick="fecharModalPaciente('modalRespostas7Dias')" aria-label="Fechar">×</button>
+            <h3>Respostas do Exercício 7 Dias</h3>
+            <div id="respostas7DiasConteudo" class="respostas-7dias-lista">
+                <p class="no-data">Carregando respostas...</p>
             </div>
         </div>
     </div>
