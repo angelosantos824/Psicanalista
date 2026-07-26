@@ -32,23 +32,26 @@ async function renderTable() {
             nomeTd.textContent = paciente.nome || 'Sem nome';
 
             const acoesTd = document.createElement('td');
+            acoesTd.className = 'acoes-paciente';
+
             const link = document.createElement('a');
             link.href = 'detalhes-cliente.html?id=' + encodeURIComponent(paciente.id);
-            link.style.background = '#7b8f80';
-            link.style.color = 'white';
-            link.style.textDecoration = 'none';
-            link.style.padding = '6px 12px';
-            link.style.borderRadius = '6px';
-            link.style.fontSize = '12px';
+            link.className = 'btn-acao-admin btn-acao-admin-prontuario';
             link.textContent = 'Prontuario';
 
+            const botaoRestaurar = document.createElement('button');
+            botaoRestaurar.className = 'btn-acao-admin btn-acao-admin-senha';
+            botaoRestaurar.type = 'button';
+            botaoRestaurar.textContent = 'Restaurar senha';
+            botaoRestaurar.addEventListener('click', () => restaurarSenhaPaciente(paciente));
+
             const botaoExcluir = document.createElement('button');
-            botaoExcluir.className = 'btn-excluir';
-            botaoExcluir.style.padding = '6px 12px';
+            botaoExcluir.className = 'btn-acao-admin btn-excluir';
+            botaoExcluir.type = 'button';
             botaoExcluir.textContent = 'Excluir';
             botaoExcluir.addEventListener('click', () => excluirPaciente(paciente.id));
 
-            acoesTd.append(link, document.createTextNode(' '), botaoExcluir);
+            acoesTd.append(link, botaoRestaurar, botaoExcluir);
             tr.append(senhaTd, nomeTd, acoesTd);
             tbody.appendChild(tr);
         });
@@ -65,12 +68,12 @@ async function salvarPacienteSQL() {
     const email = emailInput?.value.trim();
 
     if (!nome || nome.length < 2) {
-        alert('Informe o nome completo do paciente.');
+        mostrarToastAcesso('Informe o nome completo do paciente.');
         return;
     }
 
     if (!emailValido(email)) {
-        alert('Informe um e-mail valido para o paciente.');
+        mostrarToastAcesso('Informe um e-mail valido para o paciente.');
         return;
     }
 
@@ -95,15 +98,190 @@ async function salvarPacienteSQL() {
         const { error } = await _supabase.from('pacientes').insert([payload]);
         if (error) throw error;
 
+        const dadosAcesso = { nome, email, senha };
+
         nomeInput.value = '';
         emailInput.value = '';
-        alert('Paciente cadastrado com sucesso. Senha de acesso: ' + senha);
+        mostrarModalAcesso(dadosAcesso);
         renderTable();
+        return dadosAcesso;
     } catch (err) {
         console.error('Erro ao salvar paciente:', err);
-        alert('Erro ao salvar paciente. Verifique os dados e tente novamente.');
+        mostrarToastAcesso('Erro ao salvar paciente. Verifique os dados e tente novamente.');
     }
 }
+
+async function restaurarSenhaPaciente(paciente) {
+    if (!paciente?.id) return;
+
+    const nome = paciente.nome || 'Paciente';
+    const email = paciente.email || '';
+
+    if (!confirm(`Deseja restaurar a senha de ${nome}?`)) return;
+
+    try {
+        const senha = Math.floor(1000 + Math.random() * 9000).toString();
+        const { error } = await _supabase
+            .from('pacientes')
+            .update({
+                senha_acesso: senha,
+                codigo_acesso: senha
+            })
+            .eq('id', paciente.id);
+
+        if (error) throw error;
+
+        const dadosAcesso = { nome, email, senha };
+        mostrarModalAcesso(dadosAcesso);
+        renderTable();
+        return dadosAcesso;
+    } catch (err) {
+        console.error('Erro ao restaurar senha do paciente:', err);
+        mostrarToastAcesso('Erro ao restaurar senha. Tente novamente.');
+    }
+}
+
+function montarMensagemAcesso({ nome, email, senha }) {
+    return `Olá, ${nome}!
+
+Seu acesso à Área do Paciente foi criado com sucesso.
+
+Segue seus dados de acesso:
+
+🌐 Site:
+https://www.michellysantospsi.com
+
+👤 Login:
+${email}
+
+🔑 Senha:
+${senha}
+
+Área do paciente:
+https://www.michellysantospsi.com/area-cliente.html
+
+No primeiro acesso recomendamos alterar sua senha.
+
+Qualquer dúvida estou à disposição.
+
+Atenciosamente,
+Michelly Santos`;
+}
+
+function mostrarToastAcesso(mensagem) {
+    let toast = document.getElementById('toastAcessoPaciente');
+
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toastAcessoPaciente';
+        toast.className = 'acesso-toast';
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = mensagem;
+    toast.classList.add('ativo');
+
+    window.clearTimeout(toast._timeoutId);
+    toast._timeoutId = window.setTimeout(() => {
+        toast.classList.remove('ativo');
+    }, 2400);
+}
+
+function fecharModalAcesso() {
+    const modal = document.getElementById('modalAcessoPaciente');
+    if (!modal) return;
+
+    modal.classList.remove('ativo');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-acesso-aberto');
+}
+
+function criarModalAcesso() {
+    const modal = document.createElement('div');
+    modal.id = 'modalAcessoPaciente';
+    modal.className = 'modal-acesso-overlay';
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML = `
+        <div class="modal-acesso-card" role="dialog" aria-modal="true" aria-labelledby="modalAcessoTitulo">
+            <button class="modal-acesso-fechar" type="button" aria-label="Fechar modal">&times;</button>
+            <div class="modal-acesso-header">
+                <span class="modal-acesso-icone" aria-hidden="true">✓</span>
+                <h2 id="modalAcessoTitulo">✅ Acesso criado com sucesso</h2>
+            </div>
+
+            <div class="modal-acesso-dados" aria-label="Dados de acesso do paciente">
+                <article class="modal-acesso-info">
+                    <span>Nome:</span>
+                    <strong data-acesso-campo="nome"></strong>
+                </article>
+                <article class="modal-acesso-info">
+                    <span>E-mail:</span>
+                    <strong data-acesso-campo="email"></strong>
+                </article>
+                <article class="modal-acesso-info">
+                    <span>Senha provisória:</span>
+                    <strong data-acesso-campo="senha"></strong>
+                </article>
+                <article class="modal-acesso-info">
+                    <span>Site:</span>
+                    <a href="https://www.michellysantospsi.com" target="_blank" rel="noopener">https://www.michellysantospsi.com</a>
+                </article>
+                <article class="modal-acesso-info">
+                    <span>Área do paciente:</span>
+                    <a href="https://www.michellysantospsi.com/area-cliente.html" target="_blank" rel="noopener">https://www.michellysantospsi.com/area-cliente.html</a>
+                </article>
+            </div>
+
+            <textarea class="modal-acesso-mensagem" readonly data-acesso-campo="mensagem"></textarea>
+
+            <div class="modal-acesso-acoes">
+                <button class="modal-acesso-btn modal-acesso-btn-primary" type="button" data-acesso-acao="copiar">📋 Copiar mensagem</button>
+                <button class="modal-acesso-btn modal-acesso-btn-whatsapp" type="button" data-acesso-acao="whatsapp">💬 Enviar WhatsApp</button>
+                <button class="modal-acesso-btn modal-acesso-btn-secondary" type="button" data-acesso-acao="fechar">Fechar</button>
+            </div>
+        </div>
+    `;
+
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) fecharModalAcesso();
+    });
+
+    modal.querySelector('.modal-acesso-fechar').addEventListener('click', fecharModalAcesso);
+    modal.querySelector('[data-acesso-acao="fechar"]').addEventListener('click', fecharModalAcesso);
+    modal.querySelector('[data-acesso-acao="copiar"]').addEventListener('click', async () => {
+        const mensagem = modal.querySelector('[data-acesso-campo="mensagem"]').value;
+        await navigator.clipboard.writeText(mensagem);
+        mostrarToastAcesso('Mensagem copiada.');
+    });
+    modal.querySelector('[data-acesso-acao="whatsapp"]').addEventListener('click', () => {
+        const mensagem = modal.querySelector('[data-acesso-campo="mensagem"]').value;
+        window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank', 'noopener');
+    });
+
+    document.body.appendChild(modal);
+    return modal;
+}
+
+function mostrarModalAcesso(dados) {
+    const modal = document.getElementById('modalAcessoPaciente') || criarModalAcesso();
+    const mensagem = montarMensagemAcesso(dados);
+
+    modal.querySelector('[data-acesso-campo="nome"]').textContent = dados.nome;
+    modal.querySelector('[data-acesso-campo="email"]').textContent = dados.email;
+    modal.querySelector('[data-acesso-campo="senha"]').textContent = dados.senha;
+    modal.querySelector('[data-acesso-campo="mensagem"]').value = mensagem;
+
+    modal.classList.add('ativo');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-acesso-aberto');
+    modal.querySelector('[data-acesso-acao="copiar"]').focus();
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') fecharModalAcesso();
+});
 
 async function excluirPaciente(id) {
     if (!id || !confirm('Deseja realmente excluir este paciente?')) return;

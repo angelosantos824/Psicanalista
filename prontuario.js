@@ -112,6 +112,77 @@ function atualizarAgendaCliente(paciente) {
     }
 }
 
+function mostrarMensagemTrocaSenha(mensagem, tipo = 'erro') {
+    const elemento = document.getElementById('mensagemTrocaSenha');
+    if (!elemento) return;
+
+    elemento.textContent = mensagem;
+    elemento.className = `mensagem-troca-senha ${tipo}`;
+}
+
+async function alterarSenhaPaciente() {
+    if (!idCliente) {
+        mostrarMensagemTrocaSenha('Paciente nao identificado.');
+        return;
+    }
+
+    const senhaAtualInput = document.getElementById('senhaAtualPaciente');
+    const novaSenhaInput = document.getElementById('novaSenhaPaciente');
+    const confirmarSenhaInput = document.getElementById('confirmarSenhaPaciente');
+
+    const senhaAtual = senhaAtualInput?.value.trim();
+    const novaSenha = novaSenhaInput?.value.trim();
+    const confirmarSenha = confirmarSenhaInput?.value.trim();
+
+    if (!senhaAtual || !novaSenha || !confirmarSenha) {
+        mostrarMensagemTrocaSenha('Preencha todos os campos de senha.');
+        return;
+    }
+
+    if (novaSenha.length < 4) {
+        mostrarMensagemTrocaSenha('A nova senha precisa ter pelo menos 4 caracteres.');
+        return;
+    }
+
+    if (novaSenha !== confirmarSenha) {
+        mostrarMensagemTrocaSenha('A confirmacao nao confere com a nova senha.');
+        return;
+    }
+
+    try {
+        const { data: paciente, error: erroBusca } = await _supabase
+            .from('pacientes')
+            .select('senha_acesso,codigo_acesso')
+            .eq('id', idCliente)
+            .single();
+
+        if (erroBusca || !paciente) throw erroBusca || new Error('Paciente nao encontrado.');
+
+        if (paciente.senha_acesso !== senhaAtual && paciente.codigo_acesso !== senhaAtual) {
+            mostrarMensagemTrocaSenha('Senha atual incorreta.');
+            return;
+        }
+
+        const { error } = await _supabase
+            .from('pacientes')
+            .update({
+                senha_acesso: novaSenha,
+                codigo_acesso: novaSenha
+            })
+            .eq('id', idCliente);
+
+        if (error) throw error;
+
+        senhaAtualInput.value = '';
+        novaSenhaInput.value = '';
+        confirmarSenhaInput.value = '';
+        mostrarMensagemTrocaSenha('Senha alterada com sucesso.', 'sucesso');
+    } catch (err) {
+        console.error('Erro ao alterar senha do paciente:', err);
+        mostrarMensagemTrocaSenha('Erro ao alterar senha. Tente novamente.');
+    }
+}
+
 async function carregarDadosPaciente() {
     if (!idCliente) {
         console.warn('Nenhum ID de paciente recebido.');

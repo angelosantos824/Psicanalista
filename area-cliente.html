@@ -47,6 +47,17 @@
                 </a>
             </div>
 
+            <h3>Meu Acesso</h3>
+            <div class="trocar-senha-card">
+                <div class="trocar-senha-grid">
+                    <input type="password" id="senhaAtualPaciente" placeholder="Senha atual" autocomplete="current-password">
+                    <input type="password" id="novaSenhaPaciente" placeholder="Nova senha" autocomplete="new-password">
+                    <input type="password" id="confirmarSenhaPaciente" placeholder="Confirmar nova senha" autocomplete="new-password">
+                </div>
+                <button type="button" class="btn-trocar-senha" onclick="alterarSenhaPaciente()">Alterar senha</button>
+                <p id="mensagemTrocaSenha" class="mensagem-troca-senha" aria-live="polite"></p>
+            </div>
+
             <h3>Minha Sessão Online</h3>
 
 <div class="grid-acoes" style="grid-template-columns: 1fr;">
