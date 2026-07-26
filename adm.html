@@ -14,8 +14,11 @@
         .admin-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, .45fr); align-items: start; gap: 22px; }
         .card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 0; min-width: 0; }
         .card h3 { color: #8c7851; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid #f4f1ea; padding-bottom: 10px; }
-        .card-solicitacoes, .card-caixa, .card-pacientes { grid-column: 1 / 2; }
-        .card-cadastro, .card-comprovante { grid-column: 2 / 3; }
+        .card-solicitacoes { grid-column: 1 / 2; grid-row: 1; }
+        .card-caixa { grid-column: 1 / 2; grid-row: 2; }
+        .card-pacientes { grid-column: 1 / 2; grid-row: 3; }
+        .card-cadastro { grid-column: 2 / 3; grid-row: 1; }
+        .card-comprovante { grid-column: 2 / 3; grid-row: 2; }
         .card-pacientes { align-self: start; }
         
         .grid-atalhos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 22px; }
@@ -31,7 +34,7 @@
 
         @media (max-width: 1180px) {
             .admin-grid { grid-template-columns: 1fr; }
-            .card-solicitacoes, .card-caixa, .card-pacientes, .card-cadastro, .card-comprovante { grid-column: auto; }
+            .card-solicitacoes, .card-caixa, .card-pacientes, .card-cadastro, .card-comprovante { grid-column: auto; grid-row: auto; }
         }
 
         @media (max-width: 760px) {

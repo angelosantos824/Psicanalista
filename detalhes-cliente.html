@@ -60,6 +60,15 @@
         .card-financeiro-cliente { overflow: hidden; }
         .card-financeiro-cliente table { margin-top: 10px; }
         .card-progresso-cliente h3 { font-size: 0.95rem !important; margin-bottom: 12px; }
+        .respostas-7dias-lista { display: grid; gap: 12px; margin-top: 12px; }
+        .resposta-7dias-card { border: 1px solid #f0e7dc; border-left: 5px solid #d4a373; border-radius: 8px; padding: 14px; background: #fffdf9; }
+        .resposta-7dias-card.pendente { border-left-color: #ddd; background: #fafafa; }
+        .resposta-7dias-card h4 { margin: 0 0 8px; color: #8c7851; font-size: 0.95rem; }
+        .resposta-7dias-card.pendente h4 { color: #999; }
+        .resposta-7dias-card p { margin: 0; white-space: pre-wrap; line-height: 1.6; color: #444; }
+        .resposta-7dias-card.pendente p { color: #999; font-style: italic; }
+        .resposta-7dias-subresposta { margin-top: 10px; }
+        .resposta-7dias-subresposta strong { display: block; color: #7b8f80; margin-bottom: 4px; }
 
         @media (max-width: 1180px) {
             .grid-prontuario { grid-template-columns: 1fr; }
@@ -128,6 +137,13 @@
                 <div class="card card-anamnese-cliente">
                     <h3>Relatório de Anamnese Completo</h3>
                     <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
+                </div>
+
+                <div class="card card-respostas-7dias">
+                    <h3>Respostas do Exercício 7 Dias</h3>
+                    <div id="respostas7DiasConteudo" class="respostas-7dias-lista">
+                        <p class="no-data">Carregando respostas...</p>
+                    </div>
                 </div>
 
                 <div class="print-section-header print-notas-header">

@@ -152,6 +152,111 @@ function resposta7DiasPreenchida(resposta) {
     return false;
 }
 
+const perguntasExercicio7Dias = {
+    1: {
+        titulo: 'Dia 1 - Nomeando a falta',
+        pergunta: 'Do que eu senti falta? Em quais momentos eu mais precisei e não tive?'
+    },
+    2: {
+        titulo: 'Dia 2 - A voz da criança',
+        pergunta: 'Pai, quando você não estava, eu sentia... / O que eu mais queria que você tivesse me dado era...'
+    },
+    3: {
+        titulo: 'Dia 3 - Marcas',
+        pergunta: 'O que essa ausência me ensinou sobre mim?'
+    },
+    4: {
+        titulo: 'Dia 4 - O Não Dito',
+        pergunta: 'E o que eu nunca consegui te dizer?'
+    },
+    5: {
+        titulo: 'Dia 5 - Separando Histórias',
+        pergunta: 'O que foi dele e o que eu carreguei sem precisar?'
+    },
+    6: {
+        titulo: 'Dia 6 - O que eu precisava ouvir',
+        pergunta: 'O que a menina que eu fui precisava ouvir?'
+    },
+    7: {
+        titulo: 'Dia 7 - Ressignificação',
+        pergunta: 'Escreva sua frase de escolha para o presente.'
+    }
+};
+
+function adicionarTextoResposta7Dias(card, texto) {
+    const p = document.createElement('p');
+    p.textContent = texto;
+    card.appendChild(p);
+}
+
+function renderResposta7Dias(container, dia, resposta) {
+    const pergunta = perguntasExercicio7Dias[dia];
+    const respondida = resposta7DiasPreenchida(resposta);
+    const card = document.createElement('article');
+    card.className = `resposta-7dias-card${respondida ? '' : ' pendente'}`;
+
+    const titulo = document.createElement('h4');
+    titulo.textContent = `${pergunta.titulo} - ${respondida ? 'Respondido' : 'Pendente'}`;
+    card.appendChild(titulo);
+
+    const enunciado = document.createElement('p');
+    enunciado.textContent = pergunta.pergunta;
+    enunciado.style.fontWeight = '600';
+    enunciado.style.marginBottom = '8px';
+    card.appendChild(enunciado);
+
+    if (!respondida) {
+        adicionarTextoResposta7Dias(card, 'Ainda sem resposta registrada.');
+        container.appendChild(card);
+        return;
+    }
+
+    if (dia === 2 && typeof resposta === 'object') {
+        [
+            ['Quando não estava, eu sentia', resposta.sentia],
+            ['O que eu mais queria receber', resposta.queria]
+        ].forEach(([rotulo, valor]) => {
+            const bloco = document.createElement('div');
+            bloco.className = 'resposta-7dias-subresposta';
+
+            const strong = document.createElement('strong');
+            strong.textContent = rotulo;
+            bloco.appendChild(strong);
+
+            const texto = document.createElement('p');
+            texto.textContent = valor || '---';
+            bloco.appendChild(texto);
+
+            card.appendChild(bloco);
+        });
+    } else {
+        adicionarTextoResposta7Dias(card, resposta);
+    }
+
+    container.appendChild(card);
+}
+
+function renderRespostas7Dias(paciente) {
+    const container = document.getElementById('respostas7DiasConteudo');
+    if (!container) return;
+
+    container.textContent = '';
+
+    if (paciente.liberar_7dias !== true && !paciente.respostas_7dias) {
+        const vazio = document.createElement('p');
+        vazio.className = 'no-data';
+        vazio.textContent = 'Exercicio 7 Dias ainda nao liberado para este paciente.';
+        container.appendChild(vazio);
+        return;
+    }
+
+    const respostas7 = normalizarRespostas7Dias(paciente.respostas_7dias);
+
+    [1, 2, 3, 4, 5, 6, 7].forEach((dia) => {
+        renderResposta7Dias(container, dia, respostas7[`dia_${dia}`]);
+    });
+}
+
 function atualizarProgresso7Dias(paciente) {
     const barraProgresso = document.getElementById('barraProgresso');
     const textoProgresso = document.getElementById('textoProgresso');
@@ -439,6 +544,7 @@ async function carregarDadosPaciente() {
         if (liberar7Dias) liberar7Dias.checked = paciente.liberar_7dias === true;
 
         atualizarProgresso7Dias(paciente);
+        renderRespostas7Dias(paciente);
         atualizarAgendaCliente(paciente);
 
         if (paciente.proximo_agendamento) {
