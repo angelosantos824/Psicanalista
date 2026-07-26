@@ -1375,8 +1375,13 @@ h2{
         
         .status-pago { color: #7b8f80; font-weight: bold; }
         .status-pendente { color: #d4a373; font-weight: bold; }
-        .btn-comprovante { margin-top: 6px; padding: 6px 9px; border: 0; border-radius: 999px; background: #d4a373; color: #fff; cursor: pointer; font-size: 11px; font-weight: 800; }
-        .btn-comprovante:hover { background: #bd8856; transform: translateY(-1px); }
+        .acoes-financeiro-paciente { white-space: nowrap; }
+        .btn-comprovante,
+        .btn-marcar-pago { padding: 6px 10px; border: 0; border-radius: 999px; color: #fff; cursor: pointer; font-size: 11px; font-weight: 800; }
+        .btn-comprovante { background: #d4a373; }
+        .btn-marcar-pago { background: #7b8f80; }
+        .btn-comprovante:hover,
+        .btn-marcar-pago:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(41,32,25,.12); }
         table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
         .btn-sair { margin-top: 30px; display: inline-block; text-decoration: none; color: #888; font-size: 0.9rem; cursor: pointer; border: none; background: none; }

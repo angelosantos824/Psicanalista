@@ -120,7 +120,7 @@ function renderFinanceiroPacienteTabela(tbody, financeiro, permitirMarcarPago = 
     tbody.textContent = '';
 
     if (!financeiro || financeiro.length === 0) {
-        criarMensagemTabela(tbody, 4, 'Nenhum registro de sessao disponivel.');
+        criarMensagemTabela(tbody, permitirMarcarPago ? 4 : 5, 'Nenhum registro de sessao disponivel.');
         return;
     }
 
@@ -139,33 +139,29 @@ function renderFinanceiroPacienteTabela(tbody, financeiro, permitirMarcarPago = 
         }
 
         const statusTd = criarCelula(status, status === 'Pago' ? 'status-pago' : 'status-pendente');
+        const acoesTd = document.createElement('td');
+        acoesTd.className = 'acoes-financeiro-paciente';
+
         if (permitirMarcarPago && status !== 'Pago') {
-            statusTd.appendChild(document.createElement('br'));
             const btn = document.createElement('button');
-            btn.style.marginTop = '6px';
-            btn.style.padding = '5px 8px';
-            btn.style.border = 'none';
-            btn.style.borderRadius = '6px';
-            btn.style.background = '#7b8f80';
-            btn.style.color = 'white';
-            btn.style.cursor = 'pointer';
-            btn.style.fontSize = '11px';
+            btn.className = 'btn-marcar-pago';
+            btn.type = 'button';
             btn.textContent = 'Marcar pago';
             btn.addEventListener('click', () => marcarSessaoPaga(index));
-            statusTd.appendChild(btn);
+            acoesTd.appendChild(btn);
         }
 
         if (status === 'Pago') {
-            statusTd.appendChild(document.createElement('br'));
             const btnComprovante = document.createElement('button');
             btnComprovante.className = 'btn-comprovante';
             btnComprovante.type = 'button';
             btnComprovante.textContent = 'Comprovante';
             btnComprovante.addEventListener('click', () => gerarComprovantePagamento(item, index, paciente));
-            statusTd.appendChild(btnComprovante);
+            acoesTd.appendChild(btnComprovante);
         }
 
         tr.appendChild(statusTd);
+        tr.appendChild(acoesTd);
 
         tbody.appendChild(tr);
     });
@@ -444,7 +440,7 @@ function gerarComprovantePagamento(item, index, paciente = {}) {
 </body>
 </html>`;
 
-    const janela = window.open('', '_blank', 'noopener,noreferrer');
+    const janela = window.open('', '_blank');
     if (!janela) {
         alert('Nao foi possivel abrir o comprovante. Verifique o bloqueador de pop-ups.');
         return;
