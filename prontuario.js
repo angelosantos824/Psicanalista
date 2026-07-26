@@ -58,15 +58,43 @@ function formatarDataHoraNota() {
 function prepararNotasEvolucaoParaSalvar() {
     const campo = document.getElementById('notasEvolucao');
     const valorAtual = campo?.value.trim() || '';
+    const notasAnteriores = notasEvolucaoOriginal.trim();
 
-    if (!valorAtual || valorAtual === notasEvolucaoOriginal.trim()) {
+    if (!valorAtual || valorAtual === notasAnteriores) {
         return campo?.value || '';
     }
 
-    const notasDatadas = `Nota de evolução registrada em ${formatarDataHoraNota()}\n${valorAtual}`;
+    let textoNovaNota = valorAtual;
+    if (notasAnteriores && valorAtual.startsWith(notasAnteriores)) {
+        textoNovaNota = valorAtual.slice(notasAnteriores.length).trim();
+    }
+
+    if (!textoNovaNota) {
+        return notasEvolucaoOriginal;
+    }
+
+    const novaNotaDatada = `Nota de evolução registrada em ${formatarDataHoraNota()}\n${textoNovaNota}`;
+    const notasDatadas = notasAnteriores
+        ? `${notasAnteriores}\n\n${novaNotaDatada}`
+        : novaNotaDatada;
+
     if (campo) campo.value = notasDatadas;
     notasEvolucaoOriginal = notasDatadas;
     return notasDatadas;
+}
+
+function abrirModalPaciente(idModal) {
+    const modal = document.getElementById(idModal);
+    if (!modal) return;
+    modal.classList.add('modal-paciente-aberto');
+    modal.setAttribute('aria-hidden', 'false');
+}
+
+function fecharModalPaciente(idModal) {
+    const modal = document.getElementById(idModal);
+    if (!modal) return;
+    modal.classList.remove('modal-paciente-aberto');
+    modal.setAttribute('aria-hidden', 'true');
 }
 
 function renderAnamnese(container, anamnese) {
@@ -319,6 +347,12 @@ async function carregarDadosPaciente() {
         setText('nomeCliente', paciente.nome || 'Paciente');
         setText('nomeDisplay', paciente.nome || 'Paciente');
         setText('infoCliente', `Codigo de acesso: ${paciente.senha_acesso || paciente.codigo_acesso || '---'}`);
+        setText('dadosNomeCliente', paciente.nome || 'Paciente');
+        setText('dadosEmailCliente', paciente.email || '---');
+        setText('dadosNascimentoCliente', paciente.nascimento || '---');
+        setText('dadosIdadeCliente', paciente.idade || '---');
+        setText('dadosStatusCliente', paciente.status || 'Atendimento');
+        setText('dadosCodigoCliente', paciente.senha_acesso || paciente.codigo_acesso || '---');
         atualizarIdentificacaoImpressao(paciente);
 
         const btnAnamnese = document.getElementById('btnAnamnese');
@@ -606,6 +640,12 @@ async function salvarAnamnese(event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.modal-paciente').forEach((modal) => {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) fecharModalPaciente(modal.id);
+        });
+    });
+
     const formAnamnese = document.getElementById('formAnamnese');
     if (formAnamnese) {
         formAnamnese.addEventListener('submit', salvarAnamnese);
@@ -619,4 +659,11 @@ document.addEventListener('DOMContentLoaded', () => {
     ) {
         carregarDadosPaciente();
     }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    document.querySelectorAll('.modal-paciente-aberto').forEach((modal) => {
+        fecharModalPaciente(modal.id);
+    });
 });

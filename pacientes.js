@@ -1,3 +1,96 @@
+let pacientesAtivosCache = [];
+
+function normalizarPesquisaPaciente(valor) {
+    return String(valor || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
+function pacienteCombinaComPesquisa(paciente, termo) {
+    if (!termo) return true;
+
+    const conteudo = [
+        paciente.nome,
+        paciente.email,
+        paciente.telefone,
+        paciente.senha_acesso,
+        paciente.codigo_acesso,
+        paciente.status
+    ].map(normalizarPesquisaPaciente).join(' ');
+
+    return conteudo.includes(termo);
+}
+
+function atualizarContadorPacientes(totalFiltrado, totalGeral) {
+    const contador = document.getElementById('contadorPacientesAtivos');
+    if (!contador) return;
+
+    contador.textContent = totalFiltrado === totalGeral
+        ? `${totalGeral} paciente${totalGeral === 1 ? '' : 's'}`
+        : `${totalFiltrado} de ${totalGeral} paciente${totalGeral === 1 ? '' : 's'}`;
+}
+
+function renderPacientesAtivosTabela(pacientes) {
+    const tbody = document.getElementById('tabelaClientes');
+    if (!tbody) return;
+
+    tbody.textContent = '';
+
+    if (!pacientes || pacientes.length === 0) {
+        criarMensagemTabela(tbody, 3, 'Nenhum paciente encontrado.');
+        return;
+    }
+
+    pacientes.forEach((paciente) => {
+        const tr = document.createElement('tr');
+
+        const senhaTd = document.createElement('td');
+        const senhaSpan = document.createElement('span');
+        senhaSpan.className = 'id-label';
+        senhaSpan.textContent = '#' + (paciente.senha_acesso || paciente.codigo_acesso || '---');
+        senhaTd.appendChild(senhaSpan);
+
+        const nomeTd = document.createElement('td');
+        nomeTd.style.fontWeight = 'bold';
+        nomeTd.style.color = '#d4a373';
+        nomeTd.textContent = paciente.nome || 'Sem nome';
+
+        const acoesTd = document.createElement('td');
+        acoesTd.className = 'acoes-paciente';
+
+        const link = document.createElement('a');
+        link.href = 'detalhes-cliente.html?id=' + encodeURIComponent(paciente.id);
+        link.className = 'btn-acao-admin btn-acao-admin-prontuario';
+        link.textContent = 'Prontuario';
+
+        const botaoRestaurar = document.createElement('button');
+        botaoRestaurar.className = 'btn-acao-admin btn-acao-admin-senha';
+        botaoRestaurar.type = 'button';
+        botaoRestaurar.textContent = 'Restaurar senha';
+        botaoRestaurar.addEventListener('click', () => restaurarSenhaPaciente(paciente));
+
+        const botaoExcluir = document.createElement('button');
+        botaoExcluir.className = 'btn-acao-admin btn-excluir';
+        botaoExcluir.type = 'button';
+        botaoExcluir.textContent = 'Excluir';
+        botaoExcluir.addEventListener('click', () => excluirPaciente(paciente.id));
+
+        acoesTd.append(link, botaoRestaurar, botaoExcluir);
+        tr.append(senhaTd, nomeTd, acoesTd);
+        tbody.appendChild(tr);
+    });
+}
+
+function filtrarPacientesAtivos() {
+    const termo = normalizarPesquisaPaciente(document.getElementById('pesquisaPacientesInput')?.value);
+    const pacientesFiltrados = pacientesAtivosCache.filter((paciente) => pacienteCombinaComPesquisa(paciente, termo));
+
+    renderPacientesAtivosTabela(pacientesFiltrados);
+    atualizarContadorPacientes(pacientesFiltrados.length, pacientesAtivosCache.length);
+}
+
 async function renderTable() {
     const tbody = document.getElementById('tabelaClientes');
     if (!tbody) return;
@@ -10,51 +103,15 @@ async function renderTable() {
 
         if (error) throw error;
 
-        tbody.textContent = '';
+        pacientesAtivosCache = pacientes || [];
 
-        if (!pacientes || pacientes.length === 0) {
+        if (pacientesAtivosCache.length === 0) {
             criarMensagemTabela(tbody, 3, 'Nenhum paciente cadastrado no banco.');
+            atualizarContadorPacientes(0, 0);
             return;
         }
 
-        pacientes.forEach((paciente) => {
-            const tr = document.createElement('tr');
-
-            const senhaTd = document.createElement('td');
-            const senhaSpan = document.createElement('span');
-            senhaSpan.className = 'id-label';
-            senhaSpan.textContent = '#' + (paciente.senha_acesso || paciente.codigo_acesso || '---');
-            senhaTd.appendChild(senhaSpan);
-
-            const nomeTd = document.createElement('td');
-            nomeTd.style.fontWeight = 'bold';
-            nomeTd.style.color = '#d4a373';
-            nomeTd.textContent = paciente.nome || 'Sem nome';
-
-            const acoesTd = document.createElement('td');
-            acoesTd.className = 'acoes-paciente';
-
-            const link = document.createElement('a');
-            link.href = 'detalhes-cliente.html?id=' + encodeURIComponent(paciente.id);
-            link.className = 'btn-acao-admin btn-acao-admin-prontuario';
-            link.textContent = 'Prontuario';
-
-            const botaoRestaurar = document.createElement('button');
-            botaoRestaurar.className = 'btn-acao-admin btn-acao-admin-senha';
-            botaoRestaurar.type = 'button';
-            botaoRestaurar.textContent = 'Restaurar senha';
-            botaoRestaurar.addEventListener('click', () => restaurarSenhaPaciente(paciente));
-
-            const botaoExcluir = document.createElement('button');
-            botaoExcluir.className = 'btn-acao-admin btn-excluir';
-            botaoExcluir.type = 'button';
-            botaoExcluir.textContent = 'Excluir';
-            botaoExcluir.addEventListener('click', () => excluirPaciente(paciente.id));
-
-            acoesTd.append(link, botaoRestaurar, botaoExcluir);
-            tr.append(senhaTd, nomeTd, acoesTd);
-            tbody.appendChild(tr);
-        });
+        filtrarPacientesAtivos();
     } catch (err) {
         console.error('Erro ao carregar pacientes:', err);
         alert('Nao foi possivel carregar a lista de pacientes.');
@@ -452,6 +509,8 @@ async function excluirPaciente(id) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     if (document.getElementById('tabelaClientes')) {
+        document.getElementById('pesquisaPacientesInput')?.addEventListener('input', filtrarPacientesAtivos);
+
         const acessoOk = await validarAcessoAdmin();
         if (acessoOk) {
             renderTable();

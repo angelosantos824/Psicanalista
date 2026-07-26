@@ -1316,6 +1316,10 @@ h2{
         .btn-acao-admin-prontuario { background: #7b8f80; }
         .btn-acao-admin-senha { background: #d4a373; }
         .btn-acao-admin.btn-excluir { background: #ff9999; padding: 7px 12px; border-radius: 8px; }
+        .pacientes-filtro { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .pacientes-filtro input { flex: 1; min-width: 240px; padding: 12px 14px; border: 1px solid #e9e0d2; border-radius: 10px; background: #fffdfb; font: inherit; outline: none; }
+        .pacientes-filtro input:focus { border-color: #d4a373; box-shadow: 0 0 0 3px rgba(212,163,115,.16); }
+        .pacientes-filtro span { color: #8c7851; font-size: .86rem; font-weight: 800; white-space: nowrap; }
         
         footer { margin-top: 50px; text-align: center; padding: 20px; color: #999; border-top: 1px solid #eee; }
 
@@ -1352,7 +1356,7 @@ h2{
         .cliente-menu-conteudo .btn-acao small { font-weight: normal; font-size: .7rem; }
 
         .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
-        .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; }
+        .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font: inherit; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; cursor: pointer; min-height: 92px; }
         .btn-acao:hover { background: #d4a373; color: white; transform: translateY(-3px); }
         .btn-acao-disabled,
         .btn-acao-disabled:hover { background: #f3eee9; border-color: #e5d9cf; color: #9c9188; cursor: not-allowed; opacity: .72; transform: none; box-shadow: none; }
@@ -1373,6 +1377,20 @@ h2{
         .mensagem-troca-senha { min-height: 22px; margin-top: 10px; font-size: .9rem; font-weight: 700; color: #a86936; }
         .mensagem-troca-senha.sucesso { color: #7b8f80; }
         .mensagem-troca-senha.erro { color: #a86936; }
+        .modal-paciente { display: none; position: fixed; inset: 0; z-index: 10000; align-items: center; justify-content: center; padding: 22px; background: rgba(41,32,25,.52); backdrop-filter: blur(5px); }
+        .modal-paciente.modal-paciente-aberto { display: flex; }
+        .modal-paciente-conteudo { position: relative; width: min(680px, 100%); max-height: calc(100vh - 44px); overflow: auto; background: #fff; border-radius: 16px; padding: 30px; box-shadow: 0 26px 80px rgba(41,32,25,.25); }
+        .modal-paciente-amplo { width: min(920px, 100%); }
+        .modal-paciente-conteudo h3 { margin-top: 0; color: #8c7851; }
+        .modal-paciente-fechar { position: absolute; top: 12px; right: 14px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #f3eee9; color: #6f655d; font-size: 18px; line-height: 1; cursor: pointer; }
+        .modal-paciente-fechar:hover { background: #d4a373; color: #fff; }
+        .modal-paciente .card-agendamento { display: block; margin-bottom: 0; }
+        .dados-cliente-lista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }
+        .dados-cliente-lista div { padding: 14px; border: 1px solid #eee5de; border-radius: 12px; background: #fffdfb; }
+        .dados-cliente-lista span { display: block; margin-bottom: 6px; color: #8c7851; font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+        .dados-cliente-lista strong { display: block; color: #3c3530; overflow-wrap: anywhere; }
+        .trocar-senha-grid label { color: #6f655d; font-size: .86rem; font-weight: 800; }
+        .trocar-senha-grid label input { margin-top: 7px; }
         
         .status-pago { color: #7b8f80; font-weight: bold; }
         .status-pendente { color: #d4a373; font-weight: bold; }
@@ -1397,9 +1415,15 @@ h2{
         .resultado-comprovante-grid span { overflow-wrap: anywhere; }
         table { width: 100%; margin-top: 20px; border-collapse: collapse; }
         th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        .btn-sair { margin-top: 30px; display: inline-block; text-decoration: none; color: #888; font-size: 0.9rem; cursor: pointer; border: none; background: none; }
+        .btn-sair { margin-top: 8px; display: inline-block; text-decoration: none; color: #888; font-size: 0.9rem; cursor: pointer; border: none; background: none; }
         
         #loading-overlay { text-align: center; padding: 40px; color: #d4a373; font-weight: bold; }
+
+        @media(max-width: 700px) {
+            .modal-paciente-conteudo { padding: 24px 18px; }
+            .dados-cliente-lista,
+            .trocar-senha-grid.dados-contato-cliente { grid-template-columns: 1fr; }
+        }
 
         .print-section-header { display: none; }
 

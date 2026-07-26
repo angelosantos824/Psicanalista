@@ -18,105 +18,167 @@
                 <p style="color: #666;">Bem-vindo à sua área de acompanhamento e ferramentas terapêuticas.</p>
             </div>
 
-            <div id="cardAvisoAgenda" class="card-agendamento">
-                <h4>🗓️ Nossa Próxima Sessão</h4>
-                <div id="dataAgendada" class="data-destaque">--/-- às --:--</div>
-                <div id="fusoCliente" class="fuso-aviso">Detectando horário local...</div>
-            </div>
-
             <details class="cliente-menu">
                 <summary>Menu do paciente</summary>
                 <div class="cliente-menu-conteudo">
-            <h3>Ferramentas e Consultas</h3>
-            <div class="grid-acoes">
-                <a href="#" id="btnAnamnese" class="btn-acao">
-                    <span>📋 Preencher Anamnese</span>
-                    <small style="font-weight: normal; font-size: 0.7rem;">(Primeira consulta)</small>
-                </a>
+                    <div class="grid-acoes">
+                        <button type="button" class="btn-acao" onclick="abrirModalPaciente('modalMeusDados')">
+                            <span>Meus Dados</span>
+                            <small>Dados cadastrais</small>
+                        </button>
 
-                <a href="tarefa-7-dias.html" id="btnTarefa7" class="btn-acao" style="display: none;">
-                    <span>📝 Exercício 7 Dias</span>
-                    <small style="font-weight: normal; font-size: 0.7rem;">(Escuta e Ressignificação)</small>
-                </a>
-                
-                <a href="#" id="linkPasta" target="_blank" class="btn-acao">
-                    <span>📂 Meus Documentos</span>
-                    <small style="font-weight: normal; font-size: 0.7rem;">(Contratos e Testes)</small>
-                </a>
+                        <button type="button" class="btn-acao" onclick="abrirModalPaciente('modalProximaSessao')">
+                            <span>Proxima Sessao</span>
+                            <small>Data e horario</small>
+                        </button>
 
-                <a href="https://wa.me/351910377246" target="_blank" class="btn-acao">
-                    <span>📅 Reagendar</span>
-                    <small style="font-weight: normal; font-size: 0.7rem;">(Falar com Michelly)</small>
-                </a>
-            </div>
+                        <button type="button" class="btn-acao" onclick="abrirModalPaciente('modalSessaoOnline')">
+                            <span>Sessao Online</span>
+                            <small>Sala virtual</small>
+                        </button>
 
-            <h3>Meu Acesso</h3>
-            <div class="trocar-senha-card">
-                <div class="trocar-senha-grid">
-                    <input type="password" id="senhaAtualPaciente" placeholder="Senha atual" autocomplete="current-password">
-                    <input type="password" id="novaSenhaPaciente" placeholder="Nova senha" autocomplete="new-password">
-                    <input type="password" id="confirmarSenhaPaciente" placeholder="Confirmar nova senha" autocomplete="new-password">
-                </div>
-                <button type="button" class="btn-trocar-senha" onclick="alterarSenhaPaciente()">Alterar senha</button>
-                <p id="mensagemTrocaSenha" class="mensagem-troca-senha" aria-live="polite"></p>
-            </div>
+                        <button type="button" class="btn-acao" onclick="abrirModalPaciente('modalExtratoSessoes')">
+                            <span>Extrato de Sessoes</span>
+                            <small>Pagamentos e comprovantes</small>
+                        </button>
+
+                        <button type="button" class="btn-acao" onclick="abrirModalPaciente('modalFerramentas')">
+                            <span>Ferramentas</span>
+                            <small>Anamnese e exercicios</small>
+                        </button>
+
+                        <button type="button" class="btn-acao" onclick="abrirModalPaciente('modalMeuAcesso')">
+                            <span>Meu Acesso</span>
+                            <small>Alterar senha</small>
+                        </button>
+
+                        <button type="button" class="btn-acao" onclick="abrirModalPaciente('modalReagendar')">
+                            <span>Reagendar</span>
+                            <small>Falar com Michelly</small>
+                        </button>
+                    </div>
                 </div>
             </details>
 
-            <h3>Meus Dados</h3>
-            <div class="trocar-senha-card">
-                <div class="trocar-senha-grid dados-contato-cliente">
-                    <input type="text" id="telefoneClienteArea" placeholder="Telefone / WhatsApp">
-                    <input type="text" id="moradaClienteArea" placeholder="Endereço / Morada">
+            <button onclick="deslogar()" class="btn-sair">Sair da Area Restrita</button>
+
+            <div id="modalMeusDados" class="modal-paciente" aria-hidden="true">
+                <div class="modal-paciente-conteudo" role="dialog" aria-modal="true" aria-labelledby="tituloMeusDados">
+                    <button type="button" class="modal-paciente-fechar" onclick="fecharModalPaciente('modalMeusDados')" aria-label="Fechar">x</button>
+                    <h3 id="tituloMeusDados">Meus Dados</h3>
+                    <div class="dados-cliente-lista">
+                        <div><span>Nome</span><strong id="dadosNomeCliente">---</strong></div>
+                        <div><span>E-mail</span><strong id="dadosEmailCliente">---</strong></div>
+                        <div><span>Nascimento</span><strong id="dadosNascimentoCliente">---</strong></div>
+                        <div><span>Idade</span><strong id="dadosIdadeCliente">---</strong></div>
+                        <div><span>Status terapeutico</span><strong id="dadosStatusCliente">---</strong></div>
+                        <div><span>Codigo de acesso</span><strong id="dadosCodigoCliente">---</strong></div>
+                    </div>
+                    <div class="trocar-senha-card">
+                        <div class="trocar-senha-grid dados-contato-cliente">
+                            <label>Telefone / WhatsApp<input type="text" id="telefoneClienteArea" placeholder="Telefone / WhatsApp"></label>
+                            <label>Endereco / Morada<input type="text" id="moradaClienteArea" placeholder="Endereco / Morada"></label>
+                        </div>
+                        <button type="button" class="btn-trocar-senha" onclick="atualizarContatoPaciente()">Atualizar dados</button>
+                        <p id="mensagemContatoPaciente" class="mensagem-troca-senha" aria-live="polite"></p>
+                    </div>
                 </div>
-                <button type="button" class="btn-trocar-senha" onclick="atualizarContatoPaciente()">Atualizar dados</button>
-                <p id="mensagemContatoPaciente" class="mensagem-troca-senha" aria-live="polite"></p>
             </div>
 
-            <section id="sessaoOnlineArea" class="sessao-online-area">
-
-            <h3>Minha Sessão Online</h3>
-
-<div class="grid-acoes" style="grid-template-columns: 1fr;">
-    <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px dashed #7b8f80; text-align: center;">
-        <p style="margin-bottom: 15px; font-size: 0.9rem;">
-            Acesse sua sala virtual no horário agendado:
-        </p>
-
-        <a 
-            id="btnReuniaoCliente"
-            href="#"
-            target="_blank"
-            class="btn-acao btn-reuniao"
-            style="display:none;">
-            Entrar na Sessão Online
-        </a>
-
-        <p id="semLinkReuniao" style="color:#999; font-size:0.85rem;">
-            O link da reunião ainda não foi disponibilizado.
-        </p>
-    </div>
-</div>
-
-            </section>
-
-            <h3>Extrato de Sessões</h3>
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Moeda</th>
-                            <th>Valor</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaFinanceiraCliente"></tbody>
-                </table>
+            <div id="modalProximaSessao" class="modal-paciente" aria-hidden="true">
+                <div class="modal-paciente-conteudo" role="dialog" aria-modal="true" aria-labelledby="tituloProximaSessao">
+                    <button type="button" class="modal-paciente-fechar" onclick="fecharModalPaciente('modalProximaSessao')" aria-label="Fechar">x</button>
+                    <h3 id="tituloProximaSessao">Proxima Sessao</h3>
+                    <div id="cardAvisoAgenda" class="card-agendamento">
+                        <h4>Nossa Proxima Sessao</h4>
+                        <div id="dataAgendada" class="data-destaque">--/-- as --:--</div>
+                        <div id="fusoCliente" class="fuso-aviso">Detectando horario local...</div>
+                    </div>
+                </div>
             </div>
-            
-            <button onclick="deslogar()" class="btn-sair">← Sair da Área Restrita</button>
+
+            <div id="modalSessaoOnline" class="modal-paciente" aria-hidden="true">
+                <div class="modal-paciente-conteudo" role="dialog" aria-modal="true" aria-labelledby="tituloSessaoOnline">
+                    <button type="button" class="modal-paciente-fechar" onclick="fecharModalPaciente('modalSessaoOnline')" aria-label="Fechar">x</button>
+                    <section id="sessaoOnlineArea" class="sessao-online-area">
+                        <h3 id="tituloSessaoOnline">Minha Sessao Online</h3>
+                        <div class="grid-acoes" style="grid-template-columns: 1fr;">
+                            <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px dashed #7b8f80; text-align: center;">
+                                <p style="margin-bottom: 15px; font-size: 0.9rem;">Acesse sua sala virtual no horario agendado:</p>
+                                <a id="btnReuniaoCliente" href="#" target="_blank" class="btn-acao btn-reuniao" style="display:none;">Entrar na Sessao Online</a>
+                                <p id="semLinkReuniao" style="color:#999; font-size:0.85rem;">O link da reuniao ainda nao foi disponibilizado.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <div id="modalExtratoSessoes" class="modal-paciente" aria-hidden="true">
+                <div class="modal-paciente-conteudo modal-paciente-amplo" role="dialog" aria-modal="true" aria-labelledby="tituloExtratoSessoes">
+                    <button type="button" class="modal-paciente-fechar" onclick="fecharModalPaciente('modalExtratoSessoes')" aria-label="Fechar">x</button>
+                    <h3 id="tituloExtratoSessoes">Extrato de Sessoes</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Moeda</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                    <th>Acoes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaFinanceiraCliente"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modalFerramentas" class="modal-paciente" aria-hidden="true">
+                <div class="modal-paciente-conteudo" role="dialog" aria-modal="true" aria-labelledby="tituloFerramentas">
+                    <button type="button" class="modal-paciente-fechar" onclick="fecharModalPaciente('modalFerramentas')" aria-label="Fechar">x</button>
+                    <h3 id="tituloFerramentas">Ferramentas</h3>
+                    <div class="grid-acoes">
+                        <a href="#" id="btnAnamnese" class="btn-acao">
+                            <span>Preencher Anamnese</span>
+                            <small>Primeira consulta</small>
+                        </a>
+                        <a href="tarefa-7-dias.html" id="btnTarefa7" class="btn-acao" style="display: none;">
+                            <span>Exercicio 7 Dias</span>
+                            <small>Escuta e Ressignificacao</small>
+                        </a>
+                        <a href="#" id="linkPasta" target="_blank" class="btn-acao">
+                            <span>Meus Documentos</span>
+                            <small>Contratos e testes</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modalMeuAcesso" class="modal-paciente" aria-hidden="true">
+                <div class="modal-paciente-conteudo" role="dialog" aria-modal="true" aria-labelledby="tituloMeuAcesso">
+                    <button type="button" class="modal-paciente-fechar" onclick="fecharModalPaciente('modalMeuAcesso')" aria-label="Fechar">x</button>
+                    <h3 id="tituloMeuAcesso">Meu Acesso</h3>
+                    <div class="trocar-senha-card">
+                        <div class="trocar-senha-grid">
+                            <input type="password" id="senhaAtualPaciente" placeholder="Senha atual" autocomplete="current-password">
+                            <input type="password" id="novaSenhaPaciente" placeholder="Nova senha" autocomplete="new-password">
+                            <input type="password" id="confirmarSenhaPaciente" placeholder="Confirmar nova senha" autocomplete="new-password">
+                        </div>
+                        <button type="button" class="btn-trocar-senha" onclick="alterarSenhaPaciente()">Alterar senha</button>
+                        <p id="mensagemTrocaSenha" class="mensagem-troca-senha" aria-live="polite"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modalReagendar" class="modal-paciente" aria-hidden="true">
+                <div class="modal-paciente-conteudo" role="dialog" aria-modal="true" aria-labelledby="tituloReagendar">
+                    <button type="button" class="modal-paciente-fechar" onclick="fecharModalPaciente('modalReagendar')" aria-label="Fechar">x</button>
+                    <h3 id="tituloReagendar">Reagendar</h3>
+                    <p>Para remarcar sua sessao, envie uma mensagem diretamente para Michelly.</p>
+                    <a href="https://wa.me/351910377246" target="_blank" class="btn-acao btn-reuniao">Abrir WhatsApp</a>
+                </div>
+            </div>
         </div>
     </div>
 
