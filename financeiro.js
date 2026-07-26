@@ -181,14 +181,30 @@ function formatarDataComprovante(value) {
 
     if (/^\d{2}\/\d{2}\/\d{4}$/.test(String(value))) return value;
 
-    const data = new Date(value);
+    const data = parseDataComprovante(value);
     if (Number.isNaN(data.getTime())) return String(value);
 
     return data.toLocaleDateString('pt-BR');
 }
 
-function numeroComprovante(index, paciente = {}) {
-    const ano = new Date().getFullYear();
+function parseDataComprovante(value) {
+    const texto = String(value || '').trim();
+    const match = texto.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+    if (match) {
+        return new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1]));
+    }
+
+    return new Date(texto);
+}
+
+function anoComprovante(item = {}) {
+    const data = item.data ? parseDataComprovante(item.data) : new Date();
+    return Number.isNaN(data.getTime()) ? new Date().getFullYear() : data.getFullYear();
+}
+
+function numeroComprovante(index, paciente = {}, item = {}) {
+    const ano = anoComprovante(item);
     const pacienteRef = String(paciente.id || paciente.email || 'PAC')
         .replace(/[^a-zA-Z0-9]/g, '')
         .slice(0, 6)
@@ -198,7 +214,7 @@ function numeroComprovante(index, paciente = {}) {
 
 function gerarComprovantePagamento(item, index, paciente = {}) {
     const moeda = moedaValida(item.moeda) ? item.moeda : 'BRL';
-    const numero = numeroComprovante(index, paciente);
+    const numero = numeroComprovante(index, paciente, item);
     const emissao = new Date().toLocaleString('pt-BR');
     const dataPagamento = formatarDataComprovante(item.data);
     const valor = formatarValor(item.valor, moeda);
@@ -449,6 +465,85 @@ function gerarComprovantePagamento(item, index, paciente = {}) {
     janela.document.open();
     janela.document.write(html);
     janela.document.close();
+}
+
+function renderResultadoComprovante(resultado, tipo = 'neutro') {
+    const container = document.getElementById('resultadoComprovante');
+    if (!container) return;
+
+    container.className = `resultado-comprovante ${tipo}`;
+    container.textContent = '';
+
+    if (typeof resultado === 'string') {
+        container.textContent = resultado;
+        return;
+    }
+
+    const titulo = document.createElement('strong');
+    titulo.textContent = resultado.titulo;
+
+    const lista = document.createElement('div');
+    lista.className = 'resultado-comprovante-grid';
+
+    resultado.itens.forEach(([label, valor]) => {
+        const item = document.createElement('span');
+        item.innerHTML = `<b>${escapeComprovante(label)}:</b> ${escapeComprovante(valor)}`;
+        lista.appendChild(item);
+    });
+
+    container.append(titulo, lista);
+}
+
+async function verificarComprovantePagamento() {
+    const input = document.getElementById('codigoComprovanteInput');
+    const codigo = input?.value.trim().toUpperCase();
+
+    if (!codigo) {
+        renderResultadoComprovante('Informe o número do comprovante.', 'erro');
+        return;
+    }
+
+    renderResultadoComprovante('Verificando comprovante...', 'neutro');
+
+    try {
+        const { data: pacientes, error } = await _supabase
+            .from('pacientes')
+            .select('id,nome,email,telefone,financeiro');
+
+        if (error) throw error;
+
+        for (const paciente of pacientes || []) {
+            const financeiro = Array.isArray(paciente.financeiro) ? paciente.financeiro : [];
+
+            for (let index = 0; index < financeiro.length; index += 1) {
+                const item = financeiro[index];
+                const status = statusPagamentoValido(item.status) ? item.status : 'Pendente';
+                if (status !== 'Pago') continue;
+
+                const numero = numeroComprovante(index, paciente, item);
+                if (numero !== codigo) continue;
+
+                const moeda = moedaValida(item.moeda) ? item.moeda : 'BRL';
+                renderResultadoComprovante({
+                    titulo: 'Comprovante autêntico.',
+                    itens: [
+                        ['Número', numero],
+                        ['Paciente', paciente.nome || 'Paciente'],
+                        ['E-mail', paciente.email || '---'],
+                        ['Data do atendimento', formatarDataComprovante(item.data)],
+                        ['Valor pago', formatarValor(item.valor, moeda)],
+                        ['Status', status]
+                    ]
+                }, 'sucesso');
+                return;
+            }
+        }
+
+        renderResultadoComprovante('Comprovante não encontrado ou não corresponde a um pagamento confirmado.', 'erro');
+    } catch (err) {
+        console.error('Erro ao verificar comprovante:', err);
+        renderResultadoComprovante('Erro ao verificar autenticidade. Tente novamente.', 'erro');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

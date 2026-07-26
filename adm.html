@@ -49,6 +49,15 @@
             <button onclick="salvarPacienteSQL()" class="btn-salvar">Criar Acesso e Pasta</button>
         </div>
 
+        <div class="card">
+            <h3>Validar Comprovante de Pagamento</h3>
+            <div class="form-row">
+                <input type="text" id="codigoComprovanteInput" placeholder="Ex: MS-2026-ABC123-001">
+                <button type="button" class="btn-validar-comprovante" onclick="verificarComprovantePagamento()">Verificar autenticidade</button>
+            </div>
+            <div id="resultadoComprovante" class="resultado-comprovante" aria-live="polite"></div>
+        </div>
+
         <!-- SEÇÃO: FLUXO DE CAIXA MULTIMOEDAS -->
         <div class="card" id="secao-caixa">
             <h3>💰 Fluxo de Caixa Multimoedas</h3>
