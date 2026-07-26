@@ -286,12 +286,12 @@ async function carregarDadosPaciente() {
 
         const tabelaFinanceiraCliente = document.getElementById('tabelaFinanceiraCliente');
         if (tabelaFinanceiraCliente) {
-            renderFinanceiroPacienteTabela(tabelaFinanceiraCliente, paciente.financeiro || [], false);
+            renderFinanceiroPacienteTabela(tabelaFinanceiraCliente, paciente.financeiro || [], false, paciente);
         }
 
         const tabelaFinanceiroDetalhes = document.querySelector('#tabelaFinanceiro tbody');
         if (tabelaFinanceiroDetalhes) {
-            renderFinanceiroPacienteTabela(tabelaFinanceiroDetalhes, paciente.financeiro || [], true);
+            renderFinanceiroPacienteTabela(tabelaFinanceiroDetalhes, paciente.financeiro || [], true, paciente);
         }
 
         const loadingOverlay = document.getElementById('loading-overlay');
