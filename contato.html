@@ -199,16 +199,37 @@
             mostrarStatusSolicitacao('Enviando sua solicitação...', 'neutro');
 
             try {
-                const { error } = await _supabase
+                const payload = {
+                    nome,
+                    email,
+                    telefone,
+                    interesse,
+                    mensagem: mensagem || null,
+                    status: 'pendente'
+                };
+
+                let { error } = await _supabase
                     .from('solicitacoes_atendimento')
-                    .insert([{
-                        nome,
-                        email,
-                        telefone,
-                        interesse,
-                        mensagem: mensagem || null,
-                        status: 'pendente'
-                    }]);
+                    .insert([payload]);
+
+                if (error?.code === 'PGRST204' && String(error.message || '').includes('telefone')) {
+                    const mensagemComTelefone = [
+                        `Telefone / WhatsApp: ${telefone}`,
+                        mensagem ? `Mensagem: ${mensagem}` : ''
+                    ].filter(Boolean).join('\n\n');
+
+                    const { error: fallbackError } = await _supabase
+                        .from('solicitacoes_atendimento')
+                        .insert([{
+                            nome,
+                            email,
+                            interesse,
+                            mensagem: mensagemComTelefone,
+                            status: 'pendente'
+                        }]);
+
+                    error = fallbackError;
+                }
 
                 if (error) throw error;
 

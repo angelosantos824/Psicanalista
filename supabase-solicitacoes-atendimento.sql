@@ -15,6 +15,8 @@ create table if not exists public.solicitacoes_atendimento (
 alter table public.solicitacoes_atendimento
 add column if not exists telefone text;
 
+notify pgrst, 'reload schema';
+
 create index if not exists idx_solicitacoes_atendimento_status_criado
 on public.solicitacoes_atendimento (status, criado_em desc);
 
