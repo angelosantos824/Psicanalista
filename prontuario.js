@@ -148,12 +148,10 @@ function atualizarAgendaCliente(paciente) {
     const elementoData = document.getElementById('dataAgendada');
     const cardAviso = document.getElementById('cardAvisoAgenda');
     const fusoAviso = document.getElementById('fusoCliente');
-    const sessaoOnlineArea = document.getElementById('sessaoOnlineArea');
     if (!elementoData || !cardAviso) return;
 
     if (!paciente.proximo_agendamento) {
         cardAviso.style.display = 'none';
-        if (sessaoOnlineArea) sessaoOnlineArea.style.display = 'none';
         return;
     }
 
@@ -161,12 +159,10 @@ function atualizarAgendaCliente(paciente) {
     const agora = new Date();
     if (Number.isNaN(dataSessao.getTime()) || dataSessao <= agora) {
         cardAviso.style.display = 'none';
-        if (sessaoOnlineArea) sessaoOnlineArea.style.display = 'none';
         return;
     }
 
     cardAviso.style.display = 'block';
-    if (sessaoOnlineArea) sessaoOnlineArea.style.display = 'block';
 
     const fuso = paciente.fuso_paciente || 'Europe/Lisbon';
     const dataFormatada = dataSessao.toLocaleDateString('pt-BR', {
@@ -386,14 +382,17 @@ async function carregarDadosPaciente() {
 
         const btnReuniaoCliente = document.getElementById('btnReuniaoCliente');
         const semLinkReuniao = document.getElementById('semLinkReuniao');
-        if (btnReuniaoCliente && semLinkReuniao) {
+        const sessaoOnlineArea = document.getElementById('sessaoOnlineArea');
+        if (btnReuniaoCliente && semLinkReuniao && sessaoOnlineArea) {
             if (urlValida(paciente.link_reuniao, false)) {
                 btnReuniaoCliente.href = paciente.link_reuniao;
-                btnReuniaoCliente.style.display = 'inline-block';
+                btnReuniaoCliente.style.display = 'inline-flex';
                 semLinkReuniao.style.display = 'none';
+                sessaoOnlineArea.style.display = 'block';
             } else {
                 btnReuniaoCliente.style.display = 'none';
                 semLinkReuniao.style.display = 'block';
+                sessaoOnlineArea.style.display = 'none';
             }
         }
 
