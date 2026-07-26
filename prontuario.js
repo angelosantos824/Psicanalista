@@ -1,5 +1,6 @@
 const paramsProntuario = new URLSearchParams(window.location.search);
 const idCliente = paramsProntuario.get('id') || localStorage.getItem('paciente_id');
+let notasEvolucaoOriginal = '';
 
 function calcularIdadeAutomatico(dataNascimento) {
     const idadeInput = document.getElementById('idade');
@@ -35,6 +36,30 @@ function atualizarIdentificacaoImpressao(paciente) {
     document.querySelectorAll('.print-paciente-identificacao').forEach((elemento) => {
         elemento.textContent = identificacao;
     });
+}
+
+function formatarDataHoraNota() {
+    return new Date().toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function prepararNotasEvolucaoParaSalvar() {
+    const campo = document.getElementById('notasEvolucao');
+    const valorAtual = campo?.value.trim() || '';
+
+    if (!valorAtual || valorAtual === notasEvolucaoOriginal.trim()) {
+        return campo?.value || '';
+    }
+
+    const notasDatadas = `Nota de evolução registrada em ${formatarDataHoraNota()}\n${valorAtual}`;
+    if (campo) campo.value = notasDatadas;
+    notasEvolucaoOriginal = notasDatadas;
+    return notasDatadas;
 }
 
 function renderAnamnese(container, anamnese) {
@@ -274,6 +299,7 @@ async function carregarDadosPaciente() {
         }
 
         preencherValor('notasEvolucao', paciente.notas);
+        notasEvolucaoOriginal = paciente.notas || '';
 
         const btnTarefa7 = document.getElementById('btnTarefa7');
         if (btnTarefa7) {
@@ -431,7 +457,7 @@ async function salvarTudo() {
                 idade: document.getElementById('idade')?.value || null,
                 status: document.getElementById('statusPaciente')?.value || 'Atendimento',
                 morada: document.getElementById('morada')?.value.trim() || null,
-                notas: document.getElementById('notasEvolucao')?.value || ''
+                notas: prepararNotasEvolucaoParaSalvar()
             })
             .eq('id', idCliente);
 

@@ -44,6 +44,18 @@
         .btn-save:hover { background: #637367; transform: translateY(-2px); }
         .btn-print { background: white; color: #555; border: 1px solid #ddd; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; }
         .btn-financeiro { background: #8c7851; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 15px; }
+        .grid-prontuario { display: flex; flex-direction: column; gap: 0; }
+        .col-dados, .col-financeiro { display: contents; }
+        .card-historia-cliente { display: none; }
+        .card-dados-pessoais { order: 1; }
+        .card-anamnese-cliente { order: 2; }
+        .print-notas-header { order: 3; }
+        .prontuario-notas-card { order: 4; }
+        .agendamento-box { order: 5; }
+        .card-progresso-cliente { order: 6; }
+        .print-financeiro-header { order: 7; }
+        .card-financeiro-cliente { order: 8; }
+        .btn-save-notas { width: 100%; margin-top: 14px; }
 
     </style>
 </head>
@@ -92,12 +104,12 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card card-historia-cliente">
                     <h3>Resumo da História (Queixa Principal)</h3>
                     <div id="historiaCliente" class="historia-box">Carregando história...</div>
                 </div>
 
-                <div class="card">
+                <div class="card card-dados-pessoais">
                     <h3>Dados Pessoais</h3>
                     <div class="dados-grid">
                         <div><label>E-mail (Login)</label><input type="text" id="email" readonly style="background:#f9f9f9"></div>
@@ -116,7 +128,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card card-anamnese-cliente">
                     <h3>Relatório de Anamnese Completo</h3>
                     <div id="anamneseConteudo" class="no-data">Carregando dados...</div>
                 </div>
@@ -130,6 +142,7 @@
                 <div class="card prontuario-notas-card">
                     <h3>Notas de Evolução (Sigiloso)</h3>
                     <textarea id="notasEvolucao" placeholder="Registre aqui a evolução das sessões..."></textarea>
+                    <button class="btn-save btn-save-notas" onclick="salvarTudo()">Salvar Prontuário</button>
                 </div>
             </div>
 
@@ -140,7 +153,7 @@
                     <small class="print-paciente-identificacao"></small>
                 </div>
 
-                <div class="card">
+                <div class="card card-financeiro-cliente">
                     <h3>Histórico Financeiro</h3>
                     <button class="btn-financeiro" onclick="addSessao()">+ Registrar Nova Sessão</button>
                     <table id="tabelaFinanceiro">
@@ -150,7 +163,7 @@
                     <div id="resumoFinanceiro" style="margin-top: 15px; font-size: 0.85rem; border-top: 1px dashed #eee; padding-top: 10px;"></div>
                 </div>
 
-                <div class="card">
+                <div class="card card-progresso-cliente">
                     <h3 style="font-size: 0.9rem; color: #555;">Progresso do Exercício 7 Dias</h3>
                     <div class="barra-fundo" style="background: #eee; border-radius: 10px; height: 18px; width: 100%; overflow: hidden; margin-top: 10px;">
                         <div id="barraProgresso" class="barra-preenchimento" style="background: linear-gradient(90deg, #7b8f80, #a3b8a9); height: 100%; width: 0%; transition: width 1s;"></div>
