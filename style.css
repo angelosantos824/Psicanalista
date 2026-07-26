@@ -1646,6 +1646,12 @@ h2{
         page-break-inside:avoid !important;
     }
 
+    .prontuario-notas-card {
+        break-before:page !important;
+        page-break-before:always !important;
+        margin-top:14mm !important;
+    }
+
     .col-financeiro .card:last-child {
         display:none !important;
     }
