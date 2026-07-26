@@ -124,21 +124,44 @@ function renderAnamnese(container, anamnese) {
     });
 }
 
+function normalizarRespostas7Dias(respostas) {
+    if (!respostas) return {};
+
+    if (typeof respostas === 'string') {
+        try {
+            return JSON.parse(respostas) || {};
+        } catch {
+            return {};
+        }
+    }
+
+    return respostas;
+}
+
+function resposta7DiasPreenchida(resposta) {
+    if (!resposta) return false;
+
+    if (typeof resposta === 'string') {
+        return resposta.trim().length > 0;
+    }
+
+    if (typeof resposta === 'object') {
+        return Object.values(resposta).some((valor) => String(valor || '').trim().length > 0);
+    }
+
+    return false;
+}
+
 function atualizarProgresso7Dias(paciente) {
     const barraProgresso = document.getElementById('barraProgresso');
     const textoProgresso = document.getElementById('textoProgresso');
     if (!barraProgresso || !textoProgresso) return;
 
-    let respostas7 = paciente.respostas_7dias || {};
-    if (typeof respostas7 === 'string') {
-        try {
-            respostas7 = JSON.parse(respostas7);
-        } catch {
-            respostas7 = {};
-        }
-    }
+    const respostas7 = normalizarRespostas7Dias(paciente.respostas_7dias);
 
-    const diasRespondidos = Object.keys(respostas7).length;
+    const diasRespondidos = [1, 2, 3, 4, 5, 6, 7]
+        .filter((dia) => resposta7DiasPreenchida(respostas7[`dia_${dia}`]))
+        .length;
     const percentual = Math.round((diasRespondidos / 7) * 100);
     barraProgresso.style.width = `${percentual}%`;
     textoProgresso.textContent = `${percentual}% concluido (${diasRespondidos}/7 dias)`;

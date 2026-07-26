@@ -1,4 +1,19 @@
 let pacienteExercicioData = null;
+const DIAS_EXERCICIO_7_DIAS = [1, 2, 3, 4, 5, 6, 7];
+
+function normalizarRespostas7Dias(respostas) {
+    if (!respostas) return {};
+
+    if (typeof respostas === 'string') {
+        try {
+            return JSON.parse(respostas) || {};
+        } catch {
+            return {};
+        }
+    }
+
+    return respostas;
+}
 
 async function carregarExercicio7Dias() {
     const progressoTexto = document.getElementById('progresso-texto');
@@ -53,16 +68,9 @@ async function carregarExercicio7Dias() {
 
         progressoTexto.textContent = `Voce esta no DIA ${diaAtual} da sua jornada.`;
 
-        let respostas = data.respostas_7dias || {};
-        if (typeof respostas === 'string') {
-            try {
-                respostas = JSON.parse(respostas);
-            } catch {
-                respostas = {};
-            }
-        }
+        const respostas = normalizarRespostas7Dias(data.respostas_7dias);
 
-        [1, 2, 3, 5, 7].forEach((num) => {
+        DIAS_EXERCICIO_7_DIAS.forEach((num) => {
             const bloco = document.getElementById(`bloco-${num}`);
             if (!bloco || num > diaAtual) return;
 
@@ -126,14 +134,7 @@ async function salvarDia(num) {
         return;
     }
 
-    let respostasAtuais = pacienteExercicioData?.respostas_7dias || {};
-    if (typeof respostasAtuais === 'string') {
-        try {
-            respostasAtuais = JSON.parse(respostasAtuais);
-        } catch {
-            respostasAtuais = {};
-        }
-    }
+    const respostasAtuais = normalizarRespostas7Dias(pacienteExercicioData?.respostas_7dias);
 
     try {
         const { error } = await _supabase
