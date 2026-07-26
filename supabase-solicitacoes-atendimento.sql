@@ -2,6 +2,7 @@ create table if not exists public.solicitacoes_atendimento (
     id uuid primary key default gen_random_uuid(),
     nome text not null,
     email text not null,
+    telefone text,
     interesse text,
     mensagem text,
     status text not null default 'pendente',
@@ -10,6 +11,9 @@ create table if not exists public.solicitacoes_atendimento (
     constraint solicitacoes_atendimento_status_check
         check (status in ('pendente', 'autorizada', 'arquivada'))
 );
+
+alter table public.solicitacoes_atendimento
+add column if not exists telefone text;
 
 create index if not exists idx_solicitacoes_atendimento_status_criado
 on public.solicitacoes_atendimento (status, criado_em desc);

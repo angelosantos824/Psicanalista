@@ -41,6 +41,11 @@
                     </div>
 
                     <div class="form-group-contato">
+                        <label>Telefone / WhatsApp</label>
+                        <input type="tel" id="telefoneCliente" placeholder="+351 910 000 000" required>
+                    </div>
+
+                    <div class="form-group-contato">
                         <label>Qual o seu interesse?</label>
                         <select id="interesseCliente"> 
                             <option value="Sessão Avulsa (50 €)">Sessão Avulsa (60 €)</option>
@@ -180,11 +185,12 @@
             const btn = document.getElementById('btnEnviarSolicitacao');
             const nome = document.getElementById('nomeCliente').value.trim();
             const email = document.getElementById('emailCliente').value.trim();
+            const telefone = document.getElementById('telefoneCliente').value.trim();
             const interesse = document.getElementById('interesseCliente').value;
             const mensagem = document.getElementById('mensagemCliente').value.trim();
 
-            if (!nome || !emailValido(email)) {
-                mostrarStatusSolicitacao('Preencha nome e e-mail valido.', 'erro');
+            if (!nome || !emailValido(email) || !telefone) {
+                mostrarStatusSolicitacao('Preencha nome, e-mail valido e telefone.', 'erro');
                 return;
             }
 
@@ -198,6 +204,7 @@
                     .insert([{
                         nome,
                         email,
+                        telefone,
                         interesse,
                         mensagem: mensagem || null,
                         status: 'pendente'

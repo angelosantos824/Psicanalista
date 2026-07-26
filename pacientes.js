@@ -91,7 +91,7 @@ async function salvarPacienteSQL() {
     }
 }
 
-async function criarPacienteComAcesso({ nome, email, notas = '' }) {
+async function criarPacienteComAcesso({ nome, email, telefone = null, notas = '' }) {
     const { data: sessionData, error: sessionError } = await _supabase.auth.getSession();
     if (sessionError) throw sessionError;
 
@@ -102,7 +102,8 @@ async function criarPacienteComAcesso({ nome, email, notas = '' }) {
         senha_acesso: senha,
         codigo_acesso: senha,
         financeiro: [],
-        notas
+        notas,
+        telefone
     };
 
     if (sessionData?.session?.user?.id) {
@@ -119,6 +120,7 @@ function formatarSolicitacaoNotas(solicitacao) {
     const partes = [
         'Pre-cadastro recebido pelo formulario do site.',
         `Interesse: ${solicitacao.interesse || 'Nao informado'}`,
+        `Telefone: ${solicitacao.telefone || 'Nao informado'}`,
         `Mensagem: ${solicitacao.mensagem || 'Nao informada'}`
     ];
 
@@ -141,7 +143,7 @@ async function renderSolicitacoesAtendimento() {
         tbody.textContent = '';
 
         if (!solicitacoes || solicitacoes.length === 0) {
-            criarMensagemTabela(tbody, 5, 'Nenhuma solicitacao pendente.');
+            criarMensagemTabela(tbody, 6, 'Nenhuma solicitacao pendente.');
             return;
         }
 
@@ -154,6 +156,7 @@ async function renderSolicitacoesAtendimento() {
             tr.appendChild(criarCelula(data));
             tr.appendChild(criarCelula(solicitacao.nome || 'Sem nome'));
             tr.appendChild(criarCelula(solicitacao.email || '---'));
+            tr.appendChild(criarCelula(solicitacao.telefone || '---'));
             tr.appendChild(criarCelula(solicitacao.interesse || '---'));
 
             const acoesTd = document.createElement('td');
@@ -183,7 +186,7 @@ async function renderSolicitacoesAtendimento() {
         });
     } catch (err) {
         console.error('Erro ao carregar solicitacoes:', err);
-        criarMensagemTabela(tbody, 5, 'Nao foi possivel carregar as solicitacoes. Verifique a tabela solicitacoes_atendimento.');
+        criarMensagemTabela(tbody, 6, 'Nao foi possivel carregar as solicitacoes. Verifique a tabela solicitacoes_atendimento.');
     }
 }
 
@@ -231,6 +234,7 @@ async function autorizarSolicitacaoAtendimento(solicitacao) {
         const dadosAcesso = await criarPacienteComAcesso({
             nome,
             email,
+            telefone: solicitacao.telefone || null,
             notas: formatarSolicitacaoNotas(solicitacao)
         });
 
