@@ -25,6 +25,18 @@ function preencherValor(id, valor) {
     if (element) element.value = valor || '';
 }
 
+function atualizarIdentificacaoImpressao(paciente) {
+    const identificacao = [
+        paciente.nome || 'Paciente',
+        paciente.email || 'E-mail nao informado',
+        `Codigo: ${paciente.senha_acesso || paciente.codigo_acesso || '---'}`
+    ].join(' | ');
+
+    document.querySelectorAll('.print-paciente-identificacao').forEach((elemento) => {
+        elemento.textContent = identificacao;
+    });
+}
+
 function renderAnamnese(container, anamnese) {
     container.textContent = '';
 
@@ -212,6 +224,7 @@ async function carregarDadosPaciente() {
         setText('nomeCliente', paciente.nome || 'Paciente');
         setText('nomeDisplay', paciente.nome || 'Paciente');
         setText('infoCliente', `Codigo de acesso: ${paciente.senha_acesso || paciente.codigo_acesso || '---'}`);
+        atualizarIdentificacaoImpressao(paciente);
 
         const btnAnamnese = document.getElementById('btnAnamnese');
         if (btnAnamnese) {

@@ -29,7 +29,7 @@
                 <h2>Solicitar Atendimento</h2>
                 <p style="margin-bottom: 30px; color: #888;">Preencha os dados abaixo e entrarei em contato em breve.</p>
                 
-                <form id="formPedido" onsubmit="enviarWhatsApp(event)">
+                <form id="formPedido" onsubmit="enviarSolicitacaoAtendimento(event)">
                     <div class="form-group-contato">
                         <label>Seu Nome Completo</label>
                         <input type="text" id="nomeCliente" placeholder="Ex: Maria Silva" required> 
@@ -43,9 +43,9 @@
                     <div class="form-group-contato">
                         <label>Qual o seu interesse?</label>
                         <select id="interesseCliente"> 
-                            <option value="Sessão Avulsa (50 €)">Sessão Avulsa (50 €)</option>
-                            <option value="Pacote Mensal (180 €)">Pacote Mensal (180 €)</option>
-                            <option value="Foco Total (350 €)">Foco Total (350 €)</option>
+                            <option value="Sessão Avulsa (50 €)">Sessão Avulsa (60 €)</option>
+                            <option value="Pacote Mensal (180 €)">Pacote Mensal (200 €)</option>
+                            <option value="Foco Total (350 €)">Foco Total (450 €)</option>
                             <option value="Outras dúvidas">Outras dúvidas</option>
                         </select>
                     </div>
@@ -55,7 +55,8 @@
                         <textarea id="mensagemCliente" rows="4" placeholder="Conte um pouco sobre sua busca..."></textarea> 
                     </div>
 
-                    <button type="submit" class="btn" style="width: 100%; padding: 15px;">Enviar Solicitação</button>
+                    <button type="submit" id="btnEnviarSolicitacao" class="btn" style="width: 100%; padding: 15px;">Enviar Solicitação</button>
+                    <p id="statusSolicitacao" class="status-solicitacao" aria-live="polite"></p>
                 </form>
             </div>
 
@@ -165,17 +166,54 @@
     <script src="auth.js"></script>
 
     <script>
-        // Função do WhatsApp
-        function enviarWhatsApp(event) {
+        function mostrarStatusSolicitacao(mensagem, tipo = 'neutro') {
+            const status = document.getElementById('statusSolicitacao');
+            if (!status) return;
+
+            status.textContent = mensagem;
+            status.className = `status-solicitacao ${tipo}`;
+        }
+
+        async function enviarSolicitacaoAtendimento(event) {
             event.preventDefault();
-            const nome = document.getElementById('nomeCliente').value;
-            const email = document.getElementById('emailCliente').value;
+
+            const btn = document.getElementById('btnEnviarSolicitacao');
+            const nome = document.getElementById('nomeCliente').value.trim();
+            const email = document.getElementById('emailCliente').value.trim();
             const interesse = document.getElementById('interesseCliente').value;
-            const mensagem = document.getElementById('mensagemCliente').value || "Não informada";
-            const numeroTel = "+351910377246";
-            const textoMensagem = `✨ *Nova Solicitação de Consulta*\n\n👤 *PACIENTE:* ${nome}\n📧 *E-MAIL:* ${email}\n💼 *PLANO:* ${interesse}\n💬 *MENSAGEM:* ${mensagem}\n\n---\nEnviado via Site Michelly Santos`;
-            const linkWa = "https://wa.me/" + numeroTel + "?text=" + encodeURIComponent(textoMensagem);
-            window.open(linkWa, '_blank');
+            const mensagem = document.getElementById('mensagemCliente').value.trim();
+
+            if (!nome || !emailValido(email)) {
+                mostrarStatusSolicitacao('Preencha nome e e-mail valido.', 'erro');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+            mostrarStatusSolicitacao('Enviando sua solicitação...', 'neutro');
+
+            try {
+                const { error } = await _supabase
+                    .from('solicitacoes_atendimento')
+                    .insert([{
+                        nome,
+                        email,
+                        interesse,
+                        mensagem: mensagem || null,
+                        status: 'pendente'
+                    }]);
+
+                if (error) throw error;
+
+                document.getElementById('formPedido').reset();
+                mostrarStatusSolicitacao('Solicitação enviada com sucesso. Entrarei em contato em breve.', 'sucesso');
+            } catch (err) {
+                console.error('Erro ao enviar solicitacao:', err);
+                mostrarStatusSolicitacao('Não foi possível enviar agora. Tente novamente em instantes.', 'erro');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Enviar Solicitação';
+            }
         }
 
         // Lógica para abrir/fechar o modal (Garante que os links funcionem)

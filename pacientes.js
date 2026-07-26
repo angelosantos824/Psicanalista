@@ -78,27 +78,7 @@ async function salvarPacienteSQL() {
     }
 
     try {
-        const { data: sessionData, error: sessionError } = await _supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-
-        const senha = Math.floor(1000 + Math.random() * 9000).toString();
-        const payload = {
-            nome,
-            email,
-            senha_acesso: senha,
-            codigo_acesso: senha,
-            financeiro: [],
-            notas: ''
-        };
-
-        if (sessionData?.session?.user?.id) {
-            payload.user_id = sessionData.session.user.id;
-        }
-
-        const { error } = await _supabase.from('pacientes').insert([payload]);
-        if (error) throw error;
-
-        const dadosAcesso = { nome, email, senha };
+        const dadosAcesso = await criarPacienteComAcesso({ nome, email });
 
         nomeInput.value = '';
         emailInput.value = '';
@@ -108,6 +88,166 @@ async function salvarPacienteSQL() {
     } catch (err) {
         console.error('Erro ao salvar paciente:', err);
         mostrarToastAcesso('Erro ao salvar paciente. Verifique os dados e tente novamente.');
+    }
+}
+
+async function criarPacienteComAcesso({ nome, email, notas = '' }) {
+    const { data: sessionData, error: sessionError } = await _supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+
+    const senha = Math.floor(1000 + Math.random() * 9000).toString();
+    const payload = {
+        nome,
+        email,
+        senha_acesso: senha,
+        codigo_acesso: senha,
+        financeiro: [],
+        notas
+    };
+
+    if (sessionData?.session?.user?.id) {
+        payload.user_id = sessionData.session.user.id;
+    }
+
+    const { error } = await _supabase.from('pacientes').insert([payload]);
+    if (error) throw error;
+
+    return { nome, email, senha };
+}
+
+function formatarSolicitacaoNotas(solicitacao) {
+    const partes = [
+        'Pre-cadastro recebido pelo formulario do site.',
+        `Interesse: ${solicitacao.interesse || 'Nao informado'}`,
+        `Mensagem: ${solicitacao.mensagem || 'Nao informada'}`
+    ];
+
+    return partes.join('\n');
+}
+
+async function renderSolicitacoesAtendimento() {
+    const tbody = document.getElementById('tabelaSolicitacoesAtendimento');
+    if (!tbody) return;
+
+    try {
+        const { data: solicitacoes, error } = await _supabase
+            .from('solicitacoes_atendimento')
+            .select('*')
+            .eq('status', 'pendente')
+            .order('criado_em', { ascending: false });
+
+        if (error) throw error;
+
+        tbody.textContent = '';
+
+        if (!solicitacoes || solicitacoes.length === 0) {
+            criarMensagemTabela(tbody, 5, 'Nenhuma solicitacao pendente.');
+            return;
+        }
+
+        solicitacoes.forEach((solicitacao) => {
+            const tr = document.createElement('tr');
+            const data = solicitacao.criado_em
+                ? new Date(solicitacao.criado_em).toLocaleDateString('pt-BR')
+                : '---';
+
+            tr.appendChild(criarCelula(data));
+            tr.appendChild(criarCelula(solicitacao.nome || 'Sem nome'));
+            tr.appendChild(criarCelula(solicitacao.email || '---'));
+            tr.appendChild(criarCelula(solicitacao.interesse || '---'));
+
+            const acoesTd = document.createElement('td');
+            acoesTd.className = 'acoes-paciente';
+
+            const btnAutorizar = document.createElement('button');
+            btnAutorizar.className = 'btn-acao-admin btn-acao-admin-prontuario';
+            btnAutorizar.type = 'button';
+            btnAutorizar.textContent = 'Autorizar';
+            btnAutorizar.addEventListener('click', () => autorizarSolicitacaoAtendimento(solicitacao));
+
+            const btnPreencher = document.createElement('button');
+            btnPreencher.className = 'btn-acao-admin btn-acao-admin-senha';
+            btnPreencher.type = 'button';
+            btnPreencher.textContent = 'Preencher cadastro';
+            btnPreencher.addEventListener('click', () => preencherCadastroComSolicitacao(solicitacao));
+
+            const btnArquivar = document.createElement('button');
+            btnArquivar.className = 'btn-acao-admin btn-excluir';
+            btnArquivar.type = 'button';
+            btnArquivar.textContent = 'Arquivar';
+            btnArquivar.addEventListener('click', () => atualizarStatusSolicitacao(solicitacao.id, 'arquivada'));
+
+            acoesTd.append(btnAutorizar, btnPreencher, btnArquivar);
+            tr.appendChild(acoesTd);
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error('Erro ao carregar solicitacoes:', err);
+        criarMensagemTabela(tbody, 5, 'Nao foi possivel carregar as solicitacoes. Verifique a tabela solicitacoes_atendimento.');
+    }
+}
+
+function preencherCadastroComSolicitacao(solicitacao) {
+    const nomeInput = document.getElementById('nomeInput');
+    const emailInput = document.getElementById('emailInput');
+
+    if (nomeInput) nomeInput.value = solicitacao.nome || '';
+    if (emailInput) emailInput.value = solicitacao.email || '';
+
+    mostrarToastAcesso('Cadastro preenchido com os dados da solicitacao.');
+}
+
+async function atualizarStatusSolicitacao(id, status) {
+    if (!id) return;
+
+    try {
+        const { error } = await _supabase
+            .from('solicitacoes_atendimento')
+            .update({ status })
+            .eq('id', id);
+
+        if (error) throw error;
+        renderSolicitacoesAtendimento();
+    } catch (err) {
+        console.error('Erro ao atualizar solicitacao:', err);
+        mostrarToastAcesso('Erro ao atualizar solicitacao.');
+    }
+}
+
+async function autorizarSolicitacaoAtendimento(solicitacao) {
+    if (!solicitacao?.id) return;
+
+    const nome = solicitacao.nome || '';
+    const email = solicitacao.email || '';
+
+    if (!nome || !emailValido(email)) {
+        mostrarToastAcesso('Solicitacao sem nome ou e-mail valido.');
+        return;
+    }
+
+    if (!confirm(`Autorizar acesso para ${nome}?`)) return;
+
+    try {
+        const dadosAcesso = await criarPacienteComAcesso({
+            nome,
+            email,
+            notas: formatarSolicitacaoNotas(solicitacao)
+        });
+
+        const { error } = await _supabase
+            .from('solicitacoes_atendimento')
+            .update({ status: 'autorizada' })
+            .eq('id', solicitacao.id);
+
+        if (error) throw error;
+
+        mostrarModalAcesso(dadosAcesso);
+        renderSolicitacoesAtendimento();
+        renderTable();
+        return dadosAcesso;
+    } catch (err) {
+        console.error('Erro ao autorizar solicitacao:', err);
+        mostrarToastAcesso('Erro ao autorizar solicitacao. Verifique os dados e tente novamente.');
     }
 }
 
@@ -299,6 +439,9 @@ async function excluirPaciente(id) {
 document.addEventListener('DOMContentLoaded', async () => {
     if (document.getElementById('tabelaClientes')) {
         const acessoOk = await validarAcessoAdmin();
-        if (acessoOk) renderTable();
+        if (acessoOk) {
+            renderTable();
+            renderSolicitacoesAtendimento();
+        }
     }
 });

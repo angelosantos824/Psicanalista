@@ -1400,6 +1400,8 @@ h2{
         
         #loading-overlay { text-align: center; padding: 40px; color: #d4a373; font-weight: bold; }
 
+        .print-section-header { display: none; }
+
         /* ==========================================
    IMPRESSÃO DO PRONTUÁRIO
 ========================================== */
@@ -1646,10 +1648,57 @@ h2{
         page-break-inside:avoid !important;
     }
 
+    .print-section-header {
+        display:block !important;
+        padding:0 0 12px !important;
+        margin:0 0 14px !important;
+        border-bottom:1px solid #eaded3 !important;
+        position:relative !important;
+    }
+
+    .print-section-header strong {
+        display:block !important;
+        color:#2f2924 !important;
+        font-family:Georgia, 'Times New Roman', serif !important;
+        font-size:22px !important;
+        line-height:1.1 !important;
+    }
+
+    .print-section-header span {
+        display:inline-block !important;
+        margin-top:6px !important;
+        padding:7px 10px !important;
+        border-radius:10px !important;
+        background:#2f2924 !important;
+        color:#fff8f0 !important;
+        font-size:10px !important;
+        font-weight:800 !important;
+        letter-spacing:.7px !important;
+        text-transform:uppercase !important;
+    }
+
+    .print-section-header small {
+        display:block !important;
+        margin-top:8px !important;
+        color:#6f655d !important;
+        font-size:10.5px !important;
+        font-weight:700 !important;
+    }
+
     .prontuario-notas-card {
+        margin-top:0 !important;
+    }
+
+    .print-notas-header {
         break-before:page !important;
         page-break-before:always !important;
-        margin-top:14mm !important;
+        margin-top:12mm !important;
+    }
+
+    .col-financeiro {
+        break-before:page !important;
+        page-break-before:always !important;
+        padding-top:12mm !important;
     }
 
     .col-financeiro .card:last-child {
@@ -1710,6 +1759,25 @@ h2{
 .legal-container a{
     color:#7b8f80;
     font-weight:700;
+}
+
+.status-solicitacao{
+    min-height:22px;
+    margin-top:12px;
+    font-size:.92rem;
+    font-weight:700;
+}
+
+.status-solicitacao.neutro{
+    color:#8c7851;
+}
+
+.status-solicitacao.sucesso{
+    color:#7b8f80;
+}
+
+.status-solicitacao.erro{
+    color:#a64242;
 }
 
 .modal-acesso-aberto{
