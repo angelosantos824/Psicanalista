@@ -7,33 +7,40 @@
     <link rel="stylesheet" href="style.css">
     <style>
         body { background-color: #fcfbf9; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .detalhes-container { max-width: 1200px; margin: 40px auto; padding: 20px; flex: 1; }
-        .grid-prontuario { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+        .detalhes-container { width: 100%; max-width: 1680px; margin: 0 auto; padding: 24px clamp(18px, 3vw, 42px); flex: 1; box-sizing: border-box; }
+        .grid-prontuario { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(340px, .75fr); align-items: start; gap: 22px; }
         
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card { background: white; padding: 22px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 0; }
         .card h3 { color: #8c7851; border-bottom: 1px solid #f4f1ea; padding-bottom: 10px; margin-top: 0; }
         
         .header-ficha { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 30px; 
+            gap: 20px;
+            margin-bottom: 22px; 
             width: 100%; 
+            background: #fff;
+            border: 1px solid #f4f1ea;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            padding: 18px 22px;
+            box-sizing: border-box;
         }        
         .anamnese-box { background: #fdfaf5; border-left: 4px solid #d4a373; padding: 20px; border-radius: 8px; margin-top: 10px; font-size: 0.95rem; line-height: 1.8; color: #444; }
         .historia-box { background: #f0f4f1; border-left: 4px solid #7b8f80; padding: 20px; border-radius: 8px; margin-top: 10px; font-size: 1rem; font-style: italic; color: #2d3436; }
         
         .no-data { color: #999; font-style: italic; font-size: 0.85rem; }
 
-        .dados-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .dados-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 0; }
         .dados-grid label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; }
         .dados-grid input, .dados-grid select { padding: 10px; border: 1px solid #e9e0d2; border-radius: 6px; width: 100%; box-sizing: border-box; }
         
-        .agendamento-box { background: #fff9db; padding: 15px; border-radius: 8px; border: 1px solid #fab005; margin-bottom: 20px; }
+        .agendamento-box { background: #fff9db; padding: 18px; border-radius: 10px; border: 1px solid #fab005; margin-bottom: 0; }
         .agendamento-inputs { display: flex; gap: 10px; margin-top: 5px; }
         .agendamento-inputs input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
 
-        textarea { width: 100%; height: 250px; border: 1px solid #e9e0d2; border-radius: 8px; padding: 15px; font-family: inherit; resize: none; margin-top: 10px; box-sizing: border-box; line-height: 1.6; outline: none; }
+        textarea { width: 100%; min-height: 420px; border: 1px solid #e9e0d2; border-radius: 8px; padding: 15px; font-family: inherit; resize: vertical; margin-top: 10px; box-sizing: border-box; line-height: 1.6; outline: none; }
 
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid #f4f1ea; }
@@ -44,18 +51,36 @@
         .btn-save:hover { background: #637367; transform: translateY(-2px); }
         .btn-print { background: white; color: #555; border: 1px solid #ddd; padding: 12px 20px; border-radius: 8px; cursor: pointer; margin-right: 10px; }
         .btn-financeiro { background: #8c7851; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 15px; }
-        .grid-prontuario { display: flex; flex-direction: column; gap: 0; }
-        .col-dados, .col-financeiro { display: contents; }
+        .col-dados, .col-financeiro { display: grid; gap: 18px; }
+        .col-financeiro { position: sticky; top: 18px; }
         .card-historia-cliente { display: none; }
-        .card-dados-pessoais { order: 1; }
-        .card-anamnese-cliente { order: 2; }
-        .print-notas-header { order: 3; }
-        .prontuario-notas-card { order: 4; }
-        .agendamento-box { order: 5; }
-        .card-progresso-cliente { order: 6; }
-        .print-financeiro-header { order: 7; }
-        .card-financeiro-cliente { order: 8; }
+        .print-section-header { display: none; }
         .btn-save-notas { width: 100%; margin-top: 14px; }
+        .card-anamnese-cliente .anamnese-box { max-height: 520px; overflow: auto; }
+        .card-financeiro-cliente { overflow: hidden; }
+        .card-financeiro-cliente table { margin-top: 10px; }
+        .card-progresso-cliente h3 { font-size: 0.95rem !important; margin-bottom: 12px; }
+
+        @media (max-width: 1180px) {
+            .grid-prontuario { grid-template-columns: 1fr; }
+            .col-financeiro { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .card-financeiro-cliente { grid-column: 1 / -1; }
+        }
+
+        @media (max-width: 760px) {
+            .detalhes-container { padding: 14px; }
+            .header-ficha { flex-direction: column; align-items: stretch; }
+            .header-ficha > div:last-child { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+            .btn-print { margin-right: 0; }
+            .dados-grid,
+            .col-financeiro { grid-template-columns: 1fr; }
+            textarea { min-height: 320px; }
+        }
+
+        @media print {
+            .col-financeiro { position: static; }
+            .card-anamnese-cliente .anamnese-box { max-height: none; overflow: visible; }
+        }
 
     </style>
 </head>
@@ -76,34 +101,6 @@
 
         <div class="grid-prontuario">
             <div class="col-dados">
-                <div class="agendamento-box">
-                    <label><strong>📅 Próxima Sessão:</strong></label>
-                    <div class="agendamento-inputs">
-                         <input type="date" id="agendamentoData" style="flex: 2;">
-                         <input type="time" id="agendamentoHora" style="flex: 1;">
-                    </div>
-                    <select id="fusoPaciente">
-                        <option value="Europe/Lisbon">Portugal</option>
-                        <option value="America/Sao_Paulo">Brasil - São Paulo/Brasília</option>
-                        <option value="America/Manaus">Brasil - Manaus</option>
-                        <option value="America/Fortaleza">Brasil - Fortaleza</option>
-                    </select>
-<br>
-                    <label><strong>🔗 Link da Reunião:</strong></label>
-                    <input 
-                        type="url" 
-                        id="linkReuniao" 
-                        placeholder="Cole aqui o link do Zoom ou Google Meet"
-                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; margin-top:8px;"
->
-                    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #fab005;">
-                        <label style="display: flex; align-items: center; cursor: pointer; color: #85741d; font-weight: bold;">
-                            <input type="checkbox" id="liberar7Dias" style="width: auto; margin-right: 10px;"> 
-                            🔓 Liberar Exercício 7 Dias
-                        </label>
-                    </div>
-                </div>
-
                 <div class="card card-historia-cliente">
                     <h3>Resumo da História (Queixa Principal)</h3>
                     <div id="historiaCliente" class="historia-box">Carregando história...</div>
@@ -147,6 +144,33 @@
             </div>
 
             <div class="col-financeiro">
+                <div class="agendamento-box">
+                    <label><strong>📅 Próxima Sessão:</strong></label>
+                    <div class="agendamento-inputs">
+                         <input type="date" id="agendamentoData" style="flex: 2;">
+                         <input type="time" id="agendamentoHora" style="flex: 1;">
+                    </div>
+                    <select id="fusoPaciente">
+                        <option value="Europe/Lisbon">Portugal</option>
+                        <option value="America/Sao_Paulo">Brasil - São Paulo/Brasília</option>
+                        <option value="America/Manaus">Brasil - Manaus</option>
+                        <option value="America/Fortaleza">Brasil - Fortaleza</option>
+                    </select>
+                    <label><strong>🔗 Link da Reunião:</strong></label>
+                    <input
+                        type="url"
+                        id="linkReuniao"
+                        placeholder="Cole aqui o link do Zoom ou Google Meet"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; margin-top:8px;"
+                    >
+                    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #fab005;">
+                        <label style="display: flex; align-items: center; cursor: pointer; color: #85741d; font-weight: bold;">
+                            <input type="checkbox" id="liberar7Dias" style="width: auto; margin-right: 10px;">
+                            🔓 Liberar Exercício 7 Dias
+                        </label>
+                    </div>
+                </div>
+
                 <div class="print-section-header print-financeiro-header">
                     <strong>PRONTUÁRIO CLÍNICO</strong>
                     <span>Histórico Financeiro</span>

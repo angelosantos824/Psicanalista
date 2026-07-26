@@ -1668,11 +1668,6 @@ h2{
         font-weight:800 !important;
     }
 
-    .col-financeiro .card {
-        break-inside:avoid !important;
-        page-break-inside:avoid !important;
-    }
-
     .print-section-header {
         display:block !important;
         padding:0 0 12px !important;
@@ -1712,18 +1707,30 @@ h2{
 
     .prontuario-notas-card {
         margin-top:0 !important;
+        break-inside:auto !important;
+        page-break-inside:auto !important;
     }
 
     .print-notas-header {
         break-before:page !important;
         page-break-before:always !important;
-        margin-top:12mm !important;
+        margin-top:0 !important;
     }
 
-    .col-financeiro {
+    .print-financeiro-header {
         break-before:page !important;
         page-break-before:always !important;
-        padding-top:12mm !important;
+        margin-top:0 !important;
+    }
+
+    .card-financeiro-cliente {
+        break-inside:auto !important;
+        page-break-inside:auto !important;
+    }
+
+    .card-financeiro-cliente table {
+        break-inside:auto !important;
+        page-break-inside:auto !important;
     }
 
     .col-financeiro .card:last-child {
