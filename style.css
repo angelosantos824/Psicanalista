@@ -1341,6 +1341,15 @@ h2{
         .card-agendamento h4 { margin: 0; color: #85741d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
         .card-agendamento .data-destaque { font-size: 1.5rem; font-weight: bold; color: #444; margin-top: 10px; }
         .fuso-aviso { font-size: 0.75rem; color: #85741d; margin-top: 5px; font-weight: normal; }
+        .cliente-menu { margin-bottom: 30px; border: 1px solid #eee5de; border-radius: 14px; background: #fff; box-shadow: 0 10px 30px rgba(41,32,25,.05); overflow: hidden; }
+        .cliente-menu summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; background: #fdfaf5; color: #8c7851; cursor: pointer; font-weight: 800; list-style: none; }
+        .cliente-menu summary::-webkit-details-marker { display: none; }
+        .cliente-menu summary::after { content: '+'; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #d4a373; color: #fff; font-size: 18px; line-height: 1; }
+        .cliente-menu[open] summary::after { content: '-'; }
+        .cliente-menu-conteudo { padding: 20px; border-top: 1px solid #eee5de; }
+        .cliente-menu-conteudo h3 { margin-top: 0; color: #8c7851; }
+        .cliente-menu-conteudo .grid-acoes { margin-bottom: 26px; }
+        .cliente-menu-conteudo .btn-acao small { font-weight: normal; font-size: .7rem; }
 
         .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
         .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; }
@@ -1349,6 +1358,11 @@ h2{
         .btn-acao-disabled:hover { background: #f3eee9; border-color: #e5d9cf; color: #9c9188; cursor: not-allowed; opacity: .72; transform: none; box-shadow: none; }
         .btn-reuniao { background: #7b8f80; color: white; border: none; }
         .btn-reuniao:hover { background: #6a7c6e; }
+        .sessao-online-area { margin-bottom: 30px; }
+        .sessao-online-area .grid-acoes { grid-template-columns: 1fr !important; margin-bottom: 0; }
+        .sessao-online-area .grid-acoes > div { background: #f9f9f9 !important; padding: 20px !important; border-radius: 12px !important; border: 1px dashed #7b8f80 !important; text-align: center !important; }
+        .sessao-online-area p { margin-bottom: 15px; font-size: .9rem; }
+        #semLinkReuniao { color: #999; font-size: .85rem; margin: 0; }
         .trocar-senha-card { background: #fff; border: 1px solid #eee5de; border-radius: 14px; box-shadow: 0 10px 30px rgba(41,32,25,.05); padding: 20px; margin-bottom: 30px; }
         .trocar-senha-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
         .trocar-senha-grid input { width: 100%; padding: 12px; border: 1px solid #e5d9cf; border-radius: 10px; background: #fffdfb; outline: none; }

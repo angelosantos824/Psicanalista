@@ -76,40 +76,41 @@ function atualizarAgendaCliente(paciente) {
     const elementoData = document.getElementById('dataAgendada');
     const cardAviso = document.getElementById('cardAvisoAgenda');
     const fusoAviso = document.getElementById('fusoCliente');
+    const sessaoOnlineArea = document.getElementById('sessaoOnlineArea');
     if (!elementoData || !cardAviso) return;
 
     if (!paciente.proximo_agendamento) {
         cardAviso.style.display = 'none';
+        if (sessaoOnlineArea) sessaoOnlineArea.style.display = 'none';
         return;
     }
 
     const dataSessao = new Date(paciente.proximo_agendamento);
     const agora = new Date();
-    cardAviso.style.display = 'block';
-
-    if (dataSessao > agora) {
-        const fuso = paciente.fuso_paciente || 'Europe/Lisbon';
-        const dataFormatada = dataSessao.toLocaleDateString('pt-BR', {
-            timeZone: fuso,
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-        const horaFormatada = dataSessao.toLocaleTimeString('pt-BR', {
-            timeZone: fuso,
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-
-        elementoData.textContent = `${dataFormatada} as ${horaFormatada}`;
-        if (fusoAviso) fusoAviso.style.display = 'block';
-    } else {
-        elementoData.textContent = 'Aguardando novo agendamento...';
-        elementoData.style.color = '#85741d';
-        elementoData.style.fontWeight = 'normal';
-        elementoData.style.fontSize = '1.1rem';
-        if (fusoAviso) fusoAviso.style.display = 'none';
+    if (Number.isNaN(dataSessao.getTime()) || dataSessao <= agora) {
+        cardAviso.style.display = 'none';
+        if (sessaoOnlineArea) sessaoOnlineArea.style.display = 'none';
+        return;
     }
+
+    cardAviso.style.display = 'block';
+    if (sessaoOnlineArea) sessaoOnlineArea.style.display = 'block';
+
+    const fuso = paciente.fuso_paciente || 'Europe/Lisbon';
+    const dataFormatada = dataSessao.toLocaleDateString('pt-BR', {
+        timeZone: fuso,
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+    const horaFormatada = dataSessao.toLocaleTimeString('pt-BR', {
+        timeZone: fuso,
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    elementoData.textContent = `${dataFormatada} as ${horaFormatada}`;
+    if (fusoAviso) fusoAviso.style.display = 'block';
 }
 
 function bloquearCliqueAnamnese(event) {
