@@ -205,7 +205,7 @@ function gerarComprovantePagamento(item, index, paciente = {}) {
     const pacienteNome = paciente.nome || paciente.full_name || 'Paciente';
     const pacienteEmail = paciente.email || '---';
     const pacienteTelefone = paciente.telefone || '---';
-    const servico = item.descricao || 'Sessão individual de psicanálise';
+    const servico = `Referente a atendimento psicanalítico individual realizado em ${dataPagamento}.`;
     const metodo = item.forma_pagamento || item.metodo_pagamento || 'Não informado';
 
     const html = `<!DOCTYPE html>
