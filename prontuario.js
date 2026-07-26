@@ -564,17 +564,25 @@ async function salvarAnamnese(event) {
         const morada = document.getElementById('anamneseMorada')?.value.trim() || null;
         const idade = nascimento ? calcularIdadeValor(nascimento) : null;
 
-        const { error } = await _supabase
+        const payloadAnamnese = {
+            anamnese_completa: anamneseData,
+            anamnese: anamneseData,
+            nascimento,
+            idade,
+            morada
+        };
+
+        const { data: pacienteAtualizado, error } = await _supabase
             .from('pacientes')
-            .update({
-                anamnese_completa: anamneseData,
-                nascimento,
-                idade,
-                morada
-            })
-            .eq('id', idPaciente);
+            .update(payloadAnamnese)
+            .eq('id', idPaciente)
+            .select('id,anamnese_completa,anamnese')
+            .maybeSingle();
 
         if (error) throw error;
+        if (!pacienteAtualizado) {
+            throw new Error('Nenhum paciente foi atualizado. Verifique as permissoes de gravacao no Supabase.');
+        }
 
         alert('Anamnese enviada com sucesso! Obrigado.');
         window.location.href = `area-cliente.html?id=${encodeURIComponent(idPaciente)}`;
