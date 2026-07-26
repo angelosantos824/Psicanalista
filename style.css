@@ -1345,6 +1345,8 @@ h2{
         .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
         .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; }
         .btn-acao:hover { background: #d4a373; color: white; transform: translateY(-3px); }
+        .btn-acao-disabled,
+        .btn-acao-disabled:hover { background: #f3eee9; border-color: #e5d9cf; color: #9c9188; cursor: not-allowed; opacity: .72; transform: none; box-shadow: none; }
         .btn-reuniao { background: #7b8f80; color: white; border: none; }
         .btn-reuniao:hover { background: #6a7c6e; }
         .trocar-senha-card { background: #fff; border: 1px solid #eee5de; border-radius: 14px; box-shadow: 0 10px 30px rgba(41,32,25,.05); padding: 20px; margin-bottom: 30px; }

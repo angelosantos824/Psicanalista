@@ -112,6 +112,10 @@ function atualizarAgendaCliente(paciente) {
     }
 }
 
+function bloquearCliqueAnamnese(event) {
+    event.preventDefault();
+}
+
 function mostrarMensagemTrocaSenha(mensagem, tipo = 'erro') {
     const elemento = document.getElementById('mensagemTrocaSenha');
     if (!elemento) return;
@@ -209,7 +213,21 @@ async function carregarDadosPaciente() {
         setText('infoCliente', `Codigo de acesso: ${paciente.senha_acesso || paciente.codigo_acesso || '---'}`);
 
         const btnAnamnese = document.getElementById('btnAnamnese');
-        if (btnAnamnese) btnAnamnese.href = `anamnese.html?id=${encodeURIComponent(idCliente)}`;
+        if (btnAnamnese) {
+            const anamnesePreenchida = Boolean(paciente.anamnese_completa || paciente.anamnese);
+
+            if (anamnesePreenchida) {
+                btnAnamnese.removeAttribute('href');
+                btnAnamnese.classList.add('btn-acao-disabled');
+                btnAnamnese.setAttribute('aria-disabled', 'true');
+                btnAnamnese.addEventListener('click', bloquearCliqueAnamnese);
+            } else {
+                btnAnamnese.href = `anamnese.html?id=${encodeURIComponent(idCliente)}`;
+                btnAnamnese.classList.remove('btn-acao-disabled');
+                btnAnamnese.removeAttribute('aria-disabled');
+                btnAnamnese.removeEventListener('click', bloquearCliqueAnamnese);
+            }
+        }
 
         preencherValor('email', paciente.email);
         preencherValor('telefone', paciente.telefone);
