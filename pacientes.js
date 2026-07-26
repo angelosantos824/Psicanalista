@@ -117,14 +117,22 @@ async function criarPacienteComAcesso({ nome, email, telefone = null, notas = ''
 }
 
 function formatarSolicitacaoNotas(solicitacao) {
+    const telefone = obterTelefoneSolicitacao(solicitacao);
     const partes = [
         'Pre-cadastro recebido pelo formulario do site.',
         `Interesse: ${solicitacao.interesse || 'Nao informado'}`,
-        `Telefone: ${solicitacao.telefone || 'Nao informado'}`,
+        `Telefone: ${telefone || 'Nao informado'}`,
         `Mensagem: ${solicitacao.mensagem || 'Nao informada'}`
     ];
 
     return partes.join('\n');
+}
+
+function obterTelefoneSolicitacao(solicitacao) {
+    if (solicitacao.telefone) return solicitacao.telefone;
+
+    const match = String(solicitacao.mensagem || '').match(/Telefone\s*\/\s*WhatsApp:\s*([^\n]+)/i);
+    return match?.[1]?.trim() || null;
 }
 
 async function renderSolicitacoesAtendimento() {
@@ -156,7 +164,7 @@ async function renderSolicitacoesAtendimento() {
             tr.appendChild(criarCelula(data));
             tr.appendChild(criarCelula(solicitacao.nome || 'Sem nome'));
             tr.appendChild(criarCelula(solicitacao.email || '---'));
-            tr.appendChild(criarCelula(solicitacao.telefone || '---'));
+            tr.appendChild(criarCelula(obterTelefoneSolicitacao(solicitacao) || '---'));
             tr.appendChild(criarCelula(solicitacao.interesse || '---'));
 
             const acoesTd = document.createElement('td');
@@ -234,7 +242,7 @@ async function autorizarSolicitacaoAtendimento(solicitacao) {
         const dadosAcesso = await criarPacienteComAcesso({
             nome,
             email,
-            telefone: solicitacao.telefone || null,
+            telefone: obterTelefoneSolicitacao(solicitacao),
             notas: formatarSolicitacaoNotas(solicitacao)
         });
 
@@ -303,6 +311,8 @@ ${senha}
 
 Área do paciente:
 https://www.michellysantospsi.com/area-cliente.html
+
+No primeiro acesso voce sera direcionado ao formulario de anamnese inicial.
 
 No primeiro acesso recomendamos alterar sua senha.
 

@@ -12,10 +12,13 @@
         .campo-grupo { margin-bottom: 25px; }
         label { display: block; font-weight: bold; color: #555; margin-bottom: 8px; font-size: 0.95rem; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e9e0d2; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+        input[readonly] { background: #f7f2ed; color: #6f655d; }
         textarea { height: 100px; resize: none; }
+        .anamnese-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .btn-enviar { width: 100%; background: #7b8f80; color: white; border: none; padding: 18px; border-radius: 10px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: 0.3s; margin-top: 20px; }
         .btn-enviar:hover { background: #637367; }
         .secao-titulo { background: #fdfaf5; padding: 10px; border-radius: 5px; color: #8c7851; margin: 40px 0 20px 0; font-weight: bold; border-left: 4px solid #d4a373; }
+        @media(max-width: 700px) { .anamnese-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -25,6 +28,30 @@
     <p style="text-align: center; color: #888; font-size: 0.9rem;">As informações aqui registradas são estritamente sigilosas.</p>
 
     <form id="formAnamnese">
+        <div class="secao-titulo">Identificação</div>
+        <div class="anamnese-grid">
+            <div class="campo-grupo">
+                <label>Nome completo</label>
+                <input type="text" id="anamneseNome" readonly>
+            </div>
+            <div class="campo-grupo">
+                <label>E-mail</label>
+                <input type="email" id="anamneseEmail" readonly>
+            </div>
+            <div class="campo-grupo">
+                <label>Telefone / WhatsApp</label>
+                <input type="tel" id="anamneseTelefone" readonly>
+            </div>
+            <div class="campo-grupo">
+                <label>Data de nascimento</label>
+                <input type="date" id="anamneseNascimento" name="nascimento" required>
+            </div>
+        </div>
+        <div class="campo-grupo">
+            <label>Endereço / Morada</label>
+            <input type="text" id="anamneseMorada" name="morada" required>
+        </div>
+
         <div class="secao-titulo">Dados Pessoais & Hábitos</div>
         <div class="campo-grupo">
             <label>Profissão</label>

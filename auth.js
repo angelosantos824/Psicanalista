@@ -30,13 +30,16 @@ async function executarLogin(event) {
 
         const { data: paciente, error: dbError } = await _supabase
             .from('pacientes')
-            .select('id,email,senha_acesso,codigo_acesso')
+            .select('id,email,senha_acesso,codigo_acesso,anamnese_completa,anamnese')
             .eq('email', user)
             .single();
 
         if (!dbError && paciente && (paciente.senha_acesso === pass || paciente.codigo_acesso === pass)) {
             localStorage.setItem('paciente_id', paciente.id);
-            window.location.replace('area-cliente.html?id=' + encodeURIComponent(paciente.id));
+            const destino = paciente.anamnese_completa || paciente.anamnese
+                ? 'area-cliente.html'
+                : 'anamnese.html';
+            window.location.replace(`${destino}?id=${encodeURIComponent(paciente.id)}`);
             return;
         }
 

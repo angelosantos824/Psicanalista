@@ -6,6 +6,13 @@ function calcularIdadeAutomatico(dataNascimento) {
     const idadeInput = document.getElementById('idade');
     if (!idadeInput || !dataNascimento) return;
 
+    const idade = calcularIdadeValor(dataNascimento);
+    idadeInput.value = Number.isFinite(idade) && idade >= 0 ? idade : '';
+}
+
+function calcularIdadeValor(dataNascimento) {
+    if (!dataNascimento) return null;
+
     const nascimento = new Date(dataNascimento);
     const hoje = new Date();
     let idade = hoje.getFullYear() - nascimento.getFullYear();
@@ -15,7 +22,7 @@ function calcularIdadeAutomatico(dataNascimento) {
         idade -= 1;
     }
 
-    idadeInput.value = Number.isFinite(idade) && idade >= 0 ? idade : '';
+    return Number.isFinite(idade) && idade >= 0 ? idade : null;
 }
 
 window.calcularIdadeAutomático = calcularIdadeAutomatico;
@@ -162,6 +169,69 @@ function mostrarMensagemTrocaSenha(mensagem, tipo = 'erro') {
     elemento.className = `mensagem-troca-senha ${tipo}`;
 }
 
+function mostrarMensagemContatoPaciente(mensagem, tipo = 'erro') {
+    const elemento = document.getElementById('mensagemContatoPaciente');
+    if (!elemento) return;
+
+    elemento.textContent = mensagem;
+    elemento.className = `mensagem-troca-senha ${tipo}`;
+}
+
+async function carregarDadosAnamnese() {
+    const idPaciente = paramsProntuario.get('id') || localStorage.getItem('paciente_id');
+    if (!idPaciente) return;
+
+    localStorage.setItem('paciente_id', idPaciente);
+
+    try {
+        const { data: paciente, error } = await _supabase
+            .from('pacientes')
+            .select('nome,email,telefone,nascimento,morada')
+            .eq('id', idPaciente)
+            .single();
+
+        if (error || !paciente) throw error || new Error('Paciente nao encontrado.');
+
+        preencherValor('anamneseNome', paciente.nome);
+        preencherValor('anamneseEmail', paciente.email);
+        preencherValor('anamneseTelefone', paciente.telefone);
+        preencherValor('anamneseNascimento', paciente.nascimento);
+        preencherValor('anamneseMorada', paciente.morada);
+    } catch (err) {
+        console.error('Erro ao carregar dados da anamnese:', err);
+        alert('Nao foi possivel carregar seus dados. Tente novamente.');
+    }
+}
+
+async function atualizarContatoPaciente() {
+    if (!idCliente) {
+        mostrarMensagemContatoPaciente('Paciente nao identificado.');
+        return;
+    }
+
+    const telefone = document.getElementById('telefoneClienteArea')?.value.trim() || null;
+    const morada = document.getElementById('moradaClienteArea')?.value.trim() || null;
+
+    if (!telefone || !morada) {
+        mostrarMensagemContatoPaciente('Preencha telefone e endereco.');
+        return;
+    }
+
+    try {
+        const { error } = await _supabase
+            .from('pacientes')
+            .update({ telefone, morada })
+            .eq('id', idCliente);
+
+        if (error) throw error;
+
+        mostrarMensagemContatoPaciente('Dados atualizados com sucesso.', 'sucesso');
+    } catch (err) {
+        console.error('Erro ao atualizar contato do paciente:', err);
+        mostrarMensagemContatoPaciente('Erro ao atualizar dados. Tente novamente.');
+    }
+}
+
 async function alterarSenhaPaciente() {
     if (!idCliente) {
         mostrarMensagemTrocaSenha('Paciente nao identificado.');
@@ -273,6 +343,8 @@ async function carregarDadosPaciente() {
         preencherValor('nascimento', paciente.nascimento);
         preencherValor('idade', paciente.idade);
         preencherValor('morada', paciente.morada);
+        preencherValor('telefoneClienteArea', paciente.telefone);
+        preencherValor('moradaClienteArea', paciente.morada);
         preencherValor('linkReuniao', paciente.link_reuniao);
 
         const statusPaciente = document.getElementById('statusPaciente');
@@ -488,9 +560,18 @@ async function salvarAnamnese(event) {
     try {
         const formData = new FormData(form);
         const anamneseData = Object.fromEntries(formData.entries());
+        const nascimento = document.getElementById('anamneseNascimento')?.value || null;
+        const morada = document.getElementById('anamneseMorada')?.value.trim() || null;
+        const idade = nascimento ? calcularIdadeValor(nascimento) : null;
+
         const { error } = await _supabase
             .from('pacientes')
-            .update({ anamnese_completa: anamneseData })
+            .update({
+                anamnese_completa: anamneseData,
+                nascimento,
+                idade,
+                morada
+            })
             .eq('id', idPaciente);
 
         if (error) throw error;
@@ -507,7 +588,10 @@ async function salvarAnamnese(event) {
 
 document.addEventListener('DOMContentLoaded', () => {
     const formAnamnese = document.getElementById('formAnamnese');
-    if (formAnamnese) formAnamnese.addEventListener('submit', salvarAnamnese);
+    if (formAnamnese) {
+        formAnamnese.addEventListener('submit', salvarAnamnese);
+        carregarDadosAnamnese();
+    }
 
     if (
         document.getElementById('nomeCliente') ||

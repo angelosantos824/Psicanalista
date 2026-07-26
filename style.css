@@ -1365,6 +1365,7 @@ h2{
         #semLinkReuniao { color: #999; font-size: .85rem; margin: 0; }
         .trocar-senha-card { background: #fff; border: 1px solid #eee5de; border-radius: 14px; box-shadow: 0 10px 30px rgba(41,32,25,.05); padding: 20px; margin-bottom: 30px; }
         .trocar-senha-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+        .trocar-senha-grid.dados-contato-cliente { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .trocar-senha-grid input { width: 100%; padding: 12px; border: 1px solid #e5d9cf; border-radius: 10px; background: #fffdfb; outline: none; }
         .trocar-senha-grid input:focus { border-color: #d4a373; box-shadow: 0 0 0 3px rgba(212,163,115,.16); }
         .btn-trocar-senha { width: 100%; padding: 13px; border: 0; border-radius: 999px; background: #d4a373; color: #fff; cursor: pointer; font-weight: 800; }
