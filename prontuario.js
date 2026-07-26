@@ -572,16 +572,27 @@ async function salvarAnamnese(event) {
             morada
         };
 
-        const { data: pacienteAtualizado, error } = await _supabase
+        const { error } = await _supabase
             .from('pacientes')
             .update(payloadAnamnese)
-            .eq('id', idPaciente)
-            .select('id,anamnese_completa,anamnese')
-            .maybeSingle();
+            .eq('id', idPaciente);
 
         if (error) throw error;
+
+        const { data: pacienteAtualizado, error: erroConfirmacao } = await _supabase
+            .from('pacientes')
+            .select('id,anamnese_completa,anamnese,nascimento,morada')
+            .eq('id', idPaciente)
+            .maybeSingle();
+
+        if (erroConfirmacao) throw erroConfirmacao;
         if (!pacienteAtualizado) {
-            throw new Error('Nenhum paciente foi atualizado. Verifique as permissoes de gravacao no Supabase.');
+            throw new Error('Paciente nao encontrado para confirmar o salvamento.');
+        }
+
+        const anamneseSalva = pacienteAtualizado.anamnese_completa || pacienteAtualizado.anamnese;
+        if (!anamneseSalva) {
+            throw new Error('A anamnese nao foi gravada. Verifique a permissao de UPDATE da tabela pacientes no Supabase.');
         }
 
         alert('Anamnese enviada com sucesso! Obrigado.');
