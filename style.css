@@ -1324,14 +1324,22 @@ h2{
         footer { margin-top: 50px; text-align: center; padding: 20px; color: #999; border-top: 1px solid #eee; }
 
         .cliente-container { 
-            max-width: 800px; 
-            margin: 50px auto; 
-            padding: 30px; 
-            background: white; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            width:100%;
+            max-width: 1680px; 
+            margin: 0 auto; 
+            padding: 24px clamp(18px,3vw,42px); 
+            box-sizing:border-box;
         }
-        .header-cliente { border-bottom: 2px solid #fcfbf9; margin-bottom: 20px; padding-bottom: 10px; }
+        .header-cliente {
+            margin-bottom:22px;
+            padding:24px 28px;
+            background:#fff;
+            border:1px solid #f4f1ea;
+            border-radius:12px;
+            box-shadow:0 4px 15px rgba(0,0,0,.04);
+        }
+        .header-cliente h2 { margin-top:0; }
+        .header-cliente p { margin-bottom:0; }
         
         .card-agendamento {
             background: #fff9db;
@@ -1345,17 +1353,17 @@ h2{
         .card-agendamento h4 { margin: 0; color: #85741d; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
         .card-agendamento .data-destaque { font-size: 1.5rem; font-weight: bold; color: #444; margin-top: 10px; }
         .fuso-aviso { font-size: 0.75rem; color: #85741d; margin-top: 5px; font-weight: normal; }
-        .cliente-menu { margin-bottom: 30px; border: 1px solid #eee5de; border-radius: 14px; background: #fff; box-shadow: 0 10px 30px rgba(41,32,25,.05); overflow: hidden; }
-        .cliente-menu summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; background: #fdfaf5; color: #8c7851; cursor: pointer; font-weight: 800; list-style: none; }
+        .cliente-menu { margin-bottom: 20px; border: 1px solid #eee5de; border-radius: 14px; background: #fff; box-shadow: 0 10px 30px rgba(41,32,25,.05); overflow: hidden; }
+        .cliente-menu summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px; background: #fdfaf5; color: #8c7851; cursor: pointer; font-weight: 800; list-style: none; }
         .cliente-menu summary::-webkit-details-marker { display: none; }
         .cliente-menu summary::after { content: '+'; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #d4a373; color: #fff; font-size: 18px; line-height: 1; }
         .cliente-menu[open] summary::after { content: '-'; }
-        .cliente-menu-conteudo { padding: 20px; border-top: 1px solid #eee5de; }
+        .cliente-menu-conteudo { padding: 22px; border-top: 1px solid #eee5de; }
         .cliente-menu-conteudo h3 { margin-top: 0; color: #8c7851; }
-        .cliente-menu-conteudo .grid-acoes { margin-bottom: 26px; }
+        .cliente-menu-conteudo .grid-acoes { margin-bottom: 0; }
         .cliente-menu-conteudo .btn-acao small { font-weight: normal; font-size: .7rem; }
 
-        .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .grid-acoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 15px; margin-bottom: 40px; }
         .btn-acao { display: flex; align-items: center; justify-content: center; padding: 20px; background: #fff; border: 1px solid #d4a373; color: #d4a373; text-decoration: none; border-radius: 12px; font: inherit; font-weight: bold; transition: 0.3s; text-align: center; flex-direction: column; gap: 10px; cursor: pointer; min-height: 92px; }
         .btn-acao:hover { background: #d4a373; color: white; transform: translateY(-3px); }
         .btn-acao-disabled,
@@ -1379,8 +1387,8 @@ h2{
         .mensagem-troca-senha.erro { color: #a86936; }
         .modal-paciente { display: none; position: fixed; inset: 0; z-index: 10000; align-items: center; justify-content: center; padding: 22px; background: rgba(41,32,25,.52); backdrop-filter: blur(5px); }
         .modal-paciente.modal-paciente-aberto { display: flex; }
-        .modal-paciente-conteudo { position: relative; width: min(680px, 100%); max-height: calc(100vh - 44px); overflow: auto; background: #fff; border-radius: 16px; padding: 30px; box-shadow: 0 26px 80px rgba(41,32,25,.25); }
-        .modal-paciente-amplo { width: min(920px, 100%); }
+        .modal-paciente-conteudo { position: relative; width: min(820px, 100%); max-height: calc(100vh - 44px); overflow: auto; background: #fff; border-radius: 16px; padding: 30px; box-shadow: 0 26px 80px rgba(41,32,25,.25); }
+        .modal-paciente-amplo { width: min(1120px, 100%); }
         .modal-paciente-conteudo h3 { margin-top: 0; color: #8c7851; }
         .modal-paciente-fechar { position: absolute; top: 12px; right: 14px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #f3eee9; color: #6f655d; font-size: 18px; line-height: 1; cursor: pointer; }
         .modal-paciente-fechar:hover { background: #d4a373; color: #fff; }
@@ -1420,6 +1428,9 @@ h2{
         #loading-overlay { text-align: center; padding: 40px; color: #d4a373; font-weight: bold; }
 
         @media(max-width: 700px) {
+            .cliente-container { padding:14px; }
+            .header-cliente { padding:22px 18px; }
+            .cliente-menu-conteudo { padding:16px; }
             .modal-paciente-conteudo { padding: 24px 18px; }
             .dados-cliente-lista,
             .trocar-senha-grid.dados-contato-cliente { grid-template-columns: 1fr; }
